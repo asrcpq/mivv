@@ -44,13 +44,11 @@ class Gridview(QWidget):
 					self.labels[j][count_h].hide()
 				except IndexError:
 					pass
-			for j in range(count_v - 1, count_v + 1):
-				for i in range(0, count_h +1):
-					try:
-						if self.get_idx(i, j) >= len(filelist):
-							self.labels[j][i].hide()
-					except IndexError:
-						pass
+			for i in range(0, count_h +1):
+				try:
+					self.labels[count_v][i].hide()
+				except IndexError:
+					pass
 		self.count_h = count_h
 		self.count_v = count_v
 		for j in range(self.count_v):
@@ -72,15 +70,16 @@ class Gridview(QWidget):
 					label = self.labels[j][i]
 				idx = self.get_idx(i, j)
 				if idx >= len(filelist):
-					return
-				pixmap_resize = pixmaps[idx].scaled(
-					self.grid_size,
-					self.grid_size,
-					Qt.KeepAspectRatio,
-					transformMode=Qt.SmoothTransformation,
-				)
-				label.setPixmap(pixmap_resize)
-				label.show()
+					self.labels[j][i].hide()
+				else:
+					pixmap_resize = pixmaps[idx].scaled(
+						self.grid_size,
+						self.grid_size,
+						Qt.KeepAspectRatio,
+						transformMode=Qt.SmoothTransformation,
+					)
+					label.setPixmap(pixmap_resize)
+					label.show()
 
 	def resizeEvent(self, event):
 		self.reset_layout()

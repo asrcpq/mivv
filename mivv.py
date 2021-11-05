@@ -30,8 +30,8 @@ class Gridview(QWidget):
 		return j * self.count_h + i + self.idx_offset 
 
 	def reset_layout(self):
-		self.count_h = self.width() // self.grid_offset
-		self.count_v = self.height() // self.grid_offset
+		self.count_h = (self.width() - self.grid_space) // self.grid_offset
+		self.count_v = (self.height() - self.grid_space) // self.grid_offset
 		self.labels = []
 		for j in range(self.count_v):
 			self.labels.append([])
@@ -42,8 +42,8 @@ class Gridview(QWidget):
 				label = QLabel(f"Thumbview_{j}_{i}", self)
 				label.setAlignment(Qt.AlignCenter)
 				label.setGeometry(
-					i * self.grid_offset,
-					j * self.grid_offset,
+					i * self.grid_offset + self.grid_space,
+					j * self.grid_offset + self.grid_space,
 					self.grid_size,
 					self.grid_size,
 				)
@@ -180,4 +180,3 @@ if __name__ == '__main__':
 		print("Read", file)
 	main_window = MainWindow()
 	app.exec_()
-

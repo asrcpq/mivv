@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel
@@ -50,12 +51,18 @@ class Imageview(QWidget):
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
-	parser.add_argument('-i', dest = "filelist_from_stdin")
+	parser.add_argument('-i', action = "store_true")
 	return parser
 
 if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
-	filelist = unknown_args
+	if args.i:
+		filelist_string = sys.stdin.read()
+		filelist = filelist_string.split()
+		for file in filelist:
+			print("Read", file)
+	else:
+		filelist = unknown_args
 	if len(filelist) == 0:
 		print("No image file specified, exiting")
 		exit(1)

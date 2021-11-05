@@ -1,24 +1,30 @@
 import sys
+import os
 import argparse
+from pathlib import Path
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt
 
+class Config():
+	def __init__(self):
+		self.grid_size = 120
+config = Config()
+
 filelist = []
-pixmaps = []
+pixmaps = [] # thumbnails
 current_idx = 0
 
 class Gridview(QWidget):
-	def __init__(self, parent = None):
+	def __init__(self, config, parent = None):
 		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
 		self.idx_offset = 0
-		self.grid_size = 120
+		self.grid_size = config.grid_size
 		self.grid_space = 10
 		self.grid_offset = self.grid_size + self.grid_space
 		self.reset_layout()
-		self.refresh()
 
 	def get_idx(self, i, j):
 		return j * self.count_h + i + self.idx_offset 
@@ -26,7 +32,6 @@ class Gridview(QWidget):
 	def reset_layout(self):
 		self.count_h = self.width() // self.grid_offset
 		self.count_v = self.height() // self.grid_offset
-		print(self.width(), self.height())
 		self.labels = []
 		for j in range(self.count_v):
 			self.labels.append([])
@@ -51,19 +56,10 @@ class Gridview(QWidget):
 				self.setStyleSheet("background-color: white;")
 				label.setStyleSheet("border: 1px solid red;")
 				label.show()
-				print("f")
 				self.labels[j].append(label)
 
 	def resizeEvent(self, event):
 		self.reset_layout()
-
-	def refresh(self):
-		for j in range(self.count_v):
-			for i in range(self.count_h):
-				if self.get_idx(i, j) > len(filelist):
-					return
-				self.labels[j][i].setStyleSheet("background-color: cyan")
-				print("set")
 
 	def key_handler(self, e: QKeyEvent):
 		pass
@@ -82,8 +78,7 @@ class Imageview(QWidget):
 
 	def reload(self):
 		global current_idx, pixmaps
-		# self.pixmap = QPixmap(filelist[current_idx])
-		self.pixmap = pixmaps[current_idx]
+		self.pixmap = QPixmap(filelist[current_idx])
 	
 	def render(self):
 		pixmap_resize = self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)
@@ -112,7 +107,7 @@ class MainWindow(QMainWindow):
 		self.setWindowTitle("mivv")
 		self.setGeometry(0, 0, 640, 480)
 		self.image_view = Imageview(self)
-		self.grid_view = Gridview(self)
+		self.grid_view = Gridview(config, self)
 		self.image_mode()
 		self.show()
 
@@ -154,6 +149,20 @@ def build_parser():
 	parser.add_argument('-i', action = "store_true")
 	return parser
 
+def cached_read(path):
+	abspath = os.path.abspath(path)
+	# add an extra dot to prevent possible contamination
+	cached_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/.{abspath}"
+	if os.path.exists(cached_path):
+		return QPixmap(cached_path)
+	print("Generating cache for:", abspath)
+	dirname = os.path.dirname(cached_path)
+	Path(dirname).mkdir(parents = True, exist_ok = True)
+	pixmap = QPixmap(abspath)
+	pixmap_resize = pixmap.scaled(config.grid_size, config.grid_size, Qt.KeepAspectRatio)
+	pixmap_resize.save(cached_path)
+	return pixmap_resize
+
 if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
 	if args.i:
@@ -166,8 +175,8 @@ if __name__ == '__main__':
 		exit(1)
 	app = QApplication([])
 	for file in filelist:
-		# TODO: cache file, dynamic load
-		pixmaps.append(QPixmap(file))
+		# TODO: async load
+		pixmaps.append(cached_read(file))
 		print("Read", file)
 	main_window = MainWindow()
 	app.exec_()

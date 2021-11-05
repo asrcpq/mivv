@@ -10,6 +10,7 @@ from PyQt5.QtCore import Qt
 class Config():
 	def __init__(self):
 		self.grid_size = 120
+		self.overwrite_cache = False
 config = Config()
 
 filelist = []
@@ -51,6 +52,7 @@ class Gridview(QWidget):
 					self.grid_size,
 					self.grid_size,
 					Qt.KeepAspectRatio,
+					transformMode=Qt.SmoothTransformation,
 				)
 				label.setPixmap(pixmap_resize)
 				self.setStyleSheet("background-color: white;")
@@ -147,24 +149,32 @@ class MainWindow(QMainWindow):
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
 	parser.add_argument('-i', action = "store_true")
+	parser.add_argument('-c', action = "store_true")
 	return parser
 
 def cached_read(path):
 	abspath = os.path.abspath(path)
 	# add an extra dot to prevent possible contamination
 	cached_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/.{abspath}"
-	if os.path.exists(cached_path):
+	if os.path.exists(cached_path) and not config.overwrite_cache:
 		return QPixmap(cached_path)
 	print("Generating cache for:", abspath)
 	dirname = os.path.dirname(cached_path)
 	Path(dirname).mkdir(parents = True, exist_ok = True)
 	pixmap = QPixmap(abspath)
-	pixmap_resize = pixmap.scaled(config.grid_size, config.grid_size, Qt.KeepAspectRatio)
+	pixmap_resize = pixmap.scaled(
+		config.grid_size,
+		config.grid_size,
+		Qt.KeepAspectRatio,
+		transformMode=Qt.SmoothTransformation,
+	)
 	pixmap_resize.save(cached_path)
 	return pixmap_resize
 
 if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
+	if args.c:
+		config.overwrite_cache = True
 	if args.i:
 		filelist_string = sys.stdin.read()
 		filelist = filelist_string.split()

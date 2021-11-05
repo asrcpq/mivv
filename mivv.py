@@ -11,6 +11,7 @@ class Config():
 	def __init__(self):
 		self.grid_size = 120
 		self.overwrite_cache = False
+		self.start_in_grid_mode = False
 config = Config()
 
 filelist = []
@@ -131,7 +132,10 @@ class MainWindow(QMainWindow):
 		self.setGeometry(0, 0, 640, 480)
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(config, self)
-		self.image_mode()
+		if config.start_in_grid_mode:
+			self.grid_mode()
+		else:
+			self.image_mode()
 		self.show()
 
 	def grid_mode(self):
@@ -170,6 +174,7 @@ class MainWindow(QMainWindow):
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
 	parser.add_argument('-i', action = "store_true")
+	parser.add_argument('-t', action = "store_true")
 	parser.add_argument('-c', action = "store_true")
 	return parser
 
@@ -196,6 +201,8 @@ if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
 	if args.c:
 		config.overwrite_cache = True
+	if args.t:
+		config.start_in_grid_mode = True
 	if args.i:
 		filelist_string = sys.stdin.read()
 		filelist = filelist_string.split()

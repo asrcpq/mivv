@@ -25,29 +25,54 @@ class Gridview(QWidget):
 		self.grid_size = config.grid_size
 		self.grid_space = 10
 		self.grid_offset = self.grid_size + self.grid_space
+		self.count_h = 0
+		self.count_v = 0
+		self.labels = []
 		self.reset_layout()
 
 	def get_idx(self, i, j):
 		return j * self.count_h + i + self.idx_offset 
 
 	def reset_layout(self):
-		self.count_h = (self.width() - self.grid_space) // self.grid_offset
-		self.count_v = (self.height() - self.grid_space) // self.grid_offset
-		self.labels = []
+		count_h = (self.width() - self.grid_space) // self.grid_offset
+		count_v = (self.height() - self.grid_space) // self.grid_offset
+		if self.count_h == count_h and self.count_v == count_v:
+			return
+		if self.count_h > count_h or self.count_v > count_v:
+			for j in range(0, count_v):
+				try:
+					self.labels[j][count_h].hide()
+				except IndexError:
+					pass
+			for j in range(count_v - 1, count_v + 1):
+				for i in range(0, count_h +1):
+					try:
+						if self.get_idx(i, j) >= len(filelist):
+							self.labels[j][i].hide()
+					except IndexError:
+						pass
+		self.count_h = count_h
+		self.count_v = count_v
 		for j in range(self.count_v):
-			self.labels.append([])
+			if j >= len(self.labels):
+				self.labels.append([])
 			for i in range(self.count_h):
+				if i >= len(self.labels[j]):
+					label = QLabel(f"Thumbview_{j}_{i}", self)
+					label.setAlignment(Qt.AlignCenter)
+					label.setStyleSheet("border: 1px solid red;")
+					label.setGeometry(
+						i * self.grid_offset + self.grid_space,
+						j * self.grid_offset + self.grid_space,
+						self.grid_size,
+						self.grid_size,
+					)
+					self.labels[j].append(label)
+				else:
+					label = self.labels[j][i]
 				idx = self.get_idx(i, j)
 				if idx >= len(filelist):
 					return
-				label = QLabel(f"Thumbview_{j}_{i}", self)
-				label.setAlignment(Qt.AlignCenter)
-				label.setGeometry(
-					i * self.grid_offset + self.grid_space,
-					j * self.grid_offset + self.grid_space,
-					self.grid_size,
-					self.grid_size,
-				)
 				pixmap_resize = pixmaps[idx].scaled(
 					self.grid_size,
 					self.grid_size,
@@ -55,10 +80,7 @@ class Gridview(QWidget):
 					transformMode=Qt.SmoothTransformation,
 				)
 				label.setPixmap(pixmap_resize)
-				self.setStyleSheet("background-color: white;")
-				label.setStyleSheet("border: 1px solid red;")
 				label.show()
-				self.labels[j].append(label)
 
 	def resizeEvent(self, event):
 		self.reset_layout()

@@ -1,7 +1,7 @@
 import sys
 import argparse
 
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt
 
@@ -9,12 +9,10 @@ filelist = []
 current_idx = 0
 
 class Imageview(QWidget):
-	def __init__(self):
-		super().__init__()
+	def __init__(self, parent = None):
+		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
-		self.setWindowTitle("mivv")
-		self.setGeometry(0, 0, 640, 480)
-		self.label = QLabel("Black", self)
+		self.label = QLabel("Imageview", self)
 		self.label.setAlignment(Qt.AlignCenter)
 		self.reload()
 		self.render()
@@ -32,6 +30,14 @@ class Imageview(QWidget):
 		self.label.resize(self.width(), self.height())
 		self.show()
 
+class MainWindow(QMainWindow):
+	def __init__(self):
+		super().__init__()
+		self.setWindowTitle("mivv")
+		self.setGeometry(0, 0, 640, 480)
+		self.image_view = Imageview(self)
+		self.show()
+
 	def keyPressEvent(self, e: QKeyEvent):
 		global current_idx
 		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
@@ -46,8 +52,11 @@ class Imageview(QWidget):
 			exit(0)
 		else:
 			return
-		self.reload()
-		self.render()
+		self.image_view.reload()
+		self.image_view.render()
+
+	def resizeEvent(self, event):
+		self.image_view.resize(self.width(), self.height())
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
@@ -67,6 +76,6 @@ if __name__ == '__main__':
 		print("No image file specified, exiting")
 		exit(1)
 	app = QApplication([])
-	image_view = Imageview()
+	main_window = MainWindow()
 	app.exec_()
 

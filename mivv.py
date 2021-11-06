@@ -268,6 +268,8 @@ def cached_read(path):
 	if not os.path.exists(abspath):
 		# remove cache? maybe not
 		return None
+	if abspath.startswith(cache_path):
+		return QPixmap(abspath)
 	cached_path = cache_path + abspath
 	if os.path.exists(cached_path) and not config.overwrite_cache:
 		return QPixmap(cached_path)

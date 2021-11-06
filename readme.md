@@ -18,6 +18,8 @@ PyQt5 simple image viewer.
 
 * ~~scale~~/flip/rotate image
 
+* xreset layout, prevent blackout
+
 * fast transform
 
 * gif/video

@@ -2,7 +2,7 @@
 
 PyQt5 simple image viewer.
 
-## TODO
+## todo
 
 * ~~grid mode~~
 

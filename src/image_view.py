@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt
 
@@ -39,6 +39,12 @@ class Imageview(QWidget):
 			var.current_idx += 1
 			if var.current_idx >= len(var.image_loader.filelist):
 				var.current_idx = len(var.image_loader.filelist) - 1
+		elif e.key() == Qt.Key_G:
+			modifiers = QApplication.keyboardModifiers()
+			if modifiers == Qt.ShiftModifier:
+				var.current_idx = len(var.image_loader.filelist) - 1
+			else:
+				var.current_idx = 0
 		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
 			var.current_idx -= 1
 			if var.current_idx < 0:

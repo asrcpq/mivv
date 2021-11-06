@@ -11,7 +11,7 @@ from PyQt5.QtCore import Qt
 class Config():
 	def __init__(self):
 		# reference size for cache
-		self.grid_size = 256
+		self.cache_size = 256
 		self.overwrite_cache = False
 		self.start_in_grid_mode = False
 config = Config()
@@ -27,8 +27,9 @@ class Gridview(QWidget):
 		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
 		self.y_offset = 0
-		self.grid_size = config.grid_size
-		self.scaling_mult = 1.3
+		self.grid_sizes = [32, 64, 144, 192, 256]
+		self.grid_size_idx = 2
+		self.grid_size_idx_default = 2
 		self.config = config
 		self.grid_space = 10
 		self.count_h = 0
@@ -89,7 +90,7 @@ class Gridview(QWidget):
 
 	# layout = a x b images in screen
 	def reset_layout(self):
-		self.grid_offset = self.grid_size + self.grid_space
+		self.grid_offset = self.grid_sizes[self.grid_size_idx] + self.grid_space
 		count_h = (self.width() - self.grid_space) // self.grid_offset
 		count_v = (self.height() - self.grid_space) // self.grid_offset
 		if self.count_h == count_h and self.count_v == count_v:
@@ -109,6 +110,7 @@ class Gridview(QWidget):
 		self.__set_cursor(True)
 	
 	def refresh(self):
+		grid_size = self.grid_sizes[self.grid_size_idx]
 		for j in range(self.count_v):
 			if j >= len(self.labels):
 				self.labels.append([])
@@ -119,8 +121,8 @@ class Gridview(QWidget):
 					label.setGeometry(
 						i * self.grid_offset + self.grid_space,
 						j * self.grid_offset + self.grid_space,
-						self.grid_size,
-						self.grid_size,
+						grid_size,
+						grid_size,
 					)
 					self.labels[j].append(label)
 				else:
@@ -130,8 +132,8 @@ class Gridview(QWidget):
 					self.labels[j][i].hide()
 				else:
 					pixmap_resize = pixmaps[idx].scaled(
-						self.grid_size,
-						self.grid_size,
+						grid_size,
+						grid_size,
 						Qt.KeepAspectRatio,
 						Qt.SmoothTransformation,
 					)
@@ -156,6 +158,23 @@ class Gridview(QWidget):
 		else:
 			self.__set_cursor(False)
 
+	def set_zoom_level(self, dz, abs_zoom = False):
+		old_idx = self.grid_size_idx
+		if abs_zoom:
+			if self.grid_size_idx != dz:
+				self.grid_size_idx = dz
+			else:
+				return
+		else:
+			self.grid_size_idx += dz
+		if self.grid_size_idx < 0:
+			self.grid_size_idx = 0
+		elif self.grid_size_idx >= len(self.grid_sizes):
+			self.grid_size_idx = len(self.grid_sizes) - 1
+		if old_idx == self.grid_size_idx:
+			return
+		self.xreset_layout()
+
 	def key_handler(self, e: QKeyEvent):
 		global current_idx
 		if e.key() == Qt.Key_L:
@@ -167,14 +186,11 @@ class Gridview(QWidget):
 		elif e.key() == Qt.Key_K:
 			self.offset_cursor(-self.count_h, False)
 		elif e.key() == Qt.Key_O:
-			self.grid_size = int(self.grid_size / self.scaling_mult)
-			self.xreset_layout()
+			self.set_zoom_level(-1, False)
 		elif e.key() == Qt.Key_I:
-			self.grid_size = int(self.grid_size * self.scaling_mult)
-			self.xreset_layout()
+			self.set_zoom_level(1, False)
 		elif e.key() == Qt.Key_0:
-			self.grid_size = self.config.grid_size
-			self.xreset_layout()
+			self.set_zoom_level(self.grid_size_idx_default, True)
 
 class Imageview(QWidget):
 	def __init__(self, parent = None):

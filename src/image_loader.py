@@ -15,7 +15,7 @@ class ImageLoader():
 
 	def preload(self, filelist_tmp, load_all = True):
 		while filelist_tmp:
-			print(f"[2K{len(self.filelist)}:{len(filelist_tmp)}", end = "\r")
+			# print(f"[2K{len(self.filelist)}:{len(filelist_tmp)}", end = "\r")
 			file = filelist_tmp[-1]
 			filelist_tmp.pop()
 			if os.path.isdir(file):
@@ -32,7 +32,6 @@ class ImageLoader():
 				self.cached_state.append(False)
 			else:
 				exit(127)
-			print("Read", file)
 			self.filelist.append(file)
 			self.pixmaps.append(None)
 		if load_all:

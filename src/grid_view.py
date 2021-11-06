@@ -37,13 +37,14 @@ class Gridview(QWidget):
 			return
 		self.cursor[0] = var.current_idx % self.count_h
 		cy_plus_offset = var.current_idx // self.count_h
-		total_row = (len(var.filelist) - 1) // self.count_h + 1
+		total_row = (len(var.image_loader.filelist) - 1) // self.count_h + 1
 		# scaled: row as close as possible
-		# keymove: scroll as little as possible
+		# keymove: scroll as little as possible(but no extra whitespace)
 		if scaled:
 			# y shrink, never overflow
 			if self.cursor[1] >= self.count_v:
 				self.cursor[1] = self.count_v - 1
+			# eliminate extra whitespace
 			if cy_plus_offset >= self.cursor[1]: # not bottom
 				#       <----count_v---->
 				# <min1>+---------------+
@@ -55,7 +56,6 @@ class Gridview(QWidget):
 				min1 = off0
 				min2 = off0 + self.count_v - total_row
 				scroll_up = max(0, min(min1, min2))
-				print(scroll_up, min1, min2, off0)
 				self.y_offset = off0 - scroll_up
 				self.cursor[1] += scroll_up
 			else:
@@ -122,10 +122,12 @@ class Gridview(QWidget):
 				else:
 					label = self.labels[j][i]
 				idx = self.get_idx(i, j)
-				if idx >= len(var.filelist):
+				if idx >= len(var.image_loader.filelist):
 					self.labels[j][i].hide()
 				else:
-					pixmap_resize = var.pixmaps[idx].scaled(
+					if not var.image_loader.pixmaps[idx]:
+						var.image_loader.pixmaps[idx] = var.image_loader.load_by_idx(idx)
+					pixmap_resize = var.image_loader.pixmaps[idx].scaled(
 						grid_size,
 						grid_size,
 						Qt.KeepAspectRatio,
@@ -142,9 +144,10 @@ class Gridview(QWidget):
 		var.current_idx += offset
 		if var.current_idx < 0:
 			var.current_idx = old_idx
-		elif var.current_idx >= len(var.filelist):
-			if (self.cursor[1] + self.y_offset + 1) * self.count_h < len(var.filelist):
-				var.current_idx = len(var.filelist) - 1
+		elif var.current_idx >= len(var.image_loader.filelist):
+			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \
+					len(var.image_loader.filelist):
+				var.current_idx = len(var.image_loader.filelist) - 1
 				self.__set_cursor(False)
 			else:
 				var.current_idx = old_idx

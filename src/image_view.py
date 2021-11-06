@@ -22,7 +22,7 @@ class Imageview(QWidget):
 		self.render()
 
 	def reload(self):
-		self.pixmap = QPixmap(var.filelist[var.current_idx])
+		self.pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
 	
 	def render(self):
 		pixmap_resize = self.pixmap.scaled(
@@ -37,8 +37,8 @@ class Imageview(QWidget):
 	def key_handler(self, e: QKeyEvent):
 		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
 			var.current_idx += 1
-			if var.current_idx >= len(var.filelist):
-				var.current_idx = len(var.filelist) - 1
+			if var.current_idx >= len(var.image_loader.filelist):
+				var.current_idx = len(var.image_loader.filelist) - 1
 		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
 			var.current_idx -= 1
 			if var.current_idx < 0:

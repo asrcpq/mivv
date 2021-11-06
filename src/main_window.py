@@ -45,7 +45,7 @@ class MainWindow(QMainWindow):
 			self.bar_height,
 		)
 		left = self.info_label.geometry().left()
-		self.fn_label.setText(f"{var.filelist[var.current_idx]}")
+		self.fn_label.setText(f"{var.image_loader.filelist[var.current_idx]}")
 		self.fn_label.setGeometry(
 			0,
 			self.height() - self.bar_height,

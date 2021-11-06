@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
 		self.image_view.reload()
 		self.image_view.show()
 		self.image_view.resize(self.width(), self.height())
+		self.image_view.render()
 		self.mode = 1
 
 	def keyPressEvent(self, e: QKeyEvent):

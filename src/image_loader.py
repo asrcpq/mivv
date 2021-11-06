@@ -32,7 +32,7 @@ class ImageLoader():
 				self.cached_state.append(False)
 			else:
 				exit(127)
-			# print("Read", file)
+			print("Read", file)
 			self.filelist.append(file)
 			self.pixmaps.append(None)
 		if load_all:

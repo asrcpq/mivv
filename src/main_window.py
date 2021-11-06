@@ -62,7 +62,7 @@ class MainWindow(QMainWindow):
 
 	def image_mode(self):
 		self.grid_view.hide()
-		self.image_view.initialize()
+		self.image_view.reload()
 		self.image_view.show()
 		self.image_view.resize(self.width(), self.height())
 		self.mode = 1

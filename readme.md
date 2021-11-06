@@ -12,16 +12,16 @@ PyQt5 simple image viewer.
 
 * ~~show filename~~
 
-* gc cache
-
-* no recursive cache
-
-* gif/video
+* ~~no recursive cache~~
 
 * scaling quality
 
 * scale/flip/rotate image
 
-* async loading
+* gc cache
+
+* gif/video
 
 * thumbnail scale
+
+* async loading

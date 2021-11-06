@@ -26,8 +26,8 @@ PyQt5 simple image viewer.
 
 * gif/video
 
-* async loading
-
 * gc cache
 
-* image mode preload + mem management
+* grid mode async caching
+
+* image mode async caching + mem limit

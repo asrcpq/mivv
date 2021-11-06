@@ -66,7 +66,7 @@ if __name__ == '__main__':
 		file = filelist_tmp[-1]
 		filelist_tmp.pop()
 		if os.path.isdir(file):
-			filelist_tmp += glob(os.path.join(file, "*"))
+			filelist_tmp += sorted(glob(os.path.join(file, "*")), reverse = True)
 			continue
 		# TODO: async load
 		pixmap = cached_read(file)

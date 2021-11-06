@@ -14,7 +14,7 @@ PyQt5 simple image viewer.
 
 * ~~no recursive cache~~
 
-* scaling quality
+* ~~scaling quality~~
 
 * scale/flip/rotate image
 

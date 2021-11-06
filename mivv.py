@@ -165,10 +165,15 @@ class Imageview(QWidget):
 		self.setStyleSheet("background-color: black;")
 		self.label = QLabel("Imageview", self)
 		self.label.setAlignment(Qt.AlignCenter)
-		self.reload()
-		self.render()
+		self.scaling_mult = 1.3
+		self.initialize()
 
 	def resizeEvent(self, event):
+		self.render()
+
+	def initialize(self):
+		self.scaling_factor = 0.99
+		self.reload()
 		self.render()
 
 	def reload(self):
@@ -177,8 +182,8 @@ class Imageview(QWidget):
 	
 	def render(self):
 		pixmap_resize = self.pixmap.scaled(
-			self.width(),
-			self.height(),
+			int(self.width() * self.scaling_factor),
+			int(self.height() * self.scaling_factor),
 			Qt.KeepAspectRatio,
 			Qt.SmoothTransformation,
 		)
@@ -195,6 +200,12 @@ class Imageview(QWidget):
 			current_idx -= 1
 			if current_idx < 0:
 				current_idx = 0
+		elif e.key() == Qt.Key_Minus:
+			self.scaling_factor /= self.scaling_mult
+		elif e.key() == Qt.Key_Plus:
+			self.scaling_factor *= self.scaling_mult
+		elif e.key() == Qt.Key_Equal:
+			self.scaling_factor = 0.99
 		else:
 			return
 		self.reload()
@@ -232,8 +243,7 @@ class MainWindow(QMainWindow):
 
 	def image_mode(self):
 		self.grid_view.hide()
-		self.image_view.reload()
-		self.image_view.render()
+		self.image_view.initialize()
 		self.image_view.show()
 		self.image_view.resize(self.width(), self.height())
 		self.mode = 1

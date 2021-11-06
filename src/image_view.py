@@ -43,6 +43,7 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def reload(self):
+		self.scaling_factor = 1.0
 		self.pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
 		self.pixmap_item.setPixmap(self.pixmap)
 		t = self.pixmap.size() / 2
@@ -108,8 +109,8 @@ class Imageview(QGraphicsView):
 			self.scaling_factor *= self.scaling_mult
 			x_mod = True
 			y_mod = True
-		elif e.key() == Qt.Key_0:
-			self.scaling_factor = 0.99
+		elif e.key() == Qt.Key_W:
+			self.scaling_factor = 1.0
 			x_mod = True
 			y_mod = True
 		else:

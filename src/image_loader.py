@@ -96,6 +96,6 @@ class ImageLoader():
 		cached_path = var.cache_path + abspath + ".jpg"
 		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
 			print("Update cache:", abspath)
-			return create_cache(path)
+			return self.create_cache(abspath)
 		else:
 			return QPixmap(cached_path)

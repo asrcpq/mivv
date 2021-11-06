@@ -9,3 +9,4 @@ start_in_grid_mode = False
 load_all = True
 image_loader = ImageLoader()
 expand_dir = True
+delta_move = 50

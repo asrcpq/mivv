@@ -37,7 +37,7 @@ class Gridview(QWidget):
 			return
 		self.cursor[0] = var.current_idx % self.count_h
 		cy_plus_offset = var.current_idx // self.count_h
-		total_row = len(var.filelist) // self.count_h
+		total_row = (len(var.filelist) - 1) // self.count_h + 1
 		# scaled: row as close as possible
 		# keymove: scroll as little as possible
 		if scaled:
@@ -53,8 +53,9 @@ class Gridview(QWidget):
 				# <----totl------->
 				off0 = cy_plus_offset - self.cursor[1]
 				min1 = off0
-				min2 = off0 + self.count_v - 1 - total_row # -1 compensate off0 +1
+				min2 = off0 + self.count_v - total_row
 				scroll_up = max(0, min(min1, min2))
+				print(scroll_up, min1, min2, off0)
 				self.y_offset = off0 - scroll_up
 				self.cursor[1] += scroll_up
 			else:

@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
-from PyQt5.QtGui import QPixmap, QKeyEvent, QFont
+from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtGui import QPixmap, QKeyEvent
 from PyQt5.QtCore import Qt
 
 import var

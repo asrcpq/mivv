@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtCore import Qt
 
@@ -141,7 +141,10 @@ class Gridview(QWidget):
 
 	def offset_cursor(self, offset, abs_pos = False):
 		old_idx = var.current_idx
-		var.current_idx += offset
+		if abs_pos:
+			var.current_idx = offset
+		else:
+			var.current_idx += offset
 		if var.current_idx < 0:
 			var.current_idx = old_idx
 		elif var.current_idx >= len(var.image_loader.filelist):
@@ -180,6 +183,12 @@ class Gridview(QWidget):
 			self.offset_cursor(self.count_h, False)
 		elif e.key() == Qt.Key_K:
 			self.offset_cursor(-self.count_h, False)
+		elif e.key() == Qt.Key_G:
+			modifiers = QApplication.keyboardModifiers()
+			if modifiers == Qt.ShiftModifier:
+				self.offset_cursor(len(var.image_loader.filelist) - 1, True)
+			else:
+				self.offset_cursor(0, True)
 		elif e.key() == Qt.Key_O:
 			self.set_zoom_level(-1, False)
 		elif e.key() == Qt.Key_I:

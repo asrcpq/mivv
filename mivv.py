@@ -1,6 +1,7 @@
 import sys
 import os
 import argparse
+from glob import glob
 from pathlib import Path
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
@@ -250,14 +251,16 @@ def build_parser():
 
 def cached_read(path):
 	abspath = os.path.abspath(path)
-	# add an extra dot to prevent possible contamination
-	cached_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/.{abspath}"
+	pixmap = QPixmap(abspath)
+	if pixmap.isNull():
+		return None
+	# add an extra slash to prevent possible contamination
+	cached_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/{abspath}"
 	if os.path.exists(cached_path) and not config.overwrite_cache:
 		return QPixmap(cached_path)
 	print("Generating cache for:", abspath)
 	dirname = os.path.dirname(cached_path)
 	Path(dirname).mkdir(parents = True, exist_ok = True)
-	pixmap = QPixmap(abspath)
 	pixmap_resize = pixmap.scaled(
 		config.grid_size,
 		config.grid_size,
@@ -279,17 +282,20 @@ if __name__ == '__main__':
 	else:
 		filelist = unknown_args
 	app = QApplication([])
-	filelist2 = []
-	for file in filelist:
+	filelist_tmp = list(reversed(filelist))
+	filelist = []
+	while filelist_tmp:
+		file = filelist_tmp[-1]
+		filelist_tmp.pop()
+		if os.path.isdir(file):
+			filelist_tmp += glob(os.path.join(file, "*"))
 		# TODO: async load
 		pixmap = cached_read(file)
-		if pixmap.isNull():
+		if not pixmap:
 			print("Skip", file)
 			continue
 		pixmaps.append(pixmap)
-		filelist2.append(file)
-		print("Read", file)
-	filelist = filelist2
+		filelist.append(file)
 	if len(filelist) == 0:
 		print("No image file specified, exiting")
 		exit(1)

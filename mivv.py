@@ -10,7 +10,8 @@ from PyQt5.QtCore import Qt
 
 class Config():
 	def __init__(self):
-		self.grid_size = 120
+		# reference size for cache
+		self.grid_size = 256
 		self.overwrite_cache = False
 		self.start_in_grid_mode = False
 config = Config()
@@ -27,8 +28,9 @@ class Gridview(QWidget):
 		self.setStyleSheet("background-color: black;")
 		self.y_offset = 0
 		self.grid_size = config.grid_size
+		self.scaling_mult = 1.3
+		self.config = config
 		self.grid_space = 10
-		self.grid_offset = self.grid_size + self.grid_space
 		self.count_h = 0
 		self.count_v = 0
 		self.cursor = [0, 0]
@@ -78,8 +80,16 @@ class Gridview(QWidget):
 				self.cursor[1] = cy_plus_offset - self.y_offset
 		self.toggle_highlight(True) # after refresh all labels are initialized
 
+	def xreset_layout(self):
+		for label_row in self.labels:
+			for label in label_row:
+				label.close()
+		self.labels = []
+		self.reset_layout()
+
 	# layout = a x b images in screen
 	def reset_layout(self):
+		self.grid_offset = self.grid_size + self.grid_space
 		count_h = (self.width() - self.grid_space) // self.grid_offset
 		count_v = (self.height() - self.grid_space) // self.grid_offset
 		if self.count_h == count_h and self.count_v == count_v:
@@ -156,7 +166,15 @@ class Gridview(QWidget):
 			self.offset_cursor(self.count_h, False)
 		elif e.key() == Qt.Key_K:
 			self.offset_cursor(-self.count_h, False)
-		pass
+		elif e.key() == Qt.Key_Minus:
+			self.grid_size = int(self.grid_size / self.scaling_mult)
+			self.xreset_layout()
+		elif e.key() == Qt.Key_Plus:
+			self.grid_size = int(self.grid_size * self.scaling_mult)
+			self.xreset_layout()
+		elif e.key() == Qt.Key_Equal:
+			self.grid_size = self.config.grid_size
+			self.xreset_layout()
 
 class Imageview(QWidget):
 	def __init__(self, parent = None):
@@ -307,7 +325,7 @@ def cached_read(path):
 		return None
 	if abspath.startswith(cache_path):
 		return QPixmap(abspath)
-	cached_path = cache_path + abspath
+	cached_path = cache_path + abspath + ".jpg"
 	if os.path.exists(cached_path) and not config.overwrite_cache:
 		return QPixmap(cached_path)
 	_filename, ext = os.path.splitext(abspath)

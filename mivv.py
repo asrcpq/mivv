@@ -173,9 +173,9 @@ class MainWindow(QMainWindow):
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
-	parser.add_argument('-i', action = "store_true")
-	parser.add_argument('-t', action = "store_true")
-	parser.add_argument('-c', action = "store_true")
+	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
+	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
+	parser.add_argument('-c', action = "store_true", help = "overwrite cache")
 	return parser
 
 def cached_read(path):

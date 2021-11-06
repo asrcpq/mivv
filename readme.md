@@ -16,7 +16,7 @@ PyQt5 simple image viewer.
 
 * ~~scaling quality~~
 
-* scale/flip/rotate image
+* ~~scale~~/flip/rotate image
 
 * gc cache
 

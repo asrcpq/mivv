@@ -41,13 +41,13 @@ class Gridview(QWidget):
 		return (j + self.y_offset) * self.count_h + i
 
 	def toggle_highlight(self, up):
-		if up:
-			self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: 1px solid red;")
-		else:
-			try:
+		try:
+			if up:
+				self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: 1px solid red;")
+			else:
 				self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: none;")
-			except IndexError:
-				pass
+		except IndexError:
+			pass
 
 	def __set_cursor(self, scaled = True):
 		self.toggle_highlight(False)
@@ -166,13 +166,13 @@ class Gridview(QWidget):
 			self.offset_cursor(self.count_h, False)
 		elif e.key() == Qt.Key_K:
 			self.offset_cursor(-self.count_h, False)
-		elif e.key() == Qt.Key_Minus:
+		elif e.key() == Qt.Key_O:
 			self.grid_size = int(self.grid_size / self.scaling_mult)
 			self.xreset_layout()
-		elif e.key() == Qt.Key_Plus:
+		elif e.key() == Qt.Key_I:
 			self.grid_size = int(self.grid_size * self.scaling_mult)
 			self.xreset_layout()
-		elif e.key() == Qt.Key_Equal:
+		elif e.key() == Qt.Key_0:
 			self.grid_size = self.config.grid_size
 			self.xreset_layout()
 
@@ -217,11 +217,11 @@ class Imageview(QWidget):
 			current_idx -= 1
 			if current_idx < 0:
 				current_idx = 0
-		elif e.key() == Qt.Key_Minus:
+		elif e.key() == Qt.Key_O:
 			self.scaling_factor /= self.scaling_mult
-		elif e.key() == Qt.Key_Plus:
+		elif e.key() == Qt.Key_I:
 			self.scaling_factor *= self.scaling_mult
-		elif e.key() == Qt.Key_Equal:
+		elif e.key() == Qt.Key_0:
 			self.scaling_factor = 0.99
 		else:
 			return

@@ -18,10 +18,14 @@ PyQt5 simple image viewer.
 
 * ~~scale~~/flip/rotate image
 
-* gc cache
+* fast transform
 
 * gif/video
 
 * thumbnail scale
 
 * async loading
+
+* gc cache
+
+* image mode preload + mem management

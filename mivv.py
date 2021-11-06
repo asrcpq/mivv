@@ -217,16 +217,20 @@ class MainWindow(QMainWindow):
 		self.setWindowTitle("mivv")
 		self.setGeometry(0, 0, 640, 480)
 
-		label = QLabel("filename", self)
-		label.setStyleSheet("border: 1px solid red;")
-		label.setStyleSheet("color: #FFFFFF;")
-		label.setFont(QFont("monospace"))
-		self.fn_label = label
-		self.set_label()
-
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(config, self)
 		self.bar_height = 10
+
+		label = QLabel("filename", self)
+		label.setStyleSheet("color: #FFFFFF;")
+		label.setFont(QFont("monospace"))
+		self.fn_label = label
+		label = QLabel("info", self)
+		label.setStyleSheet("color: #FFFFFF;")
+		label.setFont(QFont("monospace"))
+		self.info_label = label
+		self.set_label()
+
 		if config.start_in_grid_mode:
 			self.grid_mode()
 		else:
@@ -234,7 +238,23 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def set_label(self):
-		self.fn_label.setText(f"({current_idx}/{len(filelist)}){filelist[current_idx]}")
+		self.info_label.setText(f"({current_idx}/{len(filelist)})")
+		self.info_label.adjustSize()
+		width = self.info_label.geometry().width()
+		self.info_label.setGeometry(
+			self.width() - width,
+			self.height() - self.bar_height,
+			width,
+			self.bar_height,
+		)
+		left = self.info_label.geometry().left()
+		self.fn_label.setText(f"{filelist[current_idx]}")
+		self.fn_label.setGeometry(
+			0,
+			self.height() - self.bar_height,
+			left,
+			self.bar_height,
+		)
 
 	def grid_mode(self):
 		self.image_view.hide()
@@ -266,7 +286,7 @@ class MainWindow(QMainWindow):
 			self.set_label()
 
 	def resizeEvent(self, event):
-		self.fn_label.setGeometry(0, self.height() - self.bar_height, self.width(), self.bar_height)
+		self.set_label()
 		if self.mode == 1:
 			self.image_view.resize(self.width(), self.height() - self.bar_height)
 		elif self.mode == 2:
@@ -334,7 +354,7 @@ if __name__ == '__main__':
 		if not pixmap:
 			print("Skip", file)
 			continue
-		print("Read", file)
+		# print("Read", file)
 		pixmaps.append(pixmap)
 		filelist.append(file)
 	if len(filelist) == 0:

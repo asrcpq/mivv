@@ -124,7 +124,7 @@ class Gridview(QWidget):
 						self.grid_size,
 						self.grid_size,
 						Qt.KeepAspectRatio,
-						transformMode=Qt.SmoothTransformation,
+						Qt.SmoothTransformation,
 					)
 					label.setPixmap(pixmap_resize)
 					label.show()
@@ -176,7 +176,12 @@ class Imageview(QWidget):
 		self.pixmap = QPixmap(filelist[current_idx])
 	
 	def render(self):
-		pixmap_resize = self.pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio)
+		pixmap_resize = self.pixmap.scaled(
+			self.width(),
+			self.height(),
+			Qt.KeepAspectRatio,
+			Qt.SmoothTransformation,
+		)
 		self.label.setPixmap(pixmap_resize)
 		self.label.resize(self.width(), self.height())
 
@@ -287,7 +292,7 @@ def cached_read(path):
 		config.grid_size,
 		config.grid_size,
 		Qt.KeepAspectRatio,
-		transformMode=Qt.SmoothTransformation,
+		Qt.SmoothTransformation,
 	)
 	pixmap_resize.save(cached_path)
 	return pixmap_resize

@@ -22,18 +22,60 @@ class Gridview(QWidget):
 	def __init__(self, config, parent = None):
 		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
-		self.idx_offset = 0
+		self.y_offset = 0
 		self.grid_size = config.grid_size
 		self.grid_space = 10
 		self.grid_offset = self.grid_size + self.grid_space
 		self.count_h = 0
 		self.count_v = 0
+		self.cursor = [0, 0]
 		self.labels = []
 		self.reset_layout()
 
 	def get_idx(self, i, j):
-		return j * self.count_h + i + self.idx_offset 
+		return (j + self.y_offset) * self.count_h + i
 
+	def toggle_highlight(self, up):
+		if up:
+			self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: 1px solid red;")
+		else:
+			try:
+				self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: none;")
+			except IndexError:
+				pass
+
+	def __set_cursor(self, scaled = True):
+		self.toggle_highlight(False)
+		if self.count_h == 0:
+			return
+		self.cursor[0] = current_idx % self.count_h
+		cy_plus_offset = current_idx // self.count_h
+		# scaled: row as close as possible
+		# keymove: scroll as little as possible
+		if scaled:
+			# y shrink, never overflow
+			if self.cursor[1] >= self.count_v:
+				self.cursor[1] = self.count_v - 1
+			if cy_plus_offset >= self.cursor[1]:
+				self.y_offset = cy_plus_offset - self.cursor[1]
+			else:
+				self.y_offset = 0
+				self.cursor[1] = cy_plus_offset
+			self.refresh()
+		else:
+			if cy_plus_offset < self.y_offset:
+				self.cursor[1] = 0
+				self.y_offset = cy_plus_offset
+				self.refresh()
+			elif cy_plus_offset >= self.y_offset + self.count_v:
+				self.cursor[1] = self.count_v - 1
+				self.y_offset = cy_plus_offset - self.cursor[1]
+				self.refresh()
+			else:
+				self.cursor[1] = cy_plus_offset - self.y_offset
+		self.toggle_highlight(True) # after refresh all labels are initialized
+
+	# layout = a x b images in screen
 	def reset_layout(self):
 		count_h = (self.width() - self.grid_space) // self.grid_offset
 		count_v = (self.height() - self.grid_space) // self.grid_offset
@@ -45,13 +87,16 @@ class Gridview(QWidget):
 					self.labels[j][count_h].hide()
 				except IndexError:
 					pass
-			for i in range(0, count_h +1):
+			for i in range(0, count_h + 1):
 				try:
 					self.labels[count_v][i].hide()
 				except IndexError:
 					pass
 		self.count_h = count_h
 		self.count_v = count_v
+		self.__set_cursor(True)
+	
+	def refresh(self):
 		for j in range(self.count_v):
 			if j >= len(self.labels):
 				self.labels.append([])
@@ -59,7 +104,6 @@ class Gridview(QWidget):
 				if i >= len(self.labels[j]):
 					label = QLabel(f"Thumbview_{j}_{i}", self)
 					label.setAlignment(Qt.AlignCenter)
-					label.setStyleSheet("border: 1px solid red;")
 					label.setGeometry(
 						i * self.grid_offset + self.grid_space,
 						j * self.grid_offset + self.grid_space,
@@ -85,7 +129,31 @@ class Gridview(QWidget):
 	def resizeEvent(self, event):
 		self.reset_layout()
 
+	def offset_cursor(self, offset, abs_pos = False):
+		global current_idx
+		old_idx = current_idx
+		current_idx += offset
+		if current_idx < 0:
+			current_idx = old_idx
+		elif current_idx >= len(filelist):
+			if (self.cursor[1] + self.y_offset + 1) * self.count_h < len(filelist):
+				current_idx = len(filelist) - 1
+				self.__set_cursor(False)
+			else:
+				current_idx = old_idx
+		else:
+			self.__set_cursor(False)
+
 	def key_handler(self, e: QKeyEvent):
+		global current_idx
+		if e.key() == Qt.Key_L:
+			self.offset_cursor(1, False)
+		elif e.key() == Qt.Key_H:
+			self.offset_cursor(-1, False)
+		elif e.key() == Qt.Key_J:
+			self.offset_cursor(self.count_h, False)
+		elif e.key() == Qt.Key_K:
+			self.offset_cursor(-self.count_h, False)
 		pass
 
 class Imageview(QWidget):

@@ -16,15 +16,15 @@ PyQt5 simple image viewer.
 
 * ~~scaling quality~~
 
+* ~~thumbnail scale~~
+
 * ~~scale~~/flip/rotate image
 
-* xreset layout, prevent blackout
+* ~~xreset layout, prevent blackout~~
 
 * fast transform
 
 * gif/video
-
-* ~~thumbnail scale~~
 
 * async loading
 

@@ -1,7 +1,8 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtCore import Qt
 
+from thumbnail import Thumbnail
 import var
 
 class Gridview(QWidget):
@@ -110,8 +111,7 @@ class Gridview(QWidget):
 				self.labels.append([])
 			for i in range(self.count_h):
 				if i >= len(self.labels[j]):
-					label = QLabel(f"Thumbview_{j}_{i}", self)
-					label.setAlignment(Qt.AlignCenter)
+					label = Thumbnail(self, i, j)
 					label.setGeometry(
 						i * self.grid_offset + self.grid_space,
 						j * self.grid_offset + self.grid_space,
@@ -138,6 +138,10 @@ class Gridview(QWidget):
 
 	def resizeEvent(self, event):
 		self.reset_layout()
+
+	def cursor_select(self, x, y):
+		var.current_idx = (self.y_offset + y) * self.count_h + x
+		self.__set_cursor(False)
 
 	def offset_cursor(self, offset, abs_pos = False):
 		old_idx = var.current_idx

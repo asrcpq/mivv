@@ -6,6 +6,10 @@ PyQt5 simple image viewer.
 
 * ~~grid mode~~
 
+* ~~skip invalid image~~
+
+* read directory as glob
+
 * scaling quality
 
 * show filename

@@ -10,9 +10,15 @@ PyQt5 simple image viewer.
 
 * ~~read directory as glob~~
 
-* scaling quality
+* ~~show filename~~
 
-* show filename
+* gc cache
+
+* no recursive cache
+
+* gif/video
+
+* scaling quality
 
 * scale/flip/rotate image
 

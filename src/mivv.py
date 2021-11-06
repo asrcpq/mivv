@@ -63,19 +63,22 @@ if __name__ == '__main__':
 	filelist_tmp = list(reversed(var.filelist))
 	var.filelist = []
 	while filelist_tmp:
+		print(f"[2K{len(var.filelist)}:{len(filelist_tmp)}", end = "\r")
 		file = filelist_tmp[-1]
 		filelist_tmp.pop()
 		if os.path.isdir(file):
-			filelist_tmp += sorted(glob(os.path.join(file, "*")), reverse = True)
+			if not args.i:
+				filelist_tmp += sorted(glob(os.path.join(file, "*")), reverse = True)
 			continue
 		# TODO: async load
 		pixmap = cached_read(file)
 		if not pixmap:
-			print("Skip", file)
+			# print("Skip", file)
 			continue
 		# print("Read", file)
 		var.pixmaps.append(pixmap)
 		var.filelist.append(file)
+		#print(file)
 	if len(var.filelist) == 0:
 		print("No image file specified, exiting")
 		exit(1)

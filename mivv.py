@@ -5,7 +5,7 @@ from glob import glob
 from pathlib import Path
 
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
-from PyQt5.QtGui import QPixmap, QKeyEvent
+from PyQt5.QtGui import QPixmap, QKeyEvent, QFont
 from PyQt5.QtCore import Qt
 
 class Config():
@@ -15,6 +15,8 @@ class Config():
 		self.start_in_grid_mode = False
 config = Config()
 
+cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
+valid_ext = {".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".bmp", ".BMP", ".gif", ".GIF"}
 filelist = []
 pixmaps = [] # thumbnails
 current_idx = 0
@@ -199,8 +201,17 @@ class MainWindow(QMainWindow):
 		self.setStyleSheet("background-color: black;")
 		self.setWindowTitle("mivv")
 		self.setGeometry(0, 0, 640, 480)
+
+		label = QLabel("filename", self)
+		label.setStyleSheet("border: 1px solid red;")
+		label.setStyleSheet("color: #FFFFFF;")
+		label.setText(filelist[current_idx])
+		label.setFont(QFont("monospace"))
+		self.fn_label = label
+
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(config, self)
+		self.bar_height = 10
 		if config.start_in_grid_mode:
 			self.grid_mode()
 		else:
@@ -231,16 +242,18 @@ class MainWindow(QMainWindow):
 		elif e.key() == Qt.Key_Escape or e.key() == Qt.Key_Q:
 			exit(0)
 		else:
+			self.fn_label.setText(filelist[current_idx])
 			if self.mode == 1:
 				self.image_view.key_handler(e)
 			elif self.mode == 2:
 				self.grid_view.key_handler(e)
 
 	def resizeEvent(self, event):
+		self.fn_label.setGeometry(0, self.height() - self.bar_height, self.width(), self.bar_height)
 		if self.mode == 1:
-			self.image_view.resize(self.width(), self.height())
+			self.image_view.resize(self.width(), self.height() - self.bar_height)
 		elif self.mode == 2:
-			self.grid_view.resize(self.width(), self.height())
+			self.grid_view.resize(self.width(), self.height() - self.bar_height)
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "immv")
@@ -250,15 +263,22 @@ def build_parser():
 	return parser
 
 def cached_read(path):
+	global cache_path
 	abspath = os.path.abspath(path)
-	pixmap = QPixmap(abspath)
-	if pixmap.isNull():
+	if not os.path.exists(abspath):
+		# remove cache? maybe not
 		return None
-	# add an extra slash to prevent possible contamination
-	cached_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/{abspath}"
+	cached_path = cache_path + abspath
 	if os.path.exists(cached_path) and not config.overwrite_cache:
 		return QPixmap(cached_path)
-	print("Generating cache for:", abspath)
+	_filename, ext = os.path.splitext(abspath)
+	if ext not in valid_ext:
+		return None
+	pixmap = QPixmap(abspath)
+	if pixmap.isNull():
+		print("Read fail:", abspath)
+		return None
+	print("Gen cache:", abspath)
 	dirname = os.path.dirname(cached_path)
 	Path(dirname).mkdir(parents = True, exist_ok = True)
 	pixmap_resize = pixmap.scaled(
@@ -289,11 +309,13 @@ if __name__ == '__main__':
 		filelist_tmp.pop()
 		if os.path.isdir(file):
 			filelist_tmp += glob(os.path.join(file, "*"))
+			continue
 		# TODO: async load
 		pixmap = cached_read(file)
 		if not pixmap:
 			print("Skip", file)
 			continue
+		print("Read", file)
 		pixmaps.append(pixmap)
 		filelist.append(file)
 	if len(filelist) == 0:

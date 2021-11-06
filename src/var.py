@@ -10,3 +10,4 @@ load_all = True
 image_loader = ImageLoader()
 expand_dir = True
 delta_move = 50
+mouse_factor = 3

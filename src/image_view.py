@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (
 	QApplication, QWidget, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QKeyEvent
+from PyQt5.QtGui import QPixmap, QKeyEvent, QMouseEvent
 from PyQt5.QtCore import Qt, QRectF, QPointF
 
 import var
@@ -10,9 +10,11 @@ class Imageview(QGraphicsView):
 	def __init__(self, parent = None):
 		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
+		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
 		self.pixmap = None
+		self.last_mouse_pos = None
 		self.pixmap_item = QGraphicsPixmapItem()
 		self.scaling_factor = 1.0
 		self.scaling_mult = 1.3
@@ -73,6 +75,16 @@ class Imageview(QGraphicsView):
 		self.render()
 		return True
 
+	def calibrate_center(self, x_mod = True, y_mod = True):
+		t = QRectF(
+			self.mapToScene(0, 0),
+			self.mapToScene(self.width(), self.height()),
+		).center()
+		if x_mod:
+			self.center[0] = t.x()
+		if y_mod:
+			self.center[1] = t.y()
+
 	def key_handler_transform(self, e: QKeyEvent):
 		x_mod = False
 		y_mod = False
@@ -103,14 +115,7 @@ class Imageview(QGraphicsView):
 		else:
 			return False
 		self.render()
-		t = QRectF(
-			self.mapToScene(0, 0),
-			self.mapToScene(self.width(), self.height()),
-		).center()
-		if x_mod:
-			self.center[0] = t.x()
-		if y_mod:
-			self.center[1] = t.y()
+		self.calibrate_center(x_mod, y_mod)
 		return True
 
 	def key_handler(self, e: QKeyEvent):
@@ -118,3 +123,18 @@ class Imageview(QGraphicsView):
 			return
 		if self.key_handler_transform(e):
 			return
+
+	def mouseMoveEvent(self, e: QMouseEvent):
+		if e.buttons() & Qt.MiddleButton:
+			if not self.last_mouse_pos:
+				self.last_mouse_pos = e.localPos()
+				return
+			dp = e.localPos() - self.last_mouse_pos
+			dp *= var.mouse_factor
+			self.center[0] += dp.x()
+			self.center[1] += dp.y()
+			self.last_mouse_pos = e.localPos()
+			self.render()
+			self.calibrate_center()
+		else:
+			self.last_mouse_pos = None

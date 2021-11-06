@@ -22,7 +22,7 @@ PyQt5 simple image viewer.
 
 * gif/video
 
-* thumbnail scale
+* ~~thumbnail scale~~
 
 * async loading
 

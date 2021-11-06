@@ -8,7 +8,7 @@ PyQt5 simple image viewer.
 
 * ~~skip invalid image~~
 
-* read directory as glob
+* ~~read directory as glob~~
 
 * scaling quality
 

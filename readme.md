@@ -4,33 +4,17 @@ PyQt5 simple image viewer.
 
 ## todo
 
-* ~~grid mode~~
-
-* ~~skip invalid image~~
-
-* ~~read directory as glob~~
-
-* ~~show filename~~
-
-* ~~no recursive cache~~
-
-* ~~scaling quality~~
-
-* ~~thumbnail scale~~
-
-* ~~scale~~/flip/rotate image
-
-* ~~xreset layout, prevent blackout~~
-
-* ~~mtime for cache update~~
-
-* fast transform
-
-* gif/video
+* gif
 
 * gc cache
 
-* general performance
+## maybe
+
+* flip/rotate image
+
+* mouse middle button scroll in grid mode
+
+* video
 
 * grid mode async caching
 

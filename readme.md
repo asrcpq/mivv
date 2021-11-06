@@ -6,8 +6,12 @@ PyQt5 simple image viewer.
 
 * ~~grid mode~~
 
+* scaling quality
+
 * show filename
 
 * scale/flip/rotate image
 
 * async loading
+
+* thumbnail scale

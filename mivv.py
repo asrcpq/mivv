@@ -84,17 +84,16 @@ class Gridview(QWidget):
 		count_v = (self.height() - self.grid_space) // self.grid_offset
 		if self.count_h == count_h and self.count_v == count_v:
 			return
-		if self.count_h > count_h or self.count_v > count_v:
-			for j in range(0, count_v):
-				try:
-					self.labels[j][count_h].hide()
-				except IndexError:
-					pass
-			for i in range(0, count_h + 1):
-				try:
-					self.labels[count_v][i].hide()
-				except IndexError:
-					pass
+		for j in range(0, count_v):
+			try:
+				self.labels[j][count_h].hide()
+			except IndexError:
+				pass
+		for i in range(0, count_h + 1):
+			try:
+				self.labels[count_v][i].hide()
+			except IndexError:
+				pass
 		self.count_h = count_h
 		self.count_v = count_v
 		self.__set_cursor(True)
@@ -221,9 +220,9 @@ class MainWindow(QMainWindow):
 		label = QLabel("filename", self)
 		label.setStyleSheet("border: 1px solid red;")
 		label.setStyleSheet("color: #FFFFFF;")
-		label.setText(filelist[current_idx])
 		label.setFont(QFont("monospace"))
 		self.fn_label = label
+		self.set_label()
 
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(config, self)
@@ -233,6 +232,9 @@ class MainWindow(QMainWindow):
 		else:
 			self.image_mode()
 		self.show()
+
+	def set_label(self):
+		self.fn_label.setText(f"({current_idx}/{len(filelist)}){filelist[current_idx]}")
 
 	def grid_mode(self):
 		self.image_view.hide()
@@ -257,11 +259,11 @@ class MainWindow(QMainWindow):
 		elif e.key() == Qt.Key_Escape or e.key() == Qt.Key_Q:
 			exit(0)
 		else:
-			self.fn_label.setText(filelist[current_idx])
 			if self.mode == 1:
 				self.image_view.key_handler(e)
 			elif self.mode == 2:
 				self.grid_view.key_handler(e)
+			self.set_label()
 
 	def resizeEvent(self, event):
 		self.fn_label.setGeometry(0, self.height() - self.bar_height, self.width(), self.bar_height)

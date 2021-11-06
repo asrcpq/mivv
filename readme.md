@@ -22,6 +22,8 @@ PyQt5 simple image viewer.
 
 * ~~xreset layout, prevent blackout~~
 
+* mtime for cache update
+
 * fast transform
 
 * gif/video

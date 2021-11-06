@@ -4,8 +4,8 @@ import argparse
 from glob import glob
 from pathlib import Path
 
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
-from PyQt5.QtGui import QPixmap, QKeyEvent, QFont
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 
 from main_window import MainWindow

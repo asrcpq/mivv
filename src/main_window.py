@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QMainWindow
-from PyQt5.QtGui import QPixmap, QKeyEvent, QFont
+from PyQt5.QtWidgets import QLabel, QMainWindow
+from PyQt5.QtGui import QKeyEvent, QFont
 from PyQt5.QtCore import Qt
 
 from grid_view import Gridview

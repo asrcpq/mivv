@@ -278,13 +278,20 @@ if __name__ == '__main__':
 		filelist = filelist_string.split()
 	else:
 		filelist = unknown_args
+	app = QApplication([])
+	filelist2 = []
+	for file in filelist:
+		# TODO: async load
+		pixmap = cached_read(file)
+		if pixmap.isNull():
+			print("Skip", file)
+			continue
+		pixmaps.append(pixmap)
+		filelist2.append(file)
+		print("Read", file)
+	filelist = filelist2
 	if len(filelist) == 0:
 		print("No image file specified, exiting")
 		exit(1)
-	app = QApplication([])
-	for file in filelist:
-		# TODO: async load
-		pixmaps.append(cached_read(file))
-		print("Read", file)
 	main_window = MainWindow()
 	app.exec_()

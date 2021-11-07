@@ -17,7 +17,8 @@ class Imageview(QGraphicsView):
 		self.last_mouse_pos = None
 		self.pixmap_item = QGraphicsPixmapItem()
 		self.scaling_factor = 1.0
-		self.scaling_mult = 1.3
+		self.mouse_mode = 0
+		self.move_dist = 10
 		self.reload()
 
 	def compute_rect(self):
@@ -40,6 +41,7 @@ class Imageview(QGraphicsView):
 		)
 
 	def resizeEvent(self, event):
+		self.calibrate_move_dist()
 		self.render()
 
 	def reload(self):
@@ -72,9 +74,13 @@ class Imageview(QGraphicsView):
 				var.current_idx = 0
 		else:
 			return False
+		self.calibrate_move_dist()
 		self.reload()
 		self.render()
 		return True
+
+	def calibrate_move_dist(self):
+		self.move_dist = var.k_move * self.scaling_factor
 
 	def calibrate_center(self, x_mod = True, y_mod = True):
 		t = QRectF(
@@ -90,23 +96,23 @@ class Imageview(QGraphicsView):
 		x_mod = False
 		y_mod = False
 		if e.key() == Qt.Key_H:
-			self.center[0] -= var.delta_move
+			self.center[0] -= self.move_dist
 			x_mod = True
 		elif e.key() == Qt.Key_L:
-			self.center[0] += var.delta_move
+			self.center[0] += self.move_dist
 			x_mod = True
 		elif e.key() == Qt.Key_J:
-			self.center[1] += var.delta_move
+			self.center[1] += self.move_dist
 			y_mod = True
 		elif e.key() == Qt.Key_K:
-			self.center[1] -= var.delta_move
+			self.center[1] -= self.move_dist
 			y_mod = True
 		elif e.key() == Qt.Key_O:
-			self.scaling_factor /= self.scaling_mult
+			self.scaling_factor /= var.scaling_mult
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_I:
-			self.scaling_factor *= self.scaling_mult
+			self.scaling_factor *= var.scaling_mult
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_W:
@@ -115,6 +121,7 @@ class Imageview(QGraphicsView):
 			y_mod = True
 		else:
 			return False
+		self.calibrate_move_dist()
 		self.render()
 		self.calibrate_center(x_mod, y_mod)
 		return True
@@ -127,15 +134,35 @@ class Imageview(QGraphicsView):
 
 	def mouseMoveEvent(self, e: QMouseEvent):
 		if e.buttons() & Qt.MiddleButton:
-			if not self.last_mouse_pos:
-				self.last_mouse_pos = e.localPos()
+			# ctrl zoom
+			modifiers = QApplication.keyboardModifiers()
+			if modifiers == Qt.ControlModifier:
+				if self.mouse_mode != 1 and self.mouse_mode != 2:
+					self.last_mouse_pos = e.localPos()
+				else:
+					dp = e.localPos() - self.last_mouse_pos
+					if dp.y() > 0:
+						self.scaling_factor *= var.scaling_mult_mouse
+					else:
+						self.scaling_factor /= var.scaling_mult_mouse
+					self.last_mouse_pos = e.localPos()
+					self.calibrate_move_dist()
+					self.render()
+				self.mouse_mode = 2
 				return
-			dp = e.localPos() - self.last_mouse_pos
-			dp *= var.mouse_factor
-			self.center[0] += dp.x()
-			self.center[1] += dp.y()
-			self.last_mouse_pos = e.localPos()
-			self.render()
-			self.calibrate_center()
+
+			# pan
+			if self.mouse_mode != 1 and self.mouse_mode != 2:
+				self.last_mouse_pos = e.localPos()
+				self.mouse_mode = 1
+			else:
+				dp = e.localPos() - self.last_mouse_pos
+				dp *= var.mouse_factor * self.scaling_factor
+				self.center[0] += dp.x()
+				self.center[1] += dp.y()
+				self.last_mouse_pos = e.localPos()
+				self.render()
+				self.calibrate_center()
+			self.mouse_mode = 1
 		else:
-			self.last_mouse_pos = None
+			self.mouse_mode = 0

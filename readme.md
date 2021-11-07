@@ -8,9 +8,17 @@ PyQt5 simple image viewer.
 
 ## usage
 
-have pyqt5 installed, then use `python3 src/mivv.py`
+1. have `XDG_CONFIG_HOME` and `XDG_CACHE_HOME` set
+
+2. have pyqt5 installed
+
+3. `python3 src/mivv.py`
 
 ## todo
+
+* grid mode async caching
+
+* image mode async caching + mem limit
 
 * gif
 
@@ -19,7 +27,3 @@ have pyqt5 installed, then use `python3 src/mivv.py`
 * flip/rotate image
 
 * video
-
-* grid mode async caching
-
-* image mode async caching + mem limit

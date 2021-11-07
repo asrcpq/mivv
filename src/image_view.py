@@ -41,11 +41,11 @@ class Imageview(QGraphicsView):
 		)
 
 	def resizeEvent(self, event):
-		self.calibrate_move_dist()
 		self.render()
 
 	def reload(self):
 		self.scaling_factor = 1.0
+		self.calibrate_move_dist()
 		self.pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
 		self.pixmap_item.setPixmap(self.pixmap)
 		t = self.pixmap.size() / 2
@@ -58,25 +58,34 @@ class Imageview(QGraphicsView):
 		rect = self.compute_rect()
 		self.fitInView(rect)
 
+	def navigate_image(self, offset, abs_pos = False):
+		old_idx = var.current_idx
+		if abs_pos:
+			var.current_idx = offset
+		else:
+			var.current_idx += offset
+		if old_idx == var.current_idx:
+			return
+		if var.current_idx >= len(var.image_loader.filelist):
+			var.current_idx = len(var.image_loader.filelist) - 1
+		if var.current_idx < 0:
+			var.current_idx = 0
+		self.reload()
+		self.render()
+
 	def key_handler_navigation(self, e: QKeyEvent):
 		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
-			var.current_idx += 1
-			if var.current_idx >= len(var.image_loader.filelist):
-				var.current_idx = len(var.image_loader.filelist) - 1
+			self.navigate_image(1, False)
 		elif e.key() == Qt.Key_G:
 			modifiers = QApplication.keyboardModifiers()
 			if modifiers == Qt.ShiftModifier:
-				var.current_idx = len(var.image_loader.filelist) - 1
-				var.current_idx = 0
+				self.navigate_image(len(var.image_loader.filelist) - 1, True)
+			else:
+				self.navigate_image(0, True)
 		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
-			var.current_idx -= 1
-			if var.current_idx < 0:
-				var.current_idx = 0
+			self.navigate_image(-1, False)
 		else:
 			return False
-		self.calibrate_move_dist()
-		self.reload()
-		self.render()
 		return True
 
 	def calibrate_move_dist(self):
@@ -150,7 +159,6 @@ class Imageview(QGraphicsView):
 					self.render()
 				self.mouse_mode = 2
 				return
-
 			# pan
 			if self.mouse_mode != 1 and self.mouse_mode != 2:
 				self.last_mouse_pos = e.localPos()
@@ -166,5 +174,12 @@ class Imageview(QGraphicsView):
 			self.mouse_mode = 1
 		elif e.buttons() & Qt.RightButton:
 			self.parent().grid_mode()
+		elif e.buttons() & Qt.LeftButton:
+			if self.mouse_mode != 3:
+				self.mouse_mode = 3
+				if e.localPos().x() > self.width() / 2:
+					self.navigate_image(1, False)
+				else:
+					self.navigate_image(-1, False)
 		else:
 			self.mouse_mode = 0

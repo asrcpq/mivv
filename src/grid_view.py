@@ -246,8 +246,8 @@ class Gridview(QWidget):
 				et = e.localPos() / self.grid_offset
 				cx = int(et.x())
 				cy = int(et.y())
-				if cx < self.count_h and cx > 0 and \
-					cy < self.count_v and cy > 0:
+				if cx < self.count_h and cx >= 0 and \
+					cy < self.count_v and cy >= 0:
 					self.cursor_select(cx, cy)
 		else:
 			self.mouse_mode = 0

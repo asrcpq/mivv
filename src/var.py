@@ -13,3 +13,7 @@ k_move = 100 # relative to screen size
 mouse_factor = -2.5
 scaling_mult = 1.3
 scaling_mult_mouse = 1.05
+
+config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
+if os.path.isfile(config_path):
+	exec(compile(open(config_path, "rb").read(), config_path, 'exec'))

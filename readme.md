@@ -6,6 +6,10 @@ PyQt5 simple image viewer.
 
 * All functions have mouse control
 
+## usage
+
+have pyqt5 installed, then use `python3 src/mivv.py`
+
 ## todo
 
 * cursor style

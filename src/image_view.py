@@ -45,7 +45,7 @@ class Imageview(QGraphicsView):
 
 	def reload(self):
 		self.scaling_factor = 1.0
-		self.calibrate_move_dist()
+		self.set_move_dist()
 		self.pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
 		self.pixmap_item.setPixmap(self.pixmap)
 		t = self.pixmap.size() / 2
@@ -73,6 +73,13 @@ class Imageview(QGraphicsView):
 		self.reload()
 		self.render()
 
+	def scale_view(self, offset, abs_k = False):
+		if abs_k:
+			self.scaling_factor = offset
+		else:
+			self.scaling_factor *= offset
+		self.set_move_dist()
+
 	def key_handler_navigation(self, e: QKeyEvent):
 		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
 			self.navigate_image(1, False)
@@ -88,18 +95,31 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def calibrate_move_dist(self):
+	def set_move_dist(self):
 		self.move_dist = var.k_move * self.scaling_factor
 
 	def calibrate_center(self, x_mod = True, y_mod = True):
 		t = QRectF(
 			self.mapToScene(0, 0),
 			self.mapToScene(self.width(), self.height()),
-		).center()
-		if x_mod:
-			self.center[0] = t.x()
-		if y_mod:
-			self.center[1] = t.y()
+		)
+		swh = t.width() / 2
+		shh = t.height() / 2
+		pw = self.pixmap.width()
+		ph = self.pixmap.height()
+		if t.width() > pw:
+			self.center[0] = pw / 2
+		elif self.center[0] < swh:
+			self.center[0] = swh
+		elif self.center[0] > pw - swh:
+			self.center[0] = pw - swh
+		if t.height() > ph:
+			self.center[1] = ph / 2
+		elif self.center[1] < shh:
+			self.center[1] = shh
+		elif self.center[1] > ph - shh:
+			self.center[1] = ph - shh
+		return
 
 	def key_handler_transform(self, e: QKeyEvent):
 		x_mod = False
@@ -117,22 +137,22 @@ class Imageview(QGraphicsView):
 			self.center[1] -= self.move_dist
 			y_mod = True
 		elif e.key() == Qt.Key_O:
-			self.scaling_factor /= var.scaling_mult
+			self.scale_view(var.scaling_mult, False)
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_I:
-			self.scaling_factor *= var.scaling_mult
+			self.scale_view(1 / var.scaling_mult, False)
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_W:
-			self.scaling_factor = 1.0
+			self.scale_view(1.0, True)
+			self.set_move_dist()
 			x_mod = True
 			y_mod = True
 		else:
 			return False
-		self.calibrate_move_dist()
-		self.render()
 		self.calibrate_center(x_mod, y_mod)
+		self.render()
 		return True
 
 	def key_handler(self, e: QKeyEvent):
@@ -143,35 +163,30 @@ class Imageview(QGraphicsView):
 
 	def mouseMoveEvent(self, e: QMouseEvent):
 		if e.buttons() & Qt.MiddleButton:
-			# ctrl zoom
-			modifiers = QApplication.keyboardModifiers()
-			if modifiers == Qt.ControlModifier:
-				if self.mouse_mode != 1 and self.mouse_mode != 2:
-					self.last_mouse_pos = e.localPos()
-				else:
-					dp = e.localPos() - self.last_mouse_pos
-					if dp.y() > 0:
-						self.scaling_factor *= var.scaling_mult_mouse
-					else:
-						self.scaling_factor /= var.scaling_mult_mouse
-					self.last_mouse_pos = e.localPos()
-					self.calibrate_move_dist()
-					self.render()
-				self.mouse_mode = 2
-				return
-			# pan
-			if self.mouse_mode != 1 and self.mouse_mode != 2:
+			if self.mouse_mode != 1:
 				self.last_mouse_pos = e.localPos()
 				self.mouse_mode = 1
+				return
+			modifiers = QApplication.keyboardModifiers()
+			# ctrl zoom
+			if modifiers == Qt.ControlModifier:
+				dp = e.localPos() - self.last_mouse_pos
+				if dp.y() > var.image_move_zoom:
+					self.scale_view(var.scaling_mult_mouse, False)
+					self.last_mouse_pos = e.localPos()
+				elif dp.y() < -var.image_move_zoom:
+					self.scale_view(1 / var.scaling_mult_mouse, False)
+					self.last_mouse_pos = e.localPos()
+				self.render()
+			# pan
 			else:
 				dp = e.localPos() - self.last_mouse_pos
 				dp *= var.mouse_factor * self.scaling_factor
 				self.center[0] += dp.x()
 				self.center[1] += dp.y()
 				self.last_mouse_pos = e.localPos()
-				self.render()
 				self.calibrate_center()
-			self.mouse_mode = 1
+				self.render()
 		elif e.buttons() & Qt.RightButton:
 			self.parent().grid_mode()
 		elif e.buttons() & Qt.LeftButton:

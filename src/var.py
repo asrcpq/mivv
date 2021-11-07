@@ -10,9 +10,10 @@ load_all = True
 image_loader = ImageLoader()
 expand_dir = True
 k_move = 100 # relative to screen size
-mouse_factor = -2.5
+mouse_factor = -5
 scaling_mult = 1.3
 scaling_mult_mouse = 1.05
+image_move_zoom = 5
 grid_move_zoom = 50
 grid_move_pan = 50
 

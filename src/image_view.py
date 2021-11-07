@@ -16,6 +16,7 @@ class Imageview(QGraphicsView):
 		self.pixmap = None
 		self.last_mouse_pos = None
 		self.pixmap_item = QGraphicsPixmapItem()
+		self.pixmap_item.setTransformationMode(Qt.SmoothTransformation);
 		self.scaling_factor = 1.0
 		self.mouse_mode = 0
 		self.move_dist = 10

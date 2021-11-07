@@ -14,6 +14,10 @@ PyQt5 simple image viewer.
 
 3. `python3 src/mivv.py`
 
+## problem
+
+* click during image load trigger image switch after load
+
 ## todo
 
 * grid mode async caching
@@ -22,8 +26,8 @@ PyQt5 simple image viewer.
 
 * gif
 
-## maybe
-
 * flip/rotate image
+
+## maybe
 
 * video

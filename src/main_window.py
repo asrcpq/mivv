@@ -68,6 +68,9 @@ class MainWindow(QMainWindow):
 		self.image_view.render()
 		self.mode = 1
 
+	def exit(self):
+		exit(0)
+
 	def keyPressEvent(self, e: QKeyEvent):
 		if e.key() == Qt.Key_Return:
 			if self.mode == 1:
@@ -75,7 +78,7 @@ class MainWindow(QMainWindow):
 			elif self.mode == 2:
 				self.image_mode()
 		elif e.key() == Qt.Key_Escape or e.key() == Qt.Key_Q:
-			exit(0)
+			self.exit()
 		else:
 			if self.mode == 1:
 				self.image_view.key_handler(e)

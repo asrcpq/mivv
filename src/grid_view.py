@@ -1,5 +1,4 @@
 from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtGui import QKeyEvent
 from PyQt5.QtCore import Qt
 
 from thumbnail import Thumbnail
@@ -8,6 +7,7 @@ import var
 class Gridview(QWidget):
 	def __init__(self, parent = None):
 		super().__init__(parent)
+		self.setMouseTracking(True)
 		self.setStyleSheet("background-color: black;")
 		self.y_offset = 0
 		self.grid_sizes = [32, 64, 128, 192, 256]
@@ -19,6 +19,7 @@ class Gridview(QWidget):
 		self.cursor = [0, 0]
 		self.labels = []
 		self.reset_layout()
+		self.mouse_mode = 0
 
 	def get_idx(self, i, j):
 		return (j + self.y_offset) * self.count_h + i
@@ -182,7 +183,7 @@ class Gridview(QWidget):
 			return
 		self.xreset_layout()
 
-	def key_handler(self, e: QKeyEvent):
+	def key_handler(self, e):
 		if e.key() == Qt.Key_L:
 			self.offset_cursor(1, False)
 		elif e.key() == Qt.Key_H:
@@ -203,3 +204,50 @@ class Gridview(QWidget):
 			self.set_zoom_level(1, False)
 		elif e.key() == Qt.Key_0:
 			self.set_zoom_level(self.grid_size_idx_default, True)
+
+	def mouseMoveEvent(self, e):
+		if e.buttons() & Qt.MiddleButton:
+			# ctrl zoom
+			modifiers = QApplication.keyboardModifiers()
+			if modifiers == Qt.ControlModifier:
+				if self.mouse_mode != 1 and self.mouse_mode != 2:
+					self.last_mouse_pos = e.localPos()
+				else:
+					dp = e.localPos() - self.last_mouse_pos
+					if dp.y() > var.grid_move_zoom:
+						self.set_zoom_level(-1, False)
+						self.last_mouse_pos = e.localPos()
+					elif dp.y() < -var.grid_move_zoom:
+						self.set_zoom_level(1, False)
+						self.last_mouse_pos = e.localPos()
+				self.mouse_mode = 2
+				return
+			# pan
+			if self.mouse_mode != 1 and self.mouse_mode != 2:
+				self.last_mouse_pos = e.localPos()
+			else:
+				dp = e.localPos() - self.last_mouse_pos
+				if dp.y() > var.grid_move_pan:
+					self.offset_cursor(self.count_h, False)
+					self.last_mouse_pos = e.localPos()
+				elif dp.y() < -var.grid_move_pan:
+					self.offset_cursor(-self.count_h, False)
+					self.last_mouse_pos = e.localPos()
+				if dp.x() > var.grid_move_pan:
+					self.offset_cursor(1, False)
+					self.last_mouse_pos = e.localPos()
+				elif dp.x() < -var.grid_move_pan:
+					self.offset_cursor(-1, False)
+					self.last_mouse_pos = e.localPos()
+			self.mouse_mode = 1
+		elif e.buttons() & Qt.LeftButton:
+			if self.mouse_mode != 3:
+				self.mouse_mode = 3
+				et = e.localPos() / self.grid_offset
+				cx = int(et.x())
+				cy = int(et.y())
+				if cx < self.count_h and cx > 0 and \
+					cy < self.count_v and cy > 0:
+					self.cursor_select(cx, cy)
+		else:
+			self.mouse_mode = 0

@@ -15,10 +15,23 @@ def build_parser():
 	parser.add_argument('-l', action = "store_true", help = "load thumbnail on need")
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
+	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
 	return parser
+
+def gc_cache():
+	for root, directories, filenames in os.walk(var.cache_path): 
+		for filename in filenames:
+			cache = f"{root}/{filename}"
+			root_path = "/" + os.path.relpath(cache, var.cache_path)[:-4]
+			if not os.path.isfile(root_path):
+				print("clean", root_path)
+				os.remove(cache)
 
 if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
+	if args.c:
+		gc_cache()
+		exit()
 	if args.l:
 		var.load_all = False
 	if args.t:

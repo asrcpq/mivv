@@ -35,7 +35,7 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def set_label(self):
-		self.info_label.setText(f"({1 + var.current_idx}/{len(var.filelist)})")
+		self.info_label.setText(f"({1 + var.current_idx}/{len(var.image_loader.filelist)})")
 		self.info_label.adjustSize()
 		width = self.info_label.geometry().width()
 		self.info_label.setGeometry(

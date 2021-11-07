@@ -237,6 +237,7 @@ class Gridview(QWidget):
 				elif dp.x() < -var.grid_move_pan:
 					self.offset_cursor(-1, False)
 					self.last_mouse_pos = e.localPos()
+				self.parent().set_label()
 		elif e.buttons() & Qt.LeftButton:
 			if self.mouse_mode != 3:
 				self.mouse_mode = 3

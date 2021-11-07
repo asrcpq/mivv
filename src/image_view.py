@@ -164,5 +164,7 @@ class Imageview(QGraphicsView):
 				self.render()
 				self.calibrate_center()
 			self.mouse_mode = 1
+		elif e.buttons() & Qt.RightButton:
+			self.parent().grid_mode()
 		else:
 			self.mouse_mode = 0

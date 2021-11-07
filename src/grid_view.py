@@ -140,7 +140,11 @@ class Gridview(QWidget):
 		self.reset_layout()
 
 	def cursor_select(self, x, y):
-		var.current_idx = (self.y_offset + y) * self.count_h + x
+		new_idx = (self.y_offset + y) * self.count_h + x
+		if new_idx == var.current_idx:
+			self.parent().image_mode()
+			return
+		var.current_idx = new_idx
 		self.__set_cursor(False)
 
 	def offset_cursor(self, offset, abs_pos = False):

@@ -39,11 +39,11 @@ if __name__ == '__main__':
 	if args.i:
 		var.expand_dir = False
 		filelist_string = sys.stdin.read()
-		var.filelist = filelist_string.split('\n')
+		filelist = filelist_string.split('\n')
 	else:
-		var.filelist = unknown_args
+		filelist = unknown_args
 	app = QApplication([])
-	filelist_tmp = list(reversed(var.filelist))
+	filelist_tmp = list(reversed(filelist))
 	var.image_loader.preload(filelist_tmp, var.load_all)
 	main_window = MainWindow()
 	app.exec_()

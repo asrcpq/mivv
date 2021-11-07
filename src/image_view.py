@@ -198,6 +198,7 @@ class Imageview(QGraphicsView):
 					self.navigate_image(1, False)
 				else:
 					self.navigate_image(-1, False)
+				self.parent().set_label()
 		else:
 			if e.localPos().x() > self.width() / 2:
 				self.setCursor(Qt.ArrowCursor)

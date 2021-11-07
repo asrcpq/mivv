@@ -14,13 +14,9 @@ have pyqt5 installed, then use `python3 src/mivv.py`
 
 * gif
 
-* gc cache
-
 ## maybe
 
 * flip/rotate image
-
-* mouse middle button scroll in grid mode
 
 * video
 

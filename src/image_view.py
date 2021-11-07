@@ -92,6 +92,9 @@ class Imageview(QGraphicsView):
 				self.navigate_image(0, True)
 		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
 			self.navigate_image(-1, False)
+		elif e.key() == Qt.Key_R:
+			self.reload()
+			self.render()
 		else:
 			return False
 		return True

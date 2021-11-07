@@ -4,7 +4,7 @@ PyQt5 simple image viewer.
 
 ## features
 
-* All functions have mouse control
+* More mouse control(zoom, scroll)
 
 ## usage
 
@@ -20,14 +20,14 @@ PyQt5 simple image viewer.
 
 ## todo
 
-* grid mode async caching
-
-* image mode async caching + mem limit
-
 * gif
 
 * flip/rotate image
 
 ## maybe
 
-* video
+* grid mode async caching
+
+* image mode async caching
+
+* mem limit

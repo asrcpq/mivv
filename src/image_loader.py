@@ -35,12 +35,15 @@ class ImageLoader():
 			self.filelist.append(file)
 			self.pixmaps.append(None)
 		if load_all:
-			for idx in range(len(self.filelist)):
-				pixmap = self.load_by_idx(idx)
-				self.pixmaps[idx] = pixmap
+			self.load_all()
 		if len(self.filelist) == 0:
 			print("No image file specified, exiting")
 			exit(1)
+
+	def load_all(self):
+		for idx in range(len(self.filelist)):
+			pixmap = self.load_by_idx(idx)
+			self.pixmaps[idx] = pixmap
 
 	def load_by_idx(self, idx):
 		file = self.filelist[idx]

@@ -2,6 +2,10 @@
 
 PyQt5 simple image viewer.
 
+## features
+
+* All functions have mouse control
+
 ## todo
 
 * gif

@@ -207,25 +207,25 @@ class Gridview(QWidget):
 
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
+			if self.mouse_mode != 1:
+				self.last_mouse_pos = e.localPos()
+				self.mouse_mode = 1
+				return
+
 			# ctrl zoom
 			modifiers = QApplication.keyboardModifiers()
 			if modifiers == Qt.ControlModifier:
-				if self.mouse_mode != 1 and self.mouse_mode != 2:
+				self.setCursor(Qt.SizeVerCursor)
+				dp = e.localPos() - self.last_mouse_pos
+				if dp.y() > var.grid_move_zoom:
+					self.set_zoom_level(-1, False)
 					self.last_mouse_pos = e.localPos()
-				else:
-					dp = e.localPos() - self.last_mouse_pos
-					if dp.y() > var.grid_move_zoom:
-						self.set_zoom_level(-1, False)
-						self.last_mouse_pos = e.localPos()
-					elif dp.y() < -var.grid_move_zoom:
-						self.set_zoom_level(1, False)
-						self.last_mouse_pos = e.localPos()
-				self.mouse_mode = 2
-				return
+				elif dp.y() < -var.grid_move_zoom:
+					self.set_zoom_level(1, False)
+					self.last_mouse_pos = e.localPos()
 			# pan
-			if self.mouse_mode != 1 and self.mouse_mode != 2:
-				self.last_mouse_pos = e.localPos()
 			else:
+				self.setCursor(Qt.CrossCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.grid_move_pan:
 					self.offset_cursor(self.count_h, False)
@@ -239,7 +239,6 @@ class Gridview(QWidget):
 				elif dp.x() < -var.grid_move_pan:
 					self.offset_cursor(-1, False)
 					self.last_mouse_pos = e.localPos()
-			self.mouse_mode = 1
 		elif e.buttons() & Qt.LeftButton:
 			if self.mouse_mode != 3:
 				self.mouse_mode = 3
@@ -250,4 +249,5 @@ class Gridview(QWidget):
 					cy < self.count_v and cy >= 0:
 					self.cursor_select(cx, cy)
 		else:
+			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

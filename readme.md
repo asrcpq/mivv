@@ -12,8 +12,6 @@ have pyqt5 installed, then use `python3 src/mivv.py`
 
 ## todo
 
-* cursor style
-
 * gif
 
 * gc cache

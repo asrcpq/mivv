@@ -64,12 +64,12 @@ class Imageview(QGraphicsView):
 			var.current_idx = offset
 		else:
 			var.current_idx += offset
-		if old_idx == var.current_idx:
-			return
 		if var.current_idx >= len(var.image_loader.filelist):
 			var.current_idx = len(var.image_loader.filelist) - 1
 		if var.current_idx < 0:
 			var.current_idx = 0
+		if old_idx == var.current_idx:
+			return
 		self.reload()
 		self.render()
 
@@ -170,6 +170,7 @@ class Imageview(QGraphicsView):
 			modifiers = QApplication.keyboardModifiers()
 			# ctrl zoom
 			if modifiers == Qt.ControlModifier:
+				self.setCursor(Qt.SizeVerCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.image_move_zoom:
 					self.scale_view(var.scaling_mult_mouse, False)
@@ -180,6 +181,7 @@ class Imageview(QGraphicsView):
 				self.render()
 			# pan
 			else:
+				self.setCursor(Qt.CrossCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				dp *= var.mouse_factor * self.scaling_factor
 				self.center[0] += dp.x()
@@ -197,4 +199,8 @@ class Imageview(QGraphicsView):
 				else:
 					self.navigate_image(-1, False)
 		else:
+			if e.localPos().x() > self.width() / 2:
+				self.setCursor(Qt.ArrowCursor)
+			else:
+				self.setCursor(Qt.PointingHandCursor)
 			self.mouse_mode = 0

@@ -10,9 +10,7 @@ class Gridview(QWidget):
 		self.setMouseTracking(True)
 		self.setStyleSheet("background-color: black;")
 		self.y_offset = 0
-		self.grid_sizes = [32, 64, 128, 192, 256]
 		self.grid_size_idx = 2
-		self.grid_size_idx_default = 2
 		self.grid_space = 10
 		self.count_h = 0
 		self.count_v = 0
@@ -86,7 +84,7 @@ class Gridview(QWidget):
 
 	# layout = a x b images in screen
 	def reset_layout(self):
-		self.grid_offset = self.grid_sizes[self.grid_size_idx] + self.grid_space
+		self.grid_offset = var.grid_sizes[self.grid_size_idx] + self.grid_space
 		count_h = (self.width() - self.grid_space) // self.grid_offset
 		count_v = (self.height() - self.grid_space) // self.grid_offset
 		if self.count_h == count_h and self.count_v == count_v:
@@ -106,7 +104,7 @@ class Gridview(QWidget):
 		self.__set_cursor(True)
 	
 	def refresh(self):
-		grid_size = self.grid_sizes[self.grid_size_idx]
+		grid_size = var.grid_sizes[self.grid_size_idx]
 		for j in range(self.count_v):
 			if j >= len(self.labels):
 				self.labels.append([])
@@ -177,8 +175,8 @@ class Gridview(QWidget):
 			self.grid_size_idx += dz
 		if self.grid_size_idx < 0:
 			self.grid_size_idx = 0
-		elif self.grid_size_idx >= len(self.grid_sizes):
-			self.grid_size_idx = len(self.grid_sizes) - 1
+		elif self.grid_size_idx >= len(var.grid_sizes):
+			self.grid_size_idx = len(var.grid_sizes) - 1
 		if old_idx == self.grid_size_idx:
 			return
 		self.xreset_layout()
@@ -203,7 +201,7 @@ class Gridview(QWidget):
 		elif e.key() == Qt.Key_I:
 			self.set_zoom_level(1, False)
 		elif e.key() == Qt.Key_0:
-			self.set_zoom_level(self.grid_size_idx_default, True)
+			self.set_zoom_level(var.grid_size_idx_default, True)
 
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:

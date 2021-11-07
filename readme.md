@@ -8,6 +8,8 @@ PyQt5 simple image viewer.
 
 ## todo
 
+* cursor style
+
 * gif
 
 * gc cache

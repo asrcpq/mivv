@@ -243,9 +243,9 @@ class Gridview(QWidget):
 		elif e.buttons() & Qt.LeftButton:
 			if self.mouse_mode != 3:
 				self.mouse_mode = 3
-				et = e.localPos() / self.grid_offset
-				cx = int(et.x())
-				cy = int(et.y())
+				et = e.localPos()
+				cx = int((et.x() - self.grid_space / 2) / self.grid_offset)
+				cy = int((et.y() - self.grid_space / 2) / self.grid_offset)
 				if cx < self.count_h and cx >= 0 and \
 					cy < self.count_v and cy >= 0:
 					self.cursor_select(cx, cy)

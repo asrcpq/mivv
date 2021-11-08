@@ -20,7 +20,11 @@ class ImageLoader():
 			filelist_tmp.pop()
 			if os.path.isdir(file):
 				if var.expand_dir:
-					filelist_tmp += sorted(glob(os.path.join(file, "*")), reverse = True)
+					file_filtered = []
+					for file in glob(os.path.join(file, "*")):
+						if os.path.isfile(file):
+							file_filtered.append(file)
+					filelist_tmp += sorted(file_filtered, reverse = True)
 				continue
 			# TODO: async load
 			state = self.validate(file)

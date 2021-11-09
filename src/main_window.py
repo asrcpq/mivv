@@ -26,7 +26,6 @@ class MainWindow(QMainWindow):
 		label.setStyleSheet("color: #FFFFFF;")
 		label.setFont(QFont("monospace"))
 		self.info_label = label
-		self.set_label()
 
 		if var.start_in_grid_mode:
 			self.grid_mode()
@@ -35,8 +34,12 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def set_label(self):
+		if self.mode == 1:
+			scaling_string = f"{100 / self.image_view.scaling_factor:.1f}%"
+		elif self.mode == 2:
+			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}"
 		self.info_label.setText(
-			f"{100 / self.image_view.scaling_factor:.1f}% " \
+			f"{scaling_string} " \
 			f"({1 + var.current_idx}/{len(var.image_loader.filelist)})" \
 		)
 		self.info_label.adjustSize()
@@ -63,6 +66,7 @@ class MainWindow(QMainWindow):
 		self.grid_view.resize(self.width(), self.height())
 		self.grid_view.show()
 		self.mode = 2
+		self.set_label() # only for zoom level
 
 	def image_mode(self):
 		self.grid_view.hide()
@@ -72,6 +76,7 @@ class MainWindow(QMainWindow):
 		if self.isVisible():
 			self.image_view.render()
 		self.mode = 1
+		self.set_label() # only for zoom level
 
 	def exit(self):
 		exit(0)

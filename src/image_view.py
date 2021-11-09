@@ -214,13 +214,13 @@ class Imageview(QGraphicsView):
 
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
-			if self.mouse_mode != 1:
-				self.last_mouse_pos = e.localPos()
-				self.mouse_mode = 1
-				return
 			modifiers = QApplication.keyboardModifiers()
 			# ctrl zoom
-			if modifiers == Qt.ControlModifier:
+			if self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
+				if self.mouse_mode == 0:
+					self.last_mouse_pos = e.localPos()
+					self.mouse_mode = 1
+					return
 				self.setCursor(Qt.SizeVerCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.image_move_zoom:
@@ -233,6 +233,10 @@ class Imageview(QGraphicsView):
 				self.render()
 			# pan
 			else:
+				if self.mouse_mode == 0:
+					self.last_mouse_pos = e.localPos()
+					self.mouse_mode = 2
+					return
 				self.setCursor(Qt.CrossCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				dp *= var.mouse_factor * self.scaling_factor
@@ -241,6 +245,7 @@ class Imageview(QGraphicsView):
 				self.last_mouse_pos = e.localPos()
 				self.calibrate_center()
 				self.render()
+				self.mouse_mode = 2
 		elif e.buttons() & Qt.RightButton:
 			self.parent().grid_mode()
 		elif e.buttons() & Qt.LeftButton:

@@ -16,8 +16,6 @@ PyQt5 simple image viewer.
 
 ## todo
 
-* gif bug
-
 * flip/rotate image
 
 * image async load thumbnail first

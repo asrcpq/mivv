@@ -75,8 +75,9 @@ class Imageview(QGraphicsView):
 			movie = QMovie(filename)
 			movie.start()
 			label = QLabel()
-			label.setMovie(movie)
 			self.size = movie.currentPixmap().size()
+			label.resize(self.size)
+			label.setMovie(movie)
 			scene = QGraphicsScene()
 			scene.addWidget(label)
 		else:

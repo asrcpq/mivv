@@ -13,17 +13,15 @@ class Imageview(QGraphicsView):
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
-		self.pixmap = None
+		self.size = None
 		self.last_mouse_pos = None
-		self.pixmap_item = QGraphicsPixmapItem()
-		self.pixmap_item.setTransformationMode(Qt.SmoothTransformation);
 		self.scaling_factor = 1.0
 		self.mouse_mode = 0
 		self.move_dist = 10
-		self.reload()
+		self.load()
 
 	def compute_rect(self):
-		img_size = self.pixmap.size()
+		img_size = self.size
 		wk = img_size.width() / self.width()
 		hk = img_size.height() / self.height()
 		# w bound
@@ -44,15 +42,21 @@ class Imageview(QGraphicsView):
 	def resizeEvent(self, event):
 		self.render()
 
-	def reload(self):
+	def load(self):
 		self.scaling_factor = 1.0
 		self.set_move_dist()
-		self.pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
-		self.pixmap_item.setPixmap(self.pixmap)
-		t = self.pixmap.size() / 2
+
+		pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
+		self.size = pixmap.size()
+		t = self.size / 2
 		self.center = [t.width(), t.height()]
+
+		item = QGraphicsPixmapItem()
+		item.setPixmap(pixmap)
+		item.setTransformationMode(Qt.SmoothTransformation);
+
 		scene = QGraphicsScene()
-		scene.addItem(self.pixmap_item)
+		scene.addItem(item)
 		self.setScene(scene)
 	
 	def render(self):
@@ -71,7 +75,7 @@ class Imageview(QGraphicsView):
 			var.current_idx = 0
 		if old_idx == var.current_idx:
 			return
-		self.reload()
+		self.load()
 		self.render()
 
 	def scale_view(self, offset, abs_k = False):
@@ -93,7 +97,7 @@ class Imageview(QGraphicsView):
 		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
 			self.navigate_image(-1, False)
 		elif e.key() == Qt.Key_R:
-			self.reload()
+			self.load()
 			self.render()
 		else:
 			return False
@@ -109,8 +113,8 @@ class Imageview(QGraphicsView):
 		)
 		swh = t.width() / 2
 		shh = t.height() / 2
-		pw = self.pixmap.width()
-		ph = self.pixmap.height()
+		pw = self.size.width()
+		ph = self.size.height()
 		if t.width() > pw:
 			self.center[0] = pw / 2
 		elif self.center[0] < swh:

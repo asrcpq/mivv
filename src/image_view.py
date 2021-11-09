@@ -26,9 +26,9 @@ class Imageview(QGraphicsView):
 		hk = self.height() / img_size.height()
 		# w bound
 		if hk >= wk:
-			return wk
+			return wk * var.hidpi
 		elif wk > hk:
-			return hk
+			return hk * var.hidpi
 		else:
 			raise(Exception("wk or nk is not valid number"))
 

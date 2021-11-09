@@ -14,15 +14,13 @@ PyQt5 simple image viewer.
 
 3. `python3 src/mivv.py`
 
-## problem
-
-* click during image load trigger image switch after load
-
 ## todo
 
-* gif
+* gif bug
 
 * flip/rotate image
+
+* image async load thumbnail first
 
 ## maybe
 

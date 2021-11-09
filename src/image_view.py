@@ -20,17 +20,31 @@ class Imageview(QGraphicsView):
 		self.move_dist = 10
 		self.load()
 
+	def get_original_scaling_factor(self):
+		img_size = self.size
+		wk = self.width() / img_size.width()
+		hk = self.height() / img_size.height()
+		# w bound
+		if hk >= wk:
+			return wk
+		elif wk > hk:
+			return hk
+		else:
+			raise(Exception("wk or nk is not valid number"))
+
 	def compute_rect(self):
 		img_size = self.size
-		wk = img_size.width() / self.width()
-		hk = img_size.height() / self.height()
+		wk = self.width() / img_size.width()
+		hk = self.height() / img_size.height()
 		# w bound
-		if wk > hk:
+		if hk >= wk:
 			w = img_size.width() * self.scaling_factor
-			h = img_size.height() * wk / hk * self.scaling_factor
-		else:
-			w = img_size.width() * hk / wk * self.scaling_factor
+			h = img_size.height() * hk / wk * self.scaling_factor
+		elif wk > hk:
+			w = img_size.width() * wk / hk * self.scaling_factor
 			h = img_size.height() * self.scaling_factor
+		else:
+			raise(Exception("wk or nk is not valid number"))
 		# return QRectF(0, 0, 500, 100)
 		return QRectF(
 			self.center[0] - w / 2,
@@ -162,6 +176,11 @@ class Imageview(QGraphicsView):
 			y_mod = True
 		elif e.key() == Qt.Key_I:
 			self.scale_view(1 / var.scaling_mult, False)
+			x_mod = True
+			y_mod = True
+		elif e.key() == Qt.Key_0:
+			self.scale_view(self.get_original_scaling_factor(), True)
+			self.set_move_dist()
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_W:

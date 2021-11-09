@@ -2,7 +2,18 @@ import os
 from image_loader import ImageLoader
 
 cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
-valid_ext = {".png", ".PNG", ".jpg", ".JPG", ".jpeg", ".JPEG", ".bmp", ".BMP", ".gif", ".GIF"}
+ext_type = {
+	".png": 1,
+	".PNG": 1,
+	".jpg": 1,
+	".JPG": 1,
+	".jpeg": 1,
+	".JPEG": 1,
+	".bmp": 1,
+	".BMP": 1,
+	".gif": 2,
+	".GIF": 2,
+}
 current_idx = 0
 cache_size = 256
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes

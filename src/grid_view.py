@@ -31,7 +31,7 @@ class Gridview(QWidget):
 		except IndexError:
 			pass
 
-	def __set_cursor(self, scaled = True):
+	def set_cursor(self, scaled = True):
 		self.toggle_highlight(False)
 		if self.count_h == 0:
 			return
@@ -101,7 +101,7 @@ class Gridview(QWidget):
 				pass
 		self.count_h = count_h
 		self.count_v = count_v
-		self.__set_cursor(True)
+		self.set_cursor(True)
 	
 	def refresh(self):
 		grid_size = var.grid_sizes[self.grid_size_idx]
@@ -144,7 +144,7 @@ class Gridview(QWidget):
 			self.parent().image_mode()
 			return
 		var.current_idx = new_idx
-		self.__set_cursor(False)
+		self.set_cursor(False)
 
 	def offset_cursor(self, offset, abs_pos = False):
 		old_idx = var.current_idx
@@ -158,11 +158,11 @@ class Gridview(QWidget):
 			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \
 					len(var.image_loader.filelist):
 				var.current_idx = len(var.image_loader.filelist) - 1
-				self.__set_cursor(False)
+				self.set_cursor(False)
 			else:
 				var.current_idx = old_idx
 		else:
-			self.__set_cursor(False)
+			self.set_cursor(False)
 
 	def set_zoom_level(self, dz, abs_zoom = False):
 		old_idx = self.grid_size_idx

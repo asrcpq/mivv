@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (
 	QApplication, QWidget, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QKeyEvent, QMouseEvent
+from PyQt5.QtGui import QPixmap, QMovie
 from PyQt5.QtCore import Qt, QRectF, QPointF
 
 import var
@@ -46,17 +46,29 @@ class Imageview(QGraphicsView):
 		self.scaling_factor = 1.0
 		self.set_move_dist()
 
-		pixmap = QPixmap(var.image_loader.filelist[var.current_idx])
-		self.size = pixmap.size()
+		ty = var.image_loader.typelist[var.current_idx]
+		filename = var.image_loader.filelist[var.current_idx]
+
+		if ty == 1:
+			pixmap = QPixmap(filename)
+			self.size = pixmap.size()
+			item = QGraphicsPixmapItem()
+			item.setPixmap(pixmap)
+			item.setTransformationMode(Qt.SmoothTransformation);
+			scene = QGraphicsScene()
+			scene.addItem(item)
+		elif ty == 2:
+			movie = QMovie(filename)
+			movie.start()
+			label = QLabel()
+			label.setMovie(movie)
+			self.size = movie.currentPixmap().size()
+			scene = QGraphicsScene()
+			scene.addWidget(label)
+		else:
+			raise(Exception('Unreachable code.'))
 		t = self.size / 2
 		self.center = [t.width(), t.height()]
-
-		item = QGraphicsPixmapItem()
-		item.setPixmap(pixmap)
-		item.setTransformationMode(Qt.SmoothTransformation);
-
-		scene = QGraphicsScene()
-		scene.addItem(item)
 		self.setScene(scene)
 	
 	def render(self):
@@ -85,7 +97,7 @@ class Imageview(QGraphicsView):
 			self.scaling_factor *= offset
 		self.set_move_dist()
 
-	def key_handler_navigation(self, e: QKeyEvent):
+	def key_handler_navigation(self, e):
 		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
 			self.navigate_image(1, False)
 		elif e.key() == Qt.Key_G:
@@ -129,7 +141,7 @@ class Imageview(QGraphicsView):
 			self.center[1] = ph - shh
 		return
 
-	def key_handler_transform(self, e: QKeyEvent):
+	def key_handler_transform(self, e):
 		x_mod = False
 		y_mod = False
 		if e.key() == Qt.Key_H:
@@ -163,13 +175,13 @@ class Imageview(QGraphicsView):
 		self.render()
 		return True
 
-	def key_handler(self, e: QKeyEvent):
+	def key_handler(self, e):
 		if self.key_handler_navigation(e):
 			return
 		if self.key_handler_transform(e):
 			return
 
-	def mouseMoveEvent(self, e: QMouseEvent):
+	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
 			if self.mouse_mode != 1:
 				self.last_mouse_pos = e.localPos()

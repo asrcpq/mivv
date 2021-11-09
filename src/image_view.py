@@ -123,16 +123,17 @@ class Imageview(QGraphicsView):
 		self.set_move_dist()
 
 	def key_handler_navigation(self, e):
-		if e.key() == Qt.Key_Space or e.key() == Qt.Key_N:
-			self.navigate_image(1, False)
+		modifiers = QApplication.keyboardModifiers()
+		if e.key() == Qt.Key_N:
+			if modifiers == Qt.ShiftModifier:
+				self.navigate_image(-1, False)
+			else:
+				self.navigate_image(1, False)
 		elif e.key() == Qt.Key_G:
-			modifiers = QApplication.keyboardModifiers()
 			if modifiers == Qt.ShiftModifier:
 				self.navigate_image(len(var.image_loader.filelist) - 1, True)
 			else:
 				self.navigate_image(0, True)
-		elif e.key() == Qt.Key_Backspace or e.key() == Qt.Key_P:
-			self.navigate_image(-1, False)
 		elif e.key() == Qt.Key_R:
 			self.load()
 			self.render()

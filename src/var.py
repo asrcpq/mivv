@@ -29,6 +29,7 @@ scaling_mult_mouse = 1.05 # image mode mouse scaling factor
 image_move_zoom = 5 # image mode pixels moved to trigger zoom
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
+bar_height = 10
 
 # values set at runtime
 hidpi = None

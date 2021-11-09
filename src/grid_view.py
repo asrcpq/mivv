@@ -16,7 +16,6 @@ class Gridview(QWidget):
 		self.count_v = 0
 		self.cursor = [0, 0]
 		self.labels = []
-		self.reset_layout()
 		self.mouse_mode = 0
 
 	def get_idx(self, i, j):

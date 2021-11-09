@@ -20,7 +20,6 @@ class MainWindow(QMainWindow):
 
 		labels = []
 		font = QFont("monospace", var.bar_height - 1)
-		print(font.weight())
 		for name in ["filename", "info"]:
 			label = QLabel("filename", self)
 			label.setStyleSheet("color: #FFFFFF;")
@@ -35,15 +34,21 @@ class MainWindow(QMainWindow):
 			self.image_mode()
 		self.show()
 
-	def set_label(self):
+	def set_label_text(self):
 		if self.mode == 1:
-			scaling_string = f"{100 / self.image_view.scaling_factor:.1f}%"
+			zoom_level_percent = 100 / \
+				self.image_view.scaling_factor * \
+				self.image_view.original_scaling_factor
+			scaling_string = f"{zoom_level_percent:.1f}%"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}"
 		self.info_label.setText(
 			f"{scaling_string} " \
 			f"({1 + var.current_idx}/{len(var.image_loader.filelist)})" \
 		)
+
+	def set_label(self):
+		self.set_label_text()
 		self.info_label.adjustSize()
 		width = self.info_label.geometry().width()
 		self.info_label.setGeometry(
@@ -99,8 +104,11 @@ class MainWindow(QMainWindow):
 			self.set_label()
 
 	def resizeEvent(self, event):
-		self.set_label() # set position
 		if self.mode == 1:
+			# put it in ImageView's resizeEvent will be too late for label set here
+			self.image_view.set_original_scaling_factor()
 			self.image_view.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:
 			self.grid_view.resize(self.width(), self.height() - var.bar_height)
+		# set label after apply scaling factor
+		self.set_label()

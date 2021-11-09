@@ -222,6 +222,7 @@ class Imageview(QGraphicsView):
 				elif dp.y() < -var.image_move_zoom:
 					self.scale_view(1 / var.scaling_mult_mouse, False)
 					self.last_mouse_pos = e.localPos()
+				self.parent().set_label()
 				self.render()
 			# pan
 			else:

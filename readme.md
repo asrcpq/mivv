@@ -24,6 +24,8 @@ PyQt5 simple image viewer.
 
 ## maybe
 
+* option of resizing window without scaling
+
 * grid mode async caching
 
 * image mode async caching

@@ -13,11 +13,7 @@ class MainWindow(QMainWindow):
 		self.setStyleSheet("background-color: black;")
 		self.setWindowTitle("mivv")
 		var.hidpi = self.devicePixelRatioF()
-		self.setGeometry(0, 0, 640, 480)
-
-		self.image_view = Imageview(self)
-		self.grid_view = Gridview(self)
-		self.bar_height = 10
+		self.setGeometry(0, 0, 940, 480)
 
 		label = QLabel("filename", self)
 		label.setStyleSheet("color: #FFFFFF;")
@@ -28,6 +24,9 @@ class MainWindow(QMainWindow):
 		label.setFont(QFont("monospace"))
 		self.info_label = label
 		self.set_label()
+
+		self.image_view = Imageview(self)
+		self.grid_view = Gridview(self)
 
 		if var.start_in_grid_mode:
 			self.grid_mode()
@@ -41,17 +40,17 @@ class MainWindow(QMainWindow):
 		width = self.info_label.geometry().width()
 		self.info_label.setGeometry(
 			self.width() - width,
-			self.height() - self.bar_height,
+			self.height() - var.bar_height,
 			width,
-			self.bar_height,
+			var.bar_height,
 		)
 		left = self.info_label.geometry().left()
 		self.fn_label.setText(f"{var.image_loader.filelist[var.current_idx]}")
 		self.fn_label.setGeometry(
 			0,
-			self.height() - self.bar_height,
+			self.height() - var.bar_height,
 			left,
-			self.bar_height,
+			var.bar_height,
 		)
 
 	def grid_mode(self):
@@ -67,7 +66,8 @@ class MainWindow(QMainWindow):
 		self.image_view.load()
 		self.image_view.show()
 		self.image_view.resize(self.width(), self.height())
-		self.image_view.render()
+		if self.isVisible():
+			self.image_view.render()
 		self.mode = 1
 
 	def exit(self):
@@ -91,6 +91,6 @@ class MainWindow(QMainWindow):
 	def resizeEvent(self, event):
 		self.set_label()
 		if self.mode == 1:
-			self.image_view.resize(self.width(), self.height() - self.bar_height)
+			self.image_view.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:
-			self.grid_view.resize(self.width(), self.height() - self.bar_height)
+			self.grid_view.resize(self.width(), self.height() - var.bar_height)

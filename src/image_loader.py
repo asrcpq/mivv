@@ -10,6 +10,7 @@ import var
 class ImageLoader():
 	def __init__(self):
 		self.filelist = []
+		self.typelist = []
 		self.cached_state = []
 		self.pixmaps = []
 
@@ -27,7 +28,7 @@ class ImageLoader():
 					filelist_tmp += sorted(file_filtered, reverse = True)
 				continue
 			# TODO: async load
-			state = self.validate(file)
+			state, ty = self.validate(file)
 			if state == 0:
 				continue
 			elif state == 1:
@@ -37,6 +38,7 @@ class ImageLoader():
 			else:
 				exit(127)
 			self.filelist.append(file)
+			self.typelist.append(ty)
 			self.pixmaps.append(None)
 		if load_all:
 			self.load_all()
@@ -58,7 +60,7 @@ class ImageLoader():
 			pixmap = self.create_cache(abspath)
 		return pixmap
 
-	# return
+	# return (status, ext_type)
 	# 0: invalid file
 	# 1: cache found
 	# 2: no cache
@@ -66,16 +68,18 @@ class ImageLoader():
 		abspath = os.path.abspath(path)
 		if not os.path.exists(abspath):
 			# remove cache? maybe not
-			return 0
+			return (0, 0)
+		_filename, ext = os.path.splitext(abspath)
+		if ext not in var.ext_type:
+			return (0, 0)
+		else:
+			ty = var.ext_type[ext]
 		if abspath.startswith(var.cache_path):
-			return 1
+			return (1, ty)
 		cached_path = var.cache_path + abspath + ".jpg"
 		if os.path.exists(cached_path):
-			return 1
-		_filename, ext = os.path.splitext(abspath)
-		if ext not in var.valid_ext:
-			return 0
-		return 2
+			return (1, ty)
+		return (2, ty)
 	
 	# nocheck
 	def create_cache(self, abspath):

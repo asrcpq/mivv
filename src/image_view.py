@@ -13,36 +13,36 @@ class Imageview(QGraphicsView):
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
-		self.size = None
+		self.content_size = None
 		self.last_mouse_pos = None
 		self.scaling_factor = 1.0
+		self.original_scaling_factor = 9e999
 		self.mouse_mode = 0
 		self.move_dist = 10
-		self.load()
 
-	def get_original_scaling_factor(self):
-		img_size = self.size
-		wk = self.width() / img_size.width()
-		hk = self.height() / img_size.height()
+	def set_original_scaling_factor(self):
+		print(self.size(), self.content_size)
+		var.pst()
+		wk = self.width() / self.content_size.width()
+		hk = self.height() / self.content_size.height()
 		# w bound
 		if hk >= wk:
-			return wk * var.hidpi
+			self.original_scaling_factor = wk * var.hidpi
 		elif wk > hk:
-			return hk * var.hidpi
+			self.original_scaling_factor = hk * var.hidpi
 		else:
 			raise(Exception("wk or nk is not valid number"))
 
 	def compute_rect(self):
-		img_size = self.size
-		wk = self.width() / img_size.width()
-		hk = self.height() / img_size.height()
+		wk = self.width() / self.content_size.width()
+		hk = self.height() / self.content_size.height()
 		# w bound
 		if hk >= wk:
-			w = img_size.width() * self.scaling_factor
-			h = img_size.height() * hk / wk * self.scaling_factor
+			w = self.content_size.width() * self.scaling_factor
+			h = self.content_size.height() * hk / wk * self.scaling_factor
 		elif wk > hk:
-			w = img_size.width() * wk / hk * self.scaling_factor
-			h = img_size.height() * self.scaling_factor
+			w = self.content_size.width() * wk / hk * self.scaling_factor
+			h = self.content_size.height() * self.scaling_factor
 		else:
 			raise(Exception("wk or nk is not valid number"))
 		# return QRectF(0, 0, 500, 100)
@@ -54,6 +54,7 @@ class Imageview(QGraphicsView):
 		)
 
 	def resizeEvent(self, event):
+		# original scaling factor is set in main_window
 		self.render()
 
 	def load(self):
@@ -65,7 +66,7 @@ class Imageview(QGraphicsView):
 
 		if ty == 1:
 			pixmap = QPixmap(filename)
-			self.size = pixmap.size()
+			self.content_size = pixmap.size()
 			item = QGraphicsPixmapItem()
 			item.setPixmap(pixmap)
 			item.setTransformationMode(Qt.SmoothTransformation);
@@ -75,14 +76,15 @@ class Imageview(QGraphicsView):
 			movie = QMovie(filename)
 			movie.start()
 			label = QLabel()
-			self.size = movie.currentPixmap().size()
-			label.resize(self.size)
+			self.content_size = movie.currentPixmap().size()
+			label.resize(self.content_size)
 			label.setMovie(movie)
 			scene = QGraphicsScene()
 			scene.addWidget(label)
 		else:
 			raise(Exception('Unreachable code.'))
-		t = self.size / 2
+		self.set_original_scaling_factor()
+		t = self.content_size / 2
 		self.center = [t.width(), t.height()]
 		self.setScene(scene)
 	
@@ -144,8 +146,8 @@ class Imageview(QGraphicsView):
 		)
 		swh = t.width() / 2
 		shh = t.height() / 2
-		pw = self.size.width()
-		ph = self.size.height()
+		pw = self.content_size.width()
+		ph = self.content_size.height()
 		if t.width() > pw:
 			self.center[0] = pw / 2
 		elif self.center[0] < swh:
@@ -184,7 +186,7 @@ class Imageview(QGraphicsView):
 			x_mod = True
 			y_mod = True
 		elif e.key() == Qt.Key_0:
-			self.scale_view(self.get_original_scaling_factor(), True)
+			self.scale_view(self.original_scaling_factor, True)
 			self.set_move_dist()
 			x_mod = True
 			y_mod = True

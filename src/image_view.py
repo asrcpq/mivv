@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (
 	QApplication, QWidget, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QMovie
+from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF, QPointF
 
 import var
@@ -19,6 +19,7 @@ class Imageview(QGraphicsView):
 		self.original_scaling_factor = 9e999
 		self.original_scaling_limit = [-9e999, 9e999]
 		self.mouse_mode = 0
+		self.rotation = 0
 		self.move_dist = 10
 
 	def set_original_scaling_factor(self):
@@ -63,6 +64,7 @@ class Imageview(QGraphicsView):
 
 	def load(self):
 		self.scaling_factor = 1.0
+		self.rotation = 0
 		self.set_move_dist()
 
 		ty = var.image_loader.typelist[var.current_idx]
@@ -94,7 +96,21 @@ class Imageview(QGraphicsView):
 	
 	def render(self):
 		rect = self.compute_rect()
-		self.fitInView(rect)
+		sx = self.viewport().width() / rect.width()
+		sy = self.viewport().height() / rect.height()
+		if sx < sy:
+			k = sx
+		elif sx > sy:
+			k = sy
+		else:
+			raise(Exception('Float error'))
+		qtrans = QTransform()
+		qtrans.scale(k, k)
+		qtrans.rotate(self.rotation)
+		qtrans.translate(rect.center().x(), rect.center().y())
+		self.setTransform(qtrans)
+		self.centerOn(rect.center())
+		#self.fitInView(rect)
 
 	def navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
@@ -165,7 +181,6 @@ class Imageview(QGraphicsView):
 			self.center[1] = shh
 		elif self.center[1] > ph - shh:
 			self.center[1] = ph - shh
-		return
 
 	def key_handler_transform(self, e):
 		x_mod = False
@@ -197,6 +212,7 @@ class Imageview(QGraphicsView):
 			y_mod = True
 		elif e.key() == Qt.Key_W:
 			self.scale_view(1.0, True)
+			self.rotation = 0
 			self.set_move_dist()
 			x_mod = True
 			y_mod = True
@@ -215,8 +231,23 @@ class Imageview(QGraphicsView):
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
 			modifiers = QApplication.keyboardModifiers()
+			# shift rotate
+			if self.mouse_mode == 3 or modifiers == Qt.ShiftModifier:
+				if self.mouse_mode == 0:
+					self.last_mouse_pos = e.localPos()
+					self.mouse_mode = 3
+					return
+				self.setCursor(Qt.SizeVerCursor)
+				dp = e.localPos() - self.last_mouse_pos
+				if dp.y() > var.image_move_rotate:
+					self.rotation += var.image_mouse_rotation_degree
+					self.last_mouse_pos = e.localPos()
+				elif dp.y() < -var.image_move_rotate:
+					self.rotation -= var.image_mouse_rotation_degree
+					self.last_mouse_pos = e.localPos()
+				self.render()
 			# ctrl zoom
-			if self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
+			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
 				if self.mouse_mode == 0:
 					self.last_mouse_pos = e.localPos()
 					self.mouse_mode = 1
@@ -233,16 +264,17 @@ class Imageview(QGraphicsView):
 				self.render()
 			# pan
 			else:
+				pos = QTransform().rotate(-self.rotation).map(e.localPos())
 				if self.mouse_mode == 0:
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 					self.mouse_mode = 2
 					return
 				self.setCursor(Qt.CrossCursor)
-				dp = e.localPos() - self.last_mouse_pos
+				dp = pos - self.last_mouse_pos
 				dp *= var.mouse_factor * self.scaling_factor
 				self.center[0] += dp.x()
 				self.center[1] += dp.y()
-				self.last_mouse_pos = e.localPos()
+				self.last_mouse_pos = pos
 				self.calibrate_center()
 				self.render()
 				self.mouse_mode = 2

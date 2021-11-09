@@ -55,9 +55,10 @@ class MainWindow(QMainWindow):
 
 	def grid_mode(self):
 		self.image_view.hide()
-		self.grid_view.show()
+		if not self.grid_view.reset_layout():
+			self.grid_view.set_cursor(False)
 		self.grid_view.resize(self.width(), self.height())
-		self.grid_view.reset_layout()
+		self.grid_view.show()
 		self.mode = 2
 
 	def image_mode(self):

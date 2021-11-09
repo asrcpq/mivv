@@ -88,7 +88,7 @@ class Gridview(QWidget):
 		count_h = (self.width() - self.grid_space) // self.grid_offset
 		count_v = (self.height() - self.grid_space) // self.grid_offset
 		if self.count_h == count_h and self.count_v == count_v:
-			return
+			return False
 		for j in range(0, count_v):
 			try:
 				self.labels[j][count_h].hide()
@@ -102,6 +102,7 @@ class Gridview(QWidget):
 		self.count_h = count_h
 		self.count_v = count_v
 		self.set_cursor(True)
+		return True
 	
 	def refresh(self):
 		grid_size = var.grid_sizes[self.grid_size_idx]

@@ -92,7 +92,7 @@ class MainWindow(QMainWindow):
 			self.set_label()
 
 	def resizeEvent(self, event):
-		self.set_label()
+		self.set_label() # set position
 		if self.mode == 1:
 			self.image_view.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:

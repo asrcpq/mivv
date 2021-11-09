@@ -1,14 +1,6 @@
 import os
 from image_loader import ImageLoader
 
-# values change at runtime
-hidpi = None
-load_all = True # argv
-expand_dir = True # argv
-start_in_grid_mode = False
-current_idx = 0
-image_loader = ImageLoader()
-
 cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
 ext_type = {
 	".png": 1,
@@ -34,6 +26,14 @@ image_move_zoom = 5 # image mode pixels moved to trigger zoom
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
 bar_height = 10
+
+# values change at runtime
+hidpi = None
+load_all = True # argv
+expand_dir = True # argv
+start_in_grid_mode = False
+current_idx = 0
+image_loader = ImageLoader()
 
 config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
 if os.path.isfile(config_path):

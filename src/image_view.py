@@ -17,21 +17,25 @@ class Imageview(QGraphicsView):
 		self.last_mouse_pos = None
 		self.scaling_factor = 1.0
 		self.original_scaling_factor = 9e999
+		self.original_scaling_limit = [-9e999, 9e999]
 		self.mouse_mode = 0
 		self.move_dist = 10
 
 	def set_original_scaling_factor(self):
-		print(self.size(), self.content_size)
-		var.pst()
 		wk = self.width() / self.content_size.width()
 		hk = self.height() / self.content_size.height()
 		# w bound
 		if hk >= wk:
-			self.original_scaling_factor = wk * var.hidpi
+			osf = wk * var.hidpi
 		elif wk > hk:
-			self.original_scaling_factor = hk * var.hidpi
+			osf = hk * var.hidpi
 		else:
 			raise(Exception("wk or nk is not valid number"))
+		self.original_scaling_factor = osf
+		self.original_scaling_limit = [
+			osf / var.zoom_level_limit[1],
+			osf / var.zoom_level_limit[0],
+		]
 
 	def compute_rect(self):
 		wk = self.width() / self.content_size.width()
@@ -112,10 +116,10 @@ class Imageview(QGraphicsView):
 			self.scaling_factor = offset
 		else:
 			self.scaling_factor *= offset
-		if self.scaling_factor * var.zoom_level_limit[1] < 1:
-			self.scaling_factor = 1 / var.zoom_level_limit[1]
-		if self.scaling_factor * var.zoom_level_limit[0] > 1:
-			self.scaling_factor = 1 / var.zoom_level_limit[0]
+		if self.scaling_factor < self.original_scaling_limit[0]:
+			self.scaling_factor = self.original_scaling_limit[0]
+		if self.scaling_factor > self.original_scaling_limit[1]:
+			self.scaling_factor = self.original_scaling_limit[1]
 		self.set_move_dist()
 
 	def key_handler_navigation(self, e):

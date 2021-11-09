@@ -18,14 +18,16 @@ class MainWindow(QMainWindow):
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(self)
 
-		label = QLabel("filename", self)
-		label.setStyleSheet("color: #FFFFFF;")
-		label.setFont(QFont("monospace"))
-		self.fn_label = label
-		label = QLabel("info", self)
-		label.setStyleSheet("color: #FFFFFF;")
-		label.setFont(QFont("monospace"))
-		self.info_label = label
+		labels = []
+		font = QFont("monospace", var.bar_height - 1)
+		print(font.weight())
+		for name in ["filename", "info"]:
+			label = QLabel("filename", self)
+			label.setStyleSheet("color: #FFFFFF;")
+			label.setFont(font)
+			labels.append(label)
+		self.fn_label = labels[0]
+		self.info_label = labels[1]
 
 		if var.start_in_grid_mode:
 			self.grid_mode()

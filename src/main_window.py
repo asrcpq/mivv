@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
 		self.setStyleSheet("background-color: black;")
 		self.setWindowTitle("mivv")
 		var.hidpi = self.devicePixelRatioF()
-		self.setGeometry(0, 0, 940, 480)
+		self.setGeometry(0, 0, 640, 480)
 
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(self)

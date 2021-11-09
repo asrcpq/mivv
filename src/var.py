@@ -30,6 +30,9 @@ image_move_zoom = 5 # image mode pixels moved to trigger zoom
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
 
+# values set at runtime
+hidpi = None
+
 config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
 if os.path.isfile(config_path):
 	exec(compile(open(config_path, "rb").read(), config_path, 'exec'))

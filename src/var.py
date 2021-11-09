@@ -26,6 +26,7 @@ k_move = 100 # relative to screen size
 mouse_factor = -4 # image mode panning accelarator
 scaling_mult = 1.3 # image mode keyboard scaling factor
 scaling_mult_mouse = 1.04 # image mode mouse scaling factor
+zoom_level_limit = [0.1, 100.0] # note that scaling factor = 1 / zoom level
 image_move_zoom = 5 # image mode pixels moved to trigger zoom
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation

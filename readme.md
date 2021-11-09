@@ -14,6 +14,10 @@ PyQt5 simple image viewer.
 
 3. `python3 src/mivv.py`
 
+## notes
+
+Low quality gif scaling(efficiency)
+
 ## todo
 
 * flip/rotate image
@@ -21,6 +25,8 @@ PyQt5 simple image viewer.
 * image async load thumbnail first
 
 ## maybe
+
+* flip/rotate gif
 
 * option of resizing window without scaling
 

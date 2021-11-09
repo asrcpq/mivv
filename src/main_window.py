@@ -15,6 +15,9 @@ class MainWindow(QMainWindow):
 		var.hidpi = self.devicePixelRatioF()
 		self.setGeometry(0, 0, 940, 480)
 
+		self.image_view = Imageview(self)
+		self.grid_view = Gridview(self)
+
 		label = QLabel("filename", self)
 		label.setStyleSheet("color: #FFFFFF;")
 		label.setFont(QFont("monospace"))
@@ -25,9 +28,6 @@ class MainWindow(QMainWindow):
 		self.info_label = label
 		self.set_label()
 
-		self.image_view = Imageview(self)
-		self.grid_view = Gridview(self)
-
 		if var.start_in_grid_mode:
 			self.grid_mode()
 		else:
@@ -35,7 +35,10 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def set_label(self):
-		self.info_label.setText(f"({1 + var.current_idx}/{len(var.image_loader.filelist)})")
+		self.info_label.setText(
+			f"{100 / self.image_view.scaling_factor:.1f}% " \
+			f"({1 + var.current_idx}/{len(var.image_loader.filelist)})" \
+		)
 		self.info_label.adjustSize()
 		width = self.info_label.geometry().width()
 		self.info_label.setGeometry(

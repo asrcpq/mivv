@@ -110,6 +110,10 @@ class Imageview(QGraphicsView):
 			self.scaling_factor = offset
 		else:
 			self.scaling_factor *= offset
+		if self.scaling_factor * var.zoom_level_limit[1] < 1:
+			self.scaling_factor = 1 / var.zoom_level_limit[1]
+		if self.scaling_factor * var.zoom_level_limit[0] > 1:
+			self.scaling_factor = 1 / var.zoom_level_limit[0]
 		self.set_move_dist()
 
 	def key_handler_navigation(self, e):

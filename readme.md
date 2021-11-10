@@ -8,6 +8,24 @@ PyQt5 simple image viewer.
 
 * More mouse control(zoom, scroll, rotation)
 
+## default control
+
+Mouse control like gimp/krita, keyboard:
+
+* n/N for next/prev image
+
+* hjkl move
+
+* 0 for 100% zoom
+
+* i/o for zoom in/out
+
+* \</\> for rotation
+
+* r for reload
+
+* bar/underscore for flipping
+
 ## usage
 
 1. have `XDG_CONFIG_HOME` and `XDG_CACHE_HOME` set
@@ -27,8 +45,6 @@ Low quality gif scaling(efficiency)
 ## maybe
 
 * flip/rotate gif
-
-* option of resizing window without scaling
 
 * grid mode async caching
 

@@ -17,8 +17,7 @@ ext_type = {
 cache_size = 256
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes
 grid_size_idx_default = 2
-k_move = 100 # relative to screen size
-mouse_factor = -4 # image mode panning accelarator
+k_move = 50 # relative to screen size
 scaling_mult = 1.3 # image mode keyboard scaling factor
 scaling_mult_mouse = 1.04 # image mode mouse scaling factor
 zoom_level_limit = [0.1, 20.0] # note that scaling factor = 1 / zoom level

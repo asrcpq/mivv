@@ -2,15 +2,11 @@
 
 PyQt5 simple image viewer.
 
-## features
-
-* arbitrary angle rotation
-
-* More mouse control(zoom, scroll, rotation)
-
 ## default control
 
-Mouse control like gimp/krita, keyboard:
+Mouse control like gimp, keyboard:
+
+* enter: toggle image/grid mode
 
 * n/N for next/prev image
 
@@ -43,8 +39,6 @@ Low quality gif scaling(efficiency)
 * image async load thumbnail first
 
 ## maybe
-
-* flip/rotate gif
 
 * grid mode async caching
 

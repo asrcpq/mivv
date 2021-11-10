@@ -1,10 +1,11 @@
+import sys
+
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from grid_view import Gridview
 from image_view import Imageview
-
 import var
 
 class MainWindow(QMainWindow):
@@ -85,9 +86,6 @@ class MainWindow(QMainWindow):
 		self.mode = 1
 		self.set_label() # only for zoom level
 
-	def exit(self):
-		exit(0)
-
 	def keyReleaseEvent(self, e):
 		if e.key() == Qt.Key_Shift:
 			var.keymod_shift = False
@@ -105,7 +103,7 @@ class MainWindow(QMainWindow):
 			elif self.mode == 2:
 				self.image_mode()
 		elif e.key() == Qt.Key_Escape or e.key() == Qt.Key_Q:
-			self.exit()
+			sys.exit()
 		else:
 			if self.mode == 1:
 				self.image_view.key_handler(e)

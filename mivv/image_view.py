@@ -62,6 +62,7 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def load(self):
+		self.setCursor(Qt.WaitCursor)
 		self.scaling_factor = 1.0
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
@@ -92,6 +93,7 @@ class Imageview(QGraphicsView):
 		self.center = [t.width(), t.height()]
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
+		self.setCursor(Qt.ArrowCursor)
 
 	def render(self):
 		size = self.compute_view_size()

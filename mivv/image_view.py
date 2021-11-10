@@ -204,64 +204,71 @@ class Imageview(QGraphicsView):
 		if self.key_handler_transform(e):
 			return
 
+	def mouse_shift_rotate(self, pos):
+		pos = QTransform()\
+			.scale(self.flip[0], self.flip[1])\
+			.map(pos)
+		if self.mouse_mode == 0:
+			self.last_mouse_pos = pos
+			self.mouse_mode = 3
+			return
+		c = self.viewport().rect().center()
+		p1 = pos - c
+		p0 = self.last_mouse_pos - c
+		d_angle = atan2(p1.x(), p1.y()) - atan2(p0.x(), p0.y())
+		if d_angle > var.image_move_rotate:
+			self.rotation -= var.image_mouse_rotation_degree
+			self.last_mouse_pos = pos
+		elif d_angle < -var.image_move_rotate:
+			self.rotation += var.image_mouse_rotation_degree
+			self.last_mouse_pos = pos
+		self.render()
+
+	def mouse_ctrl_zoom(self, pos):
+		if self.mouse_mode == 0:
+			self.last_mouse_pos = pos
+			self.mouse_mode = 1
+			return
+		self.setCursor(Qt.SizeVerCursor)
+		dp = pos - self.last_mouse_pos
+		if dp.y() > var.image_move_zoom:
+			self.scale_view(var.scaling_mult_mouse, False)
+			self.last_mouse_pos = pos
+		elif dp.y() < -var.image_move_zoom:
+			self.scale_view(1 / var.scaling_mult_mouse, False)
+			self.last_mouse_pos = pos
+		self.parent().set_label()
+		self.render()
+
+	def mouse_pan(self, pos):
+		pos = QTransform()\
+			.rotate(-self.rotation)\
+			.scale(self.flip[0], self.flip[1])\
+			.map(pos)
+		if self.mouse_mode == 0:
+			self.last_mouse_pos = pos
+			self.mouse_mode = 2
+			return
+		self.setCursor(Qt.CrossCursor)
+		dp = pos - self.last_mouse_pos
+		dp *= -self.scaling_factor / self.original_scaling_factor * var.hidpi
+		self.center[0] += dp.x()
+		self.center[1] += dp.y()
+		self.last_mouse_pos = pos
+		self.render()
+		self.mouse_mode = 2
+
 	def mouseMoveEvent(self, e):
+		pos = e.localPos()
 		if e.buttons() & Qt.MiddleButton:
 			modifiers = QApplication.keyboardModifiers()
-			# shift rotate
 			if self.mouse_mode == 3 or modifiers == Qt.ShiftModifier:
-				pos = QTransform()\
-					.scale(self.flip[0], self.flip[1])\
-					.map(e.localPos())
-				if self.mouse_mode == 0:
-					self.last_mouse_pos = pos
-					self.mouse_mode = 3
-					return
-				c = self.viewport().rect().center()
-				p1 = pos - c
-				p0 = self.last_mouse_pos - c
-				d_angle = atan2(p1.x(), p1.y()) - atan2(p0.x(), p0.y())
-				if d_angle > var.image_move_rotate:
-					self.rotation -= var.image_mouse_rotation_degree
-					self.last_mouse_pos = pos
-				elif d_angle < -var.image_move_rotate:
-					self.rotation += var.image_mouse_rotation_degree
-					self.last_mouse_pos = pos
-				self.render()
-			# ctrl zoom
+				return self.mouse_shift_rotate(pos)
 			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
-				pos = e.localPos()
-				if self.mouse_mode == 0:
-					self.last_mouse_pos = pos
-					self.mouse_mode = 1
-					return
-				self.setCursor(Qt.SizeVerCursor)
-				dp = pos - self.last_mouse_pos
-				if dp.y() > var.image_move_zoom:
-					self.scale_view(var.scaling_mult_mouse, False)
-					self.last_mouse_pos = pos
-				elif dp.y() < -var.image_move_zoom:
-					self.scale_view(1 / var.scaling_mult_mouse, False)
-					self.last_mouse_pos = pos
-				self.parent().set_label()
-				self.render()
+				return self.mouse_ctrl_zoom(pos)
 			# pan
 			else:
-				pos = QTransform()\
-					.rotate(-self.rotation)\
-					.scale(self.flip[0], self.flip[1])\
-					.map(e.localPos())
-				if self.mouse_mode == 0:
-					self.last_mouse_pos = pos
-					self.mouse_mode = 2
-					return
-				self.setCursor(Qt.CrossCursor)
-				dp = pos - self.last_mouse_pos
-				dp *= -self.scaling_factor / self.original_scaling_factor * var.hidpi
-				self.center[0] += dp.x()
-				self.center[1] += dp.y()
-				self.last_mouse_pos = pos
-				self.render()
-				self.mouse_mode = 2
+				return self.mouse_pan(pos)
 		elif e.buttons() & Qt.RightButton:
 			pos = e.localPos()
 			if self.mouse_mode == 0:

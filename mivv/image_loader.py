@@ -64,7 +64,8 @@ class ImageLoader():
 	# 0: invalid file
 	# 1: cache found
 	# 2: no cache
-	def validate(self, path):
+	@staticmethod
+	def validate(path):
 		abspath = os.path.abspath(path)
 		if not os.path.exists(abspath):
 			# remove cache? maybe not
@@ -81,7 +82,8 @@ class ImageLoader():
 		return (2, ty)
 
 	# nocheck
-	def create_cache(self, abspath):
+	@staticmethod
+	def create_cache(abspath):
 		pixmap = QPixmap(abspath)
 		if pixmap.isNull():
 			print("Read fail:", abspath)

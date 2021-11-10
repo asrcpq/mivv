@@ -96,6 +96,8 @@ class Imageview(QGraphicsView):
 		self.setCursor(Qt.ArrowCursor)
 
 	def render(self):
+		if not self.content_size:
+			return
 		size = self.compute_view_size()
 		sx = self.viewport().width() / size.width()
 		sy = self.viewport().height() / size.height()

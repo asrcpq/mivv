@@ -88,7 +88,6 @@ class ImageLoader():
 		if pixmap.isNull():
 			print("Read fail:", abspath)
 			return None
-		print("Cached:", abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
 		dirname = os.path.dirname(cached_path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
@@ -107,6 +106,6 @@ class ImageLoader():
 			return QPixmap(abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
 		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
-			print("Update cache:", abspath)
+			print("Update:", abspath)
 			return self.create_cache(abspath)
 		return QPixmap(cached_path)

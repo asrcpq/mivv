@@ -180,15 +180,18 @@ class Imageview(QGraphicsView):
 		elif e.key() == Qt.Key_0:
 			self.scale_view(self.original_scaling_factor, True)
 			self.set_move_dist()
-		elif e.key() == Qt.Key_F:
-			if modifiers == Qt.ShiftModifier:
-				self.flip[1] *= -1
-			else:
-				self.flip[0] *= -1
+		elif e.key() == Qt.Key_Underscore:
+			self.flip[1] *= -1
+		elif e.key() == Qt.Key_Bar:
+			self.flip[0] *= -1
 		elif e.key() == Qt.Key_W:
 			self.scale_view(1.0, True)
 			self.rotation = 0
 			self.set_move_dist()
+		elif e.key() == Qt.Key_Less:
+			self.rotation -= 90
+		elif e.key() == Qt.Key_Greater:
+			self.rotation += 90
 		else:
 			return False
 		self.render()

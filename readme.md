@@ -14,7 +14,7 @@ Mouse(image mode):
 
 * drag right left/right: next/prev image
 
-* drag up: grid mode
+* drag right up: enther grid mode
 
 Mouse(grid mode):
 
@@ -22,7 +22,7 @@ Mouse(grid mode):
 
 * ctrl + drag middle: change thumbtail size
 
-* left click: select cursor, if selected enter image mode
+* left click: select cursor, enter image mode if already selected
 
 Keyboard:
 
@@ -50,7 +50,7 @@ Keyboard:
 
 2. have pyqt5 installed
 
-3. `python3 src/mivv.py`
+3. `python3 mivv xxx.png` or `hpm/entrypoint xxx.png`
 
 ## notes
 
@@ -59,8 +59,6 @@ Low quality gif scaling(efficiency)
 ## todo
 
 * image async load thumbnail first
-
-## maybe
 
 * grid mode async caching
 

@@ -101,7 +101,7 @@ class Imageview(QGraphicsView):
 		rect = self.compute_rect()
 		sx = self.viewport().width() / rect.width()
 		sy = self.viewport().height() / rect.height()
-		if sx < sy:
+		if sx <= sy:
 			k = sx
 		elif sx > sy:
 			k = sy

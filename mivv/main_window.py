@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
 		self.info_label.setText(
-			f"{scaling_string} " \
+			f" {scaling_string} " \
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
 		)
 		self.info_label.adjustSize()
@@ -57,7 +57,7 @@ class MainWindow(QMainWindow):
 		left = self.info_label.geometry().left()
 		text = f"{var.image_loader.filelist[var.current_idx]}"
 		metrics = QFontMetrics(self.fn_label.font())
-		elidedText = metrics.elidedText(text, Qt.ElideRight, left)
+		elidedText = metrics.elidedText(text, Qt.ElideLeft, left)
 		self.fn_label.setText(elidedText)
 		self.fn_label.setGeometry(
 			0,

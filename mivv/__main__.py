@@ -29,7 +29,7 @@ if __name__ == '__main__':
 	args, unknown_args = build_parser().parse_known_args()
 	if args.c:
 		gc_cache()
-		exit()
+		sys.exit()
 	if args.l:
 		var.load_all = False
 	if args.t:

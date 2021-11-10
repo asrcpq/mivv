@@ -1,4 +1,5 @@
 import os
+import sys
 from glob import glob
 from pathlib import Path
 
@@ -35,7 +36,7 @@ class ImageLoader():
 			elif state == 2:
 				self.cached_state.append(False)
 			else:
-				exit(127)
+				sys.exit(127)
 			self.filelist.append(file)
 			self.typelist.append(ty)
 			self.pixmaps.append(None)
@@ -43,7 +44,7 @@ class ImageLoader():
 			self.load_all()
 		if len(self.filelist) == 0:
 			print("No image file specified, exiting")
-			exit(1)
+			sys.exit(1)
 
 	def load_all(self):
 		for idx in range(len(self.filelist)):
@@ -71,8 +72,7 @@ class ImageLoader():
 		_filename, ext = os.path.splitext(abspath)
 		if ext not in var.ext_type:
 			return (0, 0)
-		else:
-			ty = var.ext_type[ext]
+		ty = var.ext_type[ext]
 		if abspath.startswith(var.cache_path):
 			return (1, ty)
 		cached_path = var.cache_path + abspath + ".jpg"
@@ -107,5 +107,4 @@ class ImageLoader():
 		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
 			print("Update cache:", abspath)
 			return self.create_cache(abspath)
-		else:
-			return QPixmap(cached_path)
+		return QPixmap(cached_path)

@@ -22,7 +22,7 @@ class Imageview(QGraphicsView):
 		self.original_scaling_factor = None
 		self.original_scaling_limit = None
 		self.mouse_mode = 0
-		self.rotation = 0
+		self.rotation = None
 		self.move_dist = 10
 
 	def set_original_scaling_factor(self):
@@ -203,12 +203,11 @@ class Imageview(QGraphicsView):
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
 			modifiers = QApplication.keyboardModifiers()
-			pos = QTransform()\
-				.rotate(-self.rotation)\
-				.scale(self.flip[0], self.flip[1])\
-				.map(e.localPos())
 			# shift rotate
 			if self.mouse_mode == 3 or modifiers == Qt.ShiftModifier:
+				pos = QTransform()\
+					.scale(self.flip[0], self.flip[1])\
+					.map(e.localPos())
 				if self.mouse_mode == 0:
 					self.last_mouse_pos = pos
 					self.mouse_mode = 3
@@ -224,6 +223,7 @@ class Imageview(QGraphicsView):
 				self.render()
 			# ctrl zoom
 			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
+				pos = e.localPos()
 				if self.mouse_mode == 0:
 					self.last_mouse_pos = pos
 					self.mouse_mode = 1
@@ -240,6 +240,10 @@ class Imageview(QGraphicsView):
 				self.render()
 			# pan
 			else:
+				pos = QTransform()\
+					.rotate(-self.rotation)\
+					.scale(self.flip[0], self.flip[1])\
+					.map(e.localPos())
 				if self.mouse_mode == 0:
 					self.last_mouse_pos = pos
 					self.mouse_mode = 2

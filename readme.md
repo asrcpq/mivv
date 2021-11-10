@@ -4,7 +4,9 @@ PyQt5 simple image viewer.
 
 ## default control
 
-Mouse control like gimp, keyboard:
+Mouse: GIMP like
+
+Keyboard:
 
 * enter: toggle image/grid mode
 
@@ -12,7 +14,7 @@ Mouse control like gimp, keyboard:
 
 * hjkl move
 
-* 0 for 100% zoom
+* 1 for 100% zoom
 
 * i/o for zoom in/out
 

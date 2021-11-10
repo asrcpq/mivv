@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QLabel, QMainWindow
-from PyQt5.QtGui import QKeyEvent, QFont
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 
 from grid_view import Gridview
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
 		labels = []
 		font = QFont("monospace", var.bar_height - 1)
 		for name in ["filename", "info"]:
-			label = QLabel("filename", self)
+			label = QLabel(name, self)
 			label.setStyleSheet("color: #FFFFFF;")
 			label.setFont(font)
 			labels.append(label)
@@ -88,7 +88,7 @@ class MainWindow(QMainWindow):
 	def exit(self):
 		exit(0)
 
-	def keyPressEvent(self, e: QKeyEvent):
+	def keyPressEvent(self, e):
 		if e.key() == Qt.Key_Return:
 			if self.mode == 1:
 				self.grid_mode()
@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
 				self.grid_view.key_handler(e)
 			self.set_label()
 
-	def resizeEvent(self, event):
+	def resizeEvent(self, _e):
 		if self.mode == 1:
 			# put it in ImageView's resizeEvent will be too late for label set here
 			self.image_view.set_original_scaling_factor()

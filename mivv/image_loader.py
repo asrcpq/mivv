@@ -27,11 +27,10 @@ class ImageLoader():
 							file_filtered.append(file)
 					filelist_tmp += sorted(file_filtered, reverse = True)
 				continue
-			# TODO: async load
 			state, ty = self.validate(file)
 			if state == 0:
 				continue
-			elif state == 1:
+			if state == 1:
 				self.cached_state.append(True)
 			elif state == 2:
 				self.cached_state.append(False)
@@ -80,7 +79,7 @@ class ImageLoader():
 		if os.path.exists(cached_path):
 			return (1, ty)
 		return (2, ty)
-	
+
 	# nocheck
 	def create_cache(self, abspath):
 		pixmap = QPixmap(abspath)
@@ -99,7 +98,7 @@ class ImageLoader():
 		)
 		pixmap_resize.save(cached_path)
 		return pixmap_resize
-	
+
 	# nocheck
 	def load_cache(self, abspath):
 		if abspath.startswith(var.cache_path):

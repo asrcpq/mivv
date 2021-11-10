@@ -1,10 +1,10 @@
 from PyQt5.QtWidgets import (
-	QApplication, QWidget, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
+	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
-from PyQt5.QtCore import Qt, QRectF, QPointF
+from PyQt5.QtCore import Qt, QRectF
 
-import math
+#import math
 import var
 
 class Imageview(QGraphicsView):
@@ -12,14 +12,15 @@ class Imageview(QGraphicsView):
 		super().__init__(parent)
 		self.setStyleSheet("background-color: black;")
 		self.setMouseTracking(True)
-		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
-		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff);
+		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
 		self.last_mouse_pos = None
 		self.scaling_factor = 1.0
 		self.flip = [1.0, 1.0]
-		self.original_scaling_factor = 9e999
-		self.original_scaling_limit = [-9e999, 9e999]
+		self.center = None
+		self.original_scaling_factor = None
+		self.original_scaling_limit = None
 		self.mouse_mode = 0
 		self.rotation = 0
 		self.move_dist = 10
@@ -33,7 +34,7 @@ class Imageview(QGraphicsView):
 		elif wk > hk:
 			osf = hk * var.hidpi
 		else:
-			raise(Exception("wk or nk is not valid number"))
+			raise Exception("wk or nk is not valid number")
 		self.original_scaling_factor = osf
 		self.original_scaling_limit = [
 			osf / var.zoom_level_limit[1],
@@ -51,7 +52,7 @@ class Imageview(QGraphicsView):
 			w = self.content_size.width() * wk / hk * self.scaling_factor
 			h = self.content_size.height() * self.scaling_factor
 		else:
-			raise(Exception("wk or nk is not valid number"))
+			raise Exception("wk or nk is not valid number")
 		return QRectF(
 			self.center[0] - w / 2,
 			self.center[1] - h / 2,
@@ -59,7 +60,7 @@ class Imageview(QGraphicsView):
 			h,
 		)
 
-	def resizeEvent(self, event):
+	def resizeEvent(self, _e):
 		# original scaling factor is set in main_window
 		self.render()
 
@@ -77,7 +78,7 @@ class Imageview(QGraphicsView):
 			self.content_size = pixmap.size()
 			item = QGraphicsPixmapItem()
 			item.setPixmap(pixmap)
-			item.setTransformationMode(Qt.SmoothTransformation);
+			item.setTransformationMode(Qt.SmoothTransformation)
 			scene = QGraphicsScene()
 			scene.addItem(item)
 		elif ty == 2:
@@ -90,13 +91,13 @@ class Imageview(QGraphicsView):
 			scene = QGraphicsScene()
 			scene.addWidget(label)
 		else:
-			raise(Exception('Unreachable code.'))
+			raise Exception('Unreachable code.')
 		self.set_original_scaling_factor()
 		t = self.content_size / 2
 		self.center = [t.width(), t.height()]
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
-	
+
 	def render(self):
 		rect = self.compute_rect()
 		sx = self.viewport().width() / rect.width()
@@ -106,7 +107,7 @@ class Imageview(QGraphicsView):
 		elif sx > sy:
 			k = sy
 		else:
-			raise(Exception('Float error'))
+			raise Exception('Float error')
 		qtrans = QTransform()
 		qtrans.scale(k * self.flip[0], k * self.flip[1])
 		qtrans.rotate(self.rotation)

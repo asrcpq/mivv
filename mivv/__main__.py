@@ -3,10 +3,8 @@ import os
 import argparse
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt
 
 from main_window import MainWindow
-from image_loader import *
 
 import var
 
@@ -19,7 +17,7 @@ def build_parser():
 	return parser
 
 def gc_cache():
-	for root, directories, filenames in os.walk(var.cache_path): 
+	for root, _directories, filenames in os.walk(var.cache_path):
 		for filename in filenames:
 			cache = f"{root}/{filename}"
 			root_path = "/" + os.path.relpath(cache, var.cache_path)[:-4]

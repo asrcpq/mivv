@@ -36,6 +36,7 @@ class Imageview(QGraphicsView):
 		else:
 			raise Exception("wk or nk is not valid number")
 		self.original_scaling_factor = osf
+		self.set_move_dist()
 		self.original_scaling_limit = [
 			osf / var.zoom_level_limit[1],
 			osf / var.zoom_level_limit[0],
@@ -68,11 +69,9 @@ class Imageview(QGraphicsView):
 		self.scaling_factor = 1.0
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
-		self.set_move_dist()
 
 		ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
-
 		if ty == 1:
 			pixmap = QPixmap(filename)
 			self.content_size = pixmap.size()
@@ -161,7 +160,7 @@ class Imageview(QGraphicsView):
 		return True
 
 	def set_move_dist(self):
-		self.move_dist = var.k_move * self.scaling_factor
+		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
 	def key_handler_transform(self, e):
 		modifiers = QApplication.keyboardModifiers()
@@ -185,6 +184,8 @@ class Imageview(QGraphicsView):
 		elif e.key() == Qt.Key_Bar:
 			self.flip[0] *= -1
 		elif e.key() == Qt.Key_W:
+			t = self.content_size / 2
+			self.center = [t.width(), t.height()]
 			self.scale_view(1.0, True)
 			self.rotation = 0
 			self.set_move_dist()
@@ -255,7 +256,7 @@ class Imageview(QGraphicsView):
 					return
 				self.setCursor(Qt.CrossCursor)
 				dp = pos - self.last_mouse_pos
-				dp *= var.mouse_factor * self.scaling_factor
+				dp *= -self.scaling_factor / self.original_scaling_factor * var.hidpi
 				self.center[0] += dp.x()
 				self.center[1] += dp.y()
 				self.last_mouse_pos = pos

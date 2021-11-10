@@ -88,8 +88,18 @@ class MainWindow(QMainWindow):
 	def exit(self):
 		exit(0)
 
+	def keyReleaseEvent(self, e):
+		if e.key() == Qt.Key_Shift:
+			var.keymod_shift = False
+		elif e.key() == Qt.Key_Control:
+			var.keymod_control = False
+
 	def keyPressEvent(self, e):
-		if e.key() == Qt.Key_Return:
+		if e.key() == Qt.Key_Shift:
+			var.keymod_shift = True
+		elif e.key() == Qt.Key_Control:
+			var.keymod_control = True
+		elif e.key() == Qt.Key_Return:
 			if self.mode == 1:
 				self.grid_mode()
 			elif self.mode == 2:

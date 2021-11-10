@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
 
-from math import atan2
+from math import atan2, pi
 import var
 
 class Imageview(QGraphicsView):
@@ -16,6 +16,7 @@ class Imageview(QGraphicsView):
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
 		self.last_mouse_pos = None
+		self.last_angle = None
 		self.scaling_factor = 1.0
 		self.flip = [1.0, 1.0]
 		self.center = None
@@ -136,14 +137,13 @@ class Imageview(QGraphicsView):
 		self.set_move_dist()
 
 	def key_handler_navigation(self, e):
-		modifiers = QApplication.keyboardModifiers()
 		if e.key() == Qt.Key_N:
-			if modifiers == Qt.ShiftModifier:
+			if var.keymod_shift:
 				self.navigate_image(-1, False)
 			else:
 				self.navigate_image(1, False)
 		elif e.key() == Qt.Key_G:
-			if modifiers == Qt.ShiftModifier:
+			if var.keymod_shift:
 				self.navigate_image(len(var.image_loader.filelist) - 1, True)
 			else:
 				self.navigate_image(0, True)
@@ -158,7 +158,6 @@ class Imageview(QGraphicsView):
 		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
 	def key_handler_transform(self, e):
-		modifiers = QApplication.keyboardModifiers()
 		if e.key() == Qt.Key_H:
 			self.center[0] -= self.move_dist
 		elif e.key() == Qt.Key_L:
@@ -203,20 +202,22 @@ class Imageview(QGraphicsView):
 		pos = QTransform()\
 			.scale(self.flip[0], self.flip[1])\
 			.map(pos)
-		if self.mouse_mode == 0:
-			self.last_mouse_pos = pos
-			self.mouse_mode = 3
-			return
 		c = self.viewport().rect().center()
 		p1 = pos - c
-		p0 = self.last_mouse_pos - c
-		d_angle = atan2(p1.x(), p1.y()) - atan2(p0.x(), p0.y())
+		angle = atan2(p1.x(), p1.y()) / pi * 180
+		if self.mouse_mode == 0:
+			self.last_mouse_angle = angle
+			self.mouse_mode = 3
+			return
+		d_angle = angle - self.last_mouse_angle
 		if d_angle > var.image_move_rotate:
-			self.rotation -= var.image_mouse_rotation_degree
-			self.last_mouse_pos = pos
+			k = int(d_angle / var.image_move_rotate)
+			self.rotation -= var.image_move_rotate * k
+			self.last_mouse_angle += var.image_move_rotate * k
 		elif d_angle < -var.image_move_rotate:
-			self.rotation += var.image_mouse_rotation_degree
-			self.last_mouse_pos = pos
+			k = int(-d_angle / var.image_move_rotate)
+			self.rotation += var.image_move_rotate * k
+			self.last_mouse_angle -= var.image_move_rotate * k
 		self.render()
 
 	def mouse_ctrl_zoom(self, pos):
@@ -257,10 +258,9 @@ class Imageview(QGraphicsView):
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()
 		if e.buttons() & Qt.MiddleButton:
-			modifiers = QApplication.keyboardModifiers()
-			if self.mouse_mode == 3 or modifiers == Qt.ShiftModifier:
+			if self.mouse_mode == 3 or var.keymod_shift:
 				return self.mouse_shift_rotate(pos)
-			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
+			elif self.mouse_mode == 1 or var.keymod_control:
 				return self.mouse_ctrl_zoom(pos)
 			else:
 				return self.mouse_pan(pos)

@@ -193,8 +193,7 @@ class Gridview(QWidget):
 		elif e.key() == Qt.Key_K:
 			self.offset_cursor(-self.count_h, False)
 		elif e.key() == Qt.Key_G:
-			modifiers = QApplication.keyboardModifiers()
-			if modifiers == Qt.ShiftModifier:
+			if var.keymod_shift:
 				self.offset_cursor(len(var.image_loader.filelist) - 1, True)
 			else:
 				self.offset_cursor(0, True)
@@ -213,8 +212,7 @@ class Gridview(QWidget):
 				return
 
 			# ctrl zoom
-			modifiers = QApplication.keyboardModifiers()
-			if modifiers == Qt.ControlModifier:
+			if var.keymod_control:
 				self.setCursor(Qt.SizeVerCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.grid_move_zoom:

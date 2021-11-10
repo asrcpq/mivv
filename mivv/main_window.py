@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QLabel, QMainWindow
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from grid_view import Gridview
@@ -34,21 +34,18 @@ class MainWindow(QMainWindow):
 			self.image_mode()
 		self.show()
 
-	def set_label_text(self):
+	def set_label(self):
 		if self.mode == 1:
 			zoom_level_percent = 100 / \
 				self.image_view.scaling_factor * \
 				self.image_view.original_scaling_factor
 			scaling_string = f"{zoom_level_percent:.1f}%"
 		elif self.mode == 2:
-			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}"
+			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
 		self.info_label.setText(
 			f"{scaling_string} " \
-			f"({1 + var.current_idx}/{len(var.image_loader.filelist)})" \
+			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
 		)
-
-	def set_label(self):
-		self.set_label_text()
 		self.info_label.adjustSize()
 		width = self.info_label.geometry().width()
 		self.info_label.setGeometry(
@@ -58,7 +55,10 @@ class MainWindow(QMainWindow):
 			var.bar_height,
 		)
 		left = self.info_label.geometry().left()
-		self.fn_label.setText(f"{var.image_loader.filelist[var.current_idx]}")
+		text = f"{var.image_loader.filelist[var.current_idx]}"
+		metrics = QFontMetrics(self.fn_label.font())
+		elidedText = metrics.elidedText(text, Qt.ElideRight, left)
+		self.fn_label.setText(elidedText)
 		self.fn_label.setGeometry(
 			0,
 			self.height() - var.bar_height,

@@ -203,12 +203,9 @@ class Imageview(QGraphicsView):
 			return
 
 	def mouse_shift_rotate(self, pos):
-		pos = QTransform()\
-			.scale(self.flip[0], self.flip[1])\
-			.map(pos)
 		c = self.viewport().rect().center()
 		p1 = pos - c
-		angle = atan2(p1.x(), p1.y()) / pi * 180
+		angle = atan2(p1.x(), p1.y()) / pi * 180 * self.flip[0] * self.flip[1]
 		if self.mouse_mode == 0:
 			self.last_mouse_angle = angle
 			self.mouse_mode = 3

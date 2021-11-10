@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF, QPointF
 
+import math
 import var
 
 class Imageview(QGraphicsView):
@@ -92,6 +93,7 @@ class Imageview(QGraphicsView):
 		self.set_original_scaling_factor()
 		t = self.content_size / 2
 		self.center = [t.width(), t.height()]
+		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
 	
 	def render(self):
@@ -160,28 +162,6 @@ class Imageview(QGraphicsView):
 	def set_move_dist(self):
 		self.move_dist = var.k_move * self.scaling_factor
 
-	def calibrate_center(self, x_mod = True, y_mod = True):
-		t = QRectF(
-			self.mapToScene(0, 0),
-			self.mapToScene(self.width(), self.height()),
-		)
-		swh = t.width() / 2
-		shh = t.height() / 2
-		pw = self.content_size.width()
-		ph = self.content_size.height()
-		if t.width() > pw:
-			self.center[0] = pw / 2
-		elif self.center[0] < swh:
-			self.center[0] = swh
-		elif self.center[0] > pw - swh:
-			self.center[0] = pw - swh
-		if t.height() > ph:
-			self.center[1] = ph / 2
-		elif self.center[1] < shh:
-			self.center[1] = shh
-		elif self.center[1] > ph - shh:
-			self.center[1] = ph - shh
-
 	def key_handler_transform(self, e):
 		x_mod = False
 		y_mod = False
@@ -218,7 +198,6 @@ class Imageview(QGraphicsView):
 			y_mod = True
 		else:
 			return False
-		self.calibrate_center(x_mod, y_mod)
 		self.render()
 		return True
 
@@ -275,7 +254,6 @@ class Imageview(QGraphicsView):
 				self.center[0] += dp.x()
 				self.center[1] += dp.y()
 				self.last_mouse_pos = pos
-				self.calibrate_center()
 				self.render()
 				self.mouse_mode = 2
 		elif e.buttons() & Qt.RightButton:

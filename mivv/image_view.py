@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (
 	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
 
 from math import atan2
 import var
@@ -42,7 +42,7 @@ class Imageview(QGraphicsView):
 			osf / var.zoom_level_limit[0],
 		]
 
-	def compute_rect(self):
+	def compute_view_size(self):
 		wk = self.width() / self.content_size.width()
 		hk = self.height() / self.content_size.height()
 		# w bound
@@ -54,12 +54,7 @@ class Imageview(QGraphicsView):
 			h = self.content_size.height() * self.scaling_factor
 		else:
 			raise Exception("wk or nk is not valid number")
-		return QRectF(
-			self.center[0] - w / 2,
-			self.center[1] - h / 2,
-			w,
-			h,
-		)
+		return QSizeF(w, h)
 
 	def resizeEvent(self, _e):
 		# original scaling factor is set in main_window
@@ -98,9 +93,9 @@ class Imageview(QGraphicsView):
 		self.setScene(scene)
 
 	def render(self):
-		rect = self.compute_rect()
-		sx = self.viewport().width() / rect.width()
-		sy = self.viewport().height() / rect.height()
+		size = self.compute_view_size()
+		sx = self.viewport().width() / size.width()
+		sy = self.viewport().height() / size.height()
 		if sx <= sy:
 			k = sx
 		elif sx > sy:
@@ -110,9 +105,9 @@ class Imageview(QGraphicsView):
 		qtrans = QTransform()
 		qtrans.scale(k * self.flip[0], k * self.flip[1])
 		qtrans.rotate(self.rotation)
-		qtrans.translate(rect.center().x(), rect.center().y())
+		qtrans.translate(self.center[0], self.center[1])
 		self.setTransform(qtrans)
-		self.centerOn(rect.center())
+		self.centerOn(self.center[0], self.center[1])
 
 	def navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
@@ -251,7 +246,8 @@ class Imageview(QGraphicsView):
 			return
 		self.setCursor(Qt.CrossCursor)
 		dp = pos - self.last_mouse_pos
-		dp *= -self.scaling_factor / self.original_scaling_factor * var.hidpi
+		view_size_w = self.compute_view_size().width()
+		dp *= -view_size_w / self.width()
 		self.center[0] += dp.x()
 		self.center[1] += dp.y()
 		self.last_mouse_pos = pos
@@ -266,7 +262,6 @@ class Imageview(QGraphicsView):
 				return self.mouse_shift_rotate(pos)
 			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
 				return self.mouse_ctrl_zoom(pos)
-			# pan
 			else:
 				return self.mouse_pan(pos)
 		elif e.buttons() & Qt.RightButton:

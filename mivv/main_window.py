@@ -70,14 +70,14 @@ class MainWindow(QMainWindow):
 		self.image_view.hide()
 		if not self.grid_view.reset_layout():
 			self.grid_view.set_cursor(False)
-		self.grid_view.resize(self.width(), self.height())
+		self.grid_view.resize(self.width(), self.height() - var.bar_height)
 		self.grid_view.show()
 		self.mode = 2
 		self.set_label() # only for zoom level
 
 	def image_mode(self):
 		self.grid_view.hide()
-		self.image_view.resize(self.width(), self.height())
+		self.image_view.resize(self.width(), self.height() - var.bar_height)
 		self.image_view.load()
 		self.image_view.show()
 		if self.isVisible():

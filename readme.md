@@ -4,7 +4,9 @@ PyQt5 simple image viewer.
 
 ## features
 
-* More mouse control(zoom, scroll)
+* arbitrary angle rotation
+
+* More mouse control(zoom, scroll, rotation)
 
 ## usage
 
@@ -19,8 +21,6 @@ PyQt5 simple image viewer.
 Low quality gif scaling(efficiency)
 
 ## todo
-
-* flip/rotate image
 
 * image async load thumbnail first
 

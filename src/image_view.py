@@ -17,6 +17,7 @@ class Imageview(QGraphicsView):
 		self.content_size = None
 		self.last_mouse_pos = None
 		self.scaling_factor = 1.0
+		self.flip = [1.0, 1.0]
 		self.original_scaling_factor = 9e999
 		self.original_scaling_limit = [-9e999, 9e999]
 		self.mouse_mode = 0
@@ -51,7 +52,6 @@ class Imageview(QGraphicsView):
 			h = self.content_size.height() * self.scaling_factor
 		else:
 			raise(Exception("wk or nk is not valid number"))
-		# return QRectF(0, 0, 500, 100)
 		return QRectF(
 			self.center[0] - w / 2,
 			self.center[1] - h / 2,
@@ -65,6 +65,7 @@ class Imageview(QGraphicsView):
 
 	def load(self):
 		self.scaling_factor = 1.0
+		self.flip = [1.0, 1.0]
 		self.rotation = 0
 		self.set_move_dist()
 
@@ -107,12 +108,11 @@ class Imageview(QGraphicsView):
 		else:
 			raise(Exception('Float error'))
 		qtrans = QTransform()
-		qtrans.scale(k, k)
+		qtrans.scale(k * self.flip[0], k * self.flip[1])
 		qtrans.rotate(self.rotation)
 		qtrans.translate(rect.center().x(), rect.center().y())
 		self.setTransform(qtrans)
 		self.centerOn(rect.center())
-		#self.fitInView(rect)
 
 	def navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
@@ -163,39 +163,31 @@ class Imageview(QGraphicsView):
 		self.move_dist = var.k_move * self.scaling_factor
 
 	def key_handler_transform(self, e):
-		x_mod = False
-		y_mod = False
+		modifiers = QApplication.keyboardModifiers()
 		if e.key() == Qt.Key_H:
 			self.center[0] -= self.move_dist
-			x_mod = True
 		elif e.key() == Qt.Key_L:
 			self.center[0] += self.move_dist
-			x_mod = True
 		elif e.key() == Qt.Key_J:
 			self.center[1] += self.move_dist
-			y_mod = True
 		elif e.key() == Qt.Key_K:
 			self.center[1] -= self.move_dist
-			y_mod = True
 		elif e.key() == Qt.Key_O:
 			self.scale_view(var.scaling_mult, False)
-			x_mod = True
-			y_mod = True
 		elif e.key() == Qt.Key_I:
 			self.scale_view(1 / var.scaling_mult, False)
-			x_mod = True
-			y_mod = True
 		elif e.key() == Qt.Key_0:
 			self.scale_view(self.original_scaling_factor, True)
 			self.set_move_dist()
-			x_mod = True
-			y_mod = True
+		elif e.key() == Qt.Key_F:
+			if modifiers == Qt.ShiftModifier:
+				self.flip[1] *= -1
+			else:
+				self.flip[0] *= -1
 		elif e.key() == Qt.Key_W:
 			self.scale_view(1.0, True)
 			self.rotation = 0
 			self.set_move_dist()
-			x_mod = True
-			y_mod = True
 		else:
 			return False
 		self.render()
@@ -210,40 +202,43 @@ class Imageview(QGraphicsView):
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
 			modifiers = QApplication.keyboardModifiers()
+			pos = QTransform()\
+				.rotate(-self.rotation)\
+				.scale(self.flip[0], self.flip[1])\
+				.map(e.localPos())
 			# shift rotate
 			if self.mouse_mode == 3 or modifiers == Qt.ShiftModifier:
 				if self.mouse_mode == 0:
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 					self.mouse_mode = 3
 					return
 				self.setCursor(Qt.SizeVerCursor)
-				dp = e.localPos() - self.last_mouse_pos
+				dp = pos - self.last_mouse_pos
 				if dp.y() > var.image_move_rotate:
 					self.rotation += var.image_mouse_rotation_degree
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 				elif dp.y() < -var.image_move_rotate:
 					self.rotation -= var.image_mouse_rotation_degree
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 				self.render()
 			# ctrl zoom
 			elif self.mouse_mode == 1 or modifiers == Qt.ControlModifier:
 				if self.mouse_mode == 0:
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 					self.mouse_mode = 1
 					return
 				self.setCursor(Qt.SizeVerCursor)
-				dp = e.localPos() - self.last_mouse_pos
+				dp = pos - self.last_mouse_pos
 				if dp.y() > var.image_move_zoom:
 					self.scale_view(var.scaling_mult_mouse, False)
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 				elif dp.y() < -var.image_move_zoom:
 					self.scale_view(1 / var.scaling_mult_mouse, False)
-					self.last_mouse_pos = e.localPos()
+					self.last_mouse_pos = pos
 				self.parent().set_label()
 				self.render()
 			# pan
 			else:
-				pos = QTransform().rotate(-self.rotation).map(e.localPos())
 				if self.mouse_mode == 0:
 					self.last_mouse_pos = pos
 					self.mouse_mode = 2

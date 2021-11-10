@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF
 
-#import math
+from math import atan2
 import var
 
 class Imageview(QGraphicsView):
@@ -212,13 +212,15 @@ class Imageview(QGraphicsView):
 					self.last_mouse_pos = pos
 					self.mouse_mode = 3
 					return
-				self.setCursor(Qt.SizeVerCursor)
-				dp = pos - self.last_mouse_pos
-				if dp.y() > var.image_move_rotate:
-					self.rotation += var.image_mouse_rotation_degree
-					self.last_mouse_pos = pos
-				elif dp.y() < -var.image_move_rotate:
+				c = self.viewport().rect().center()
+				p1 = pos - c
+				p0 = self.last_mouse_pos - c
+				d_angle = atan2(p1.x(), p1.y()) - atan2(p0.x(), p0.y())
+				if d_angle > var.image_move_rotate:
 					self.rotation -= var.image_mouse_rotation_degree
+					self.last_mouse_pos = pos
+				elif d_angle < -var.image_move_rotate:
+					self.rotation += var.image_mouse_rotation_degree
 					self.last_mouse_pos = pos
 				self.render()
 			# ctrl zoom

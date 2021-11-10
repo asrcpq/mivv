@@ -39,4 +39,5 @@ image_loader = ImageLoader()
 
 config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
 if os.path.isfile(config_path):
+	# pylint: disable=W0122
 	exec(compile(open(config_path, "rb").read(), config_path, 'exec'))

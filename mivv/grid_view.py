@@ -12,11 +12,13 @@ class Gridview(QWidget):
 		self.y_offset = 0
 		self.grid_size_idx = 2
 		self.grid_space = 10
+		self.grid_offset = None
 		self.count_h = 0
 		self.count_v = 0
 		self.cursor = [0, 0]
 		self.labels = []
 		self.mouse_mode = 0
+		self.last_mouse_pos = None
 
 	def get_idx(self, i, j):
 		return (j + self.y_offset) * self.count_h + i
@@ -102,7 +104,7 @@ class Gridview(QWidget):
 		self.count_v = count_v
 		self.set_cursor(True)
 		return True
-	
+
 	def refresh(self):
 		grid_size = var.grid_sizes[self.grid_size_idx]
 		for j in range(self.count_v):
@@ -135,7 +137,7 @@ class Gridview(QWidget):
 					label.setPixmap(pixmap_resize)
 					label.show()
 
-	def resizeEvent(self, event):
+	def resizeEvent(self, _e):
 		self.reset_layout()
 
 	def cursor_select(self, x, y):

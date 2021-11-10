@@ -6,4 +6,4 @@ class Thumbnail(QLabel):
 		super().__init__(parent)
 		self.setAlignment(Qt.AlignCenter)
 		self.coord = [x, y]
-		self.setAttribute(Qt.WA_TransparentForMouseEvents);
+		self.setAttribute(Qt.WA_TransparentForMouseEvents)

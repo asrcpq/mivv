@@ -6,15 +6,15 @@ PyQt5 simple image viewer.
 
 Mouse(image mode):
 
-* drag middle: pan
+* drag middle button: pan
 
-* shift + drag middle: rotation
+* shift + drag middle button: rotation
 
-* ctrl + drag middle: zoom
+* ctrl + drag middle button: zoom
 
-* drag right left/right: next/prev image
+* drag right button move left/right: next/prev image
 
-* drag right up: enther grid mode
+* drag right button move up: enther grid mode
 
 Mouse(grid mode):
 

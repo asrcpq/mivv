@@ -176,7 +176,7 @@ class Imageview(QGraphicsView):
 			self.scale_view(var.scaling_mult, False)
 		elif e.key() == Qt.Key_I:
 			self.scale_view(1 / var.scaling_mult, False)
-		elif e.key() == Qt.Key_0:
+		elif e.key() == Qt.Key_1:
 			self.scale_view(self.original_scaling_factor, True)
 			self.set_move_dist()
 		elif e.key() == Qt.Key_Underscore:

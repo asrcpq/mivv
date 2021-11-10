@@ -263,18 +263,25 @@ class Imageview(QGraphicsView):
 				self.render()
 				self.mouse_mode = 2
 		elif e.buttons() & Qt.RightButton:
-			self.parent().grid_mode()
-		elif e.buttons() & Qt.LeftButton:
-			if self.mouse_mode != 3:
-				self.mouse_mode = 3
-				if e.localPos().x() > self.width() / 2:
-					self.navigate_image(1, False)
-				else:
-					self.navigate_image(-1, False)
-				self.parent().set_label()
-		else:
-			if e.localPos().x() > self.width() / 2:
-				self.setCursor(Qt.ArrowCursor)
+			pos = e.localPos()
+			if self.mouse_mode == 0:
+				self.last_mouse_pos = pos
+				self.mouse_mode = 4
+				self.setCursor(Qt.CrossCursor)
+				return
+			if self.mouse_mode != 4:
+				return
+			dp = pos - self.last_mouse_pos
+			if dp.y() < -var.guesture_move:
+				self.parent().grid_mode()
+			elif dp.x() < -var.guesture_move:
+				self.navigate_image(-1, False)
+			elif dp.x() > var.guesture_move:
+				self.navigate_image(1, False)
 			else:
-				self.setCursor(Qt.PointingHandCursor)
+				return
+			self.setCursor(Qt.ArrowCursor)
+			self.mouse_mode = 5 # not 4
+		else:
+			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

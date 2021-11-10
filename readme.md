@@ -2,9 +2,27 @@
 
 PyQt5 simple image viewer.
 
-## default control
+## control
 
-Mouse: GIMP like
+Mouse(image mode):
+
+* drag middle: pan
+
+* shift + drag middle: rotation
+
+* ctrl + drag middle: zoom
+
+* drag right left/right: next/prev image
+
+* drag up: grid mode
+
+Mouse(grid mode):
+
+* drag middle: move cursor
+
+* ctrl + drag middle: change thumbtail size
+
+* left click: select cursor, if selected enter image mode
 
 Keyboard:
 
@@ -23,6 +41,8 @@ Keyboard:
 * r for reload
 
 * bar/underscore for flipping
+
+* q/escape for quit
 
 ## usage
 

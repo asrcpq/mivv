@@ -26,6 +26,7 @@ image_move_rotate = 0.05 # ... rotation
 image_mouse_rotation_degree = 5 # image mode keyboard scaling factor
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
+guesture_move = 30
 bar_height = 10
 
 # values change at runtime

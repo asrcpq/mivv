@@ -249,8 +249,6 @@ class Gridview(QWidget):
 				if cx < self.count_h and cx >= 0 and \
 					cy < self.count_v and cy >= 0:
 					self.cursor_select(cx, cy)
-		elif e.buttons() & Qt.RightButton:
-			self.parent().exit()
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

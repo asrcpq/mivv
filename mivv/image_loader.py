@@ -20,6 +20,9 @@ class ImageLoader():
 			# print(f"[2K{len(self.filelist)}:{len(filelist_tmp)}", end = "\r")
 			file = filelist_tmp[-1]
 			filelist_tmp.pop()
+			if not os.access(file, os.R_OK):
+				var.logger.warn(f"Permission denied: {file}")
+				continue
 			if os.path.isdir(file):
 				if var.expand_dir:
 					file_filtered = []

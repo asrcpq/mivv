@@ -265,9 +265,13 @@ class Imageview(QGraphicsView):
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()
 		if e.buttons() & Qt.MiddleButton:
-			if self.mouse_mode == 3 or var.keymod_shift:
+			if self.mouse_mode == 3:
 				return self.mouse_shift_rotate(pos)
-			elif self.mouse_mode == 1 or var.keymod_control:
+			elif self.mouse_mode == 1:
+				return self.mouse_ctrl_zoom(pos)
+			elif var.keymod_shift:
+				return self.mouse_shift_rotate(pos)
+			elif var.keymod_control:
 				return self.mouse_ctrl_zoom(pos)
 			else:
 				return self.mouse_pan(pos)

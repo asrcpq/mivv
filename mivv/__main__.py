@@ -14,7 +14,7 @@ def build_parser():
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
-	parser.add_argument('path', type=str, nargs='+')
+	parser.add_argument('path', type=str, nargs='*')
 	return parser
 
 def gc_cache():

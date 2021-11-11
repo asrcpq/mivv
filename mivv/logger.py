@@ -3,7 +3,6 @@ import sys
 
 def get_logger():
 	logger = logging.getLogger()
-	logger.setLevel(logging.WARN)
 	log_format = '%(levelname)s: %(message)s'
 	formatter = logging.Formatter(log_format)
 	handler = logging.StreamHandler(sys.stderr)

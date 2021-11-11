@@ -64,6 +64,4 @@ Low quality gif scaling(efficiency)
 
 ## todo
 
-* make move speed in grid mode proportional to reciprocal of zoom level
-
 * async load + memory management

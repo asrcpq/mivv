@@ -211,9 +211,10 @@ class Imageview(QGraphicsView):
 		c = self.viewport().rect().center()
 		p1 = pos - c
 		angle = atan2(p1.x(), p1.y()) / pi * 180 * self.flip[0] * self.flip[1]
-		if self.mouse_mode == 0:
+		if self.mouse_mode != 3:
 			self.last_mouse_angle = angle
 			self.mouse_mode = 3
+			self.setCursor(Qt.ClosedHandCursor)
 			return
 		d_angle = angle - self.last_mouse_angle
 		if d_angle > var.image_move_rotate:
@@ -227,7 +228,7 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def mouse_ctrl_zoom(self, pos):
-		if self.mouse_mode == 0:
+		if self.mouse_mode != 1:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 1
 			return
@@ -247,7 +248,7 @@ class Imageview(QGraphicsView):
 			.rotate(-self.rotation)\
 			.scale(self.flip[0], self.flip[1])\
 			.map(pos)
-		if self.mouse_mode == 0:
+		if self.mouse_mode != 2:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 2
 			return

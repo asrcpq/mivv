@@ -58,12 +58,12 @@ Keyboard:
 
 Low quality gif scaling(efficiency)
 
+## bugs
+
+* chance of grid mode cursor index overflow(hard to reproduce)
+
 ## todo
 
-* image async load thumbnail first
+* make move speed in grid mode proportional to reciprocal of zoom level
 
-* grid mode async caching
-
-* image mode async caching
-
-* mem limit
+* async load + memory management

@@ -85,14 +85,18 @@ class ImageLoader():
 			return (1, ty)
 		return (2, ty)
 
-	# nocheck
+	# nocheck, abspath must exist
 	@staticmethod
 	def create_cache(abspath):
 		pixmap = QPixmap(abspath)
-		if pixmap.isNull():
-			var.logger.warning("Read fail:", abspath)
-			return None
 		cached_path = var.cache_path + abspath + ".jpg"
+		if pixmap.isNull():
+			raise Exception(f"Read fail: {abspath}")
+		elif pixmap.width() <= var.cache_size or \
+			pixmap.height() <= var.cache_size:
+			var.logger.info(f"Touch-cached: {abspath}")
+			open(cached_path, "w").close()
+			return
 		dirname = os.path.dirname(cached_path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
 		pixmap_resize = pixmap.scaled(
@@ -102,14 +106,15 @@ class ImageLoader():
 			Qt.SmoothTransformation,
 		)
 		pixmap_resize.save(cached_path)
-		var.logger.info("Cached:", abspath)
+		var.logger.info(f"Cached: {abspath}")
 		return pixmap_resize
 
-	# nocheck
+	# nocheck, abspath, cached_path must exist
 	def load_cache(self, abspath):
-		if abspath.startswith(var.cache_path):
-			return QPixmap(abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
+		if abspath.startswith(var.cache_path) or os.path.getsize(cached_path) == 0:
+			var.logger.debug(f"Use original file for thumbnail: {abspath}")
+			return QPixmap(abspath)
 		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
 			var.logger.info(f"Update: {abspath}")
 			return self.create_cache(abspath)

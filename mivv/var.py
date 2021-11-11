@@ -1,5 +1,15 @@
-import os
+import os, sys
 from image_loader import ImageLoader
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.WARN)
+log_format = '%(levelname)s: %(message)s'
+formatter = logging.Formatter(log_format)
+handler = logging.StreamHandler(sys.stderr)
+handler.setLevel(logging.DEBUG)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
 ext_type = {

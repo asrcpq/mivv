@@ -43,7 +43,7 @@ class ImageLoader():
 		if load_all:
 			self.load_all()
 		if len(self.filelist) == 0:
-			print("No image file specified, exiting")
+			var.logger.error("No image file specified, exiting")
 			sys.exit(1)
 
 	def load_all(self):
@@ -58,6 +58,7 @@ class ImageLoader():
 			pixmap = self.load_cache(abspath)
 		else:
 			pixmap = self.create_cache(abspath)
+		var.logger.debug(f"Loaded: {file}")
 		return pixmap
 
 	# return (status, ext_type)
@@ -86,7 +87,7 @@ class ImageLoader():
 	def create_cache(abspath):
 		pixmap = QPixmap(abspath)
 		if pixmap.isNull():
-			print("Read fail:", abspath)
+			var.logger.warning("Read fail:", abspath)
 			return None
 		cached_path = var.cache_path + abspath + ".jpg"
 		dirname = os.path.dirname(cached_path)
@@ -98,6 +99,7 @@ class ImageLoader():
 			Qt.SmoothTransformation,
 		)
 		pixmap_resize.save(cached_path)
+		var.logger.info("Cached:", abspath)
 		return pixmap_resize
 
 	# nocheck
@@ -106,6 +108,6 @@ class ImageLoader():
 			return QPixmap(abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
 		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
-			print("Update:", abspath)
+			var.logger.info(f"Update: {abspath}")
 			return self.create_cache(abspath)
 		return QPixmap(cached_path)

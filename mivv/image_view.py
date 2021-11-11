@@ -17,7 +17,7 @@ class Imageview(QGraphicsView):
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
-		self.movie = None
+		self.content = None
 		self.last_mouse_pos = None
 		self.last_angle = None
 		self.scaling_factor = 1.0
@@ -74,6 +74,7 @@ class Imageview(QGraphicsView):
 		filename = var.image_loader.filelist[var.current_idx]
 		if ty == 1:
 			pixmap = QPixmap(filename)
+			self.content = pixmap
 			# filelist has fixed so we can do nothing here
 			if pixmap.isNull():
 				raise Exception('Read fail, this is a bug.')
@@ -86,7 +87,7 @@ class Imageview(QGraphicsView):
 		elif ty == 2:
 			movie = QMovie(filename)
 			movie.start()
-			self.movie = movie
+			self.content = movie
 			label = QLabel()
 			self.content_size = movie.currentPixmap().size()
 			label.resize(self.content_size)
@@ -204,18 +205,22 @@ class Imageview(QGraphicsView):
 		return True
 
 	def key_handler_movie(self, e):
+		if not isinstance(self.content, QMovie):
+			return False
 		if e.key() == Qt.Key_Space:
-			s = self.movie.state()
+			s = self.content.state()
 			if s == QMovie.Running:
-				self.movie.setPaused(True)
+				self.content.setPaused(True)
 			elif s == QMovie.NotRunning or s == QMovie.Paused:
-				self.movie.setPaused(False)
+				self.content.setPaused(False)
 			else:
 				var.logger.error("Unknown state")
 		if e.key() == Qt.Key_S:
-			n = self.movie.currentFrameNumber()
+			n = self.content.currentFrameNumber()
 			var.logger.debug(f"Frame before keypress: {n}")
-			self.movie.jumpToFrame(n + 1)
+			self.content.jumpToFrame(n + 1)
+		else:
+			return False
 		return True
 
 	def key_handler(self, e):

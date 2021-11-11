@@ -10,7 +10,7 @@ import var
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "mivv")
-	parser.add_argument('-l', action = "store_true", help = "load thumbnail on need")
+	parser.add_argument('-l', action = "store_true", help = "lazy loading mode")
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")

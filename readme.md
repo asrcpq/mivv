@@ -2,6 +2,8 @@
 
 PyQt5 simple image viewer.
 
+![demo](https://asrcpq.github.io/resources/2111/mivv_demo.gif)
+
 ## control
 
 Mouse(image mode):

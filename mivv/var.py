@@ -1,6 +1,8 @@
-import os, sys
-from image_loader import ImageLoader
 import logging
+import os
+import sys
+
+from image_loader import ImageLoader
 
 logger = logging.getLogger()
 logger.setLevel(logging.WARN)

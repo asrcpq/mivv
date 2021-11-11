@@ -86,7 +86,8 @@ class MainWindow(QMainWindow):
 		self.mode = 1
 		self.set_label() # only for zoom level
 
-	def keyReleaseEvent(self, e):
+	@staticmethod
+	def keyReleaseEvent(e):
 		if e.key() == Qt.Key_Shift:
 			var.keymod_shift = False
 		elif e.key() == Qt.Key_Control:

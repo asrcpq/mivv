@@ -206,6 +206,14 @@ class Gridview(QWidget):
 			self.set_zoom_level(1, False)
 		elif e.key() == Qt.Key_0:
 			self.set_zoom_level(var.grid_size_idx_default, True)
+		elif e.key() == Qt.Key_B and var.keymod_control:
+			self.offset_cursor(-self.count_h * self.count_v)
+		elif e.key() == Qt.Key_F and var.keymod_control:
+			self.offset_cursor(self.count_h * self.count_v)
+		elif e.key() == Qt.Key_U and var.keymod_control:
+			self.offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
+		elif e.key() == Qt.Key_D and var.keymod_control:
+			self.offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:

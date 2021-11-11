@@ -30,21 +30,25 @@ Keyboard:
 
 * enter: toggle image/grid mode
 
-* n/N for next/prev image
+* n/N: next/prev image
 
-* hjkl move
+* hjkl: move
 
-* 1 for 100% zoom
+* 1: 100% zoom
 
-* i/o for zoom in/out
+* i/o: zoom in/out
 
-* \</\> for rotation
+* \</\>: rotation
 
-* r for reload
+* r: reload
 
-* bar/underscore for flipping
+* bar/underscore: flipping
 
-* q/escape for quit
+* q/escape: quit
+
+* space: gif pause/resume
+
+* s: gif frame forward
 
 ## usage
 

@@ -17,6 +17,7 @@ class Imageview(QGraphicsView):
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
+		self.movie = None
 		self.last_mouse_pos = None
 		self.last_angle = None
 		self.scaling_factor = 1.0
@@ -85,6 +86,7 @@ class Imageview(QGraphicsView):
 		elif ty == 2:
 			movie = QMovie(filename)
 			movie.start()
+			self.movie = movie
 			label = QLabel()
 			self.content_size = movie.currentPixmap().size()
 			label.resize(self.content_size)
@@ -201,10 +203,27 @@ class Imageview(QGraphicsView):
 		self.render()
 		return True
 
+	def key_handler_movie(self, e):
+		if e.key() == Qt.Key_Space:
+			s = self.movie.state()
+			if s == QMovie.Running:
+				self.movie.setPaused(True)
+			elif s == QMovie.NotRunning or s == QMovie.Paused:
+				self.movie.setPaused(False)
+			else:
+				var.logger.error("Unknown state")
+		if e.key() == Qt.Key_S:
+			n = self.movie.currentFrameNumber()
+			var.logger.debug(f"Frame before keypress: {n}")
+			self.movie.jumpToFrame(n + 1)
+		return True
+
 	def key_handler(self, e):
 		if self.key_handler_navigation(e):
 			return
 		if self.key_handler_transform(e):
+			return
+		if self.key_handler_movie(e):
 			return
 
 	def mouse_shift_rotate(self, pos):

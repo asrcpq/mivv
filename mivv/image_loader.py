@@ -21,7 +21,7 @@ class ImageLoader():
 			file = filelist_tmp[-1]
 			filelist_tmp.pop()
 			if not os.access(file, os.R_OK):
-				var.logger.warn(f"Permission denied: {file}")
+				var.logger.warning(f"Permission denied: {file}")
 				continue
 			if os.path.isdir(file):
 				if var.expand_dir:
@@ -46,7 +46,7 @@ class ImageLoader():
 		if load_all:
 			self.load_all()
 		if len(self.filelist) == 0:
-			var.logger.error("No image file specified, exiting")
+			var.logger.error("Nothing loaded, exiting")
 			sys.exit(1)
 
 	def load_all(self):
@@ -92,7 +92,7 @@ class ImageLoader():
 		cached_path = var.cache_path + abspath + ".jpg"
 		if pixmap.isNull():
 			raise Exception(f"Read fail: {abspath}")
-		elif pixmap.width() <= var.cache_size or \
+		if pixmap.width() <= var.cache_size or \
 			pixmap.height() <= var.cache_size:
 			var.logger.info(f"Touch-cached: {abspath}")
 			open(cached_path, "w").close()

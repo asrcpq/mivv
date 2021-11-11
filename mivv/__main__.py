@@ -14,6 +14,7 @@ def build_parser():
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
+	parser.add_argument('path', type=str, nargs='+')
 	return parser
 
 def gc_cache():
@@ -26,7 +27,7 @@ def gc_cache():
 				os.remove(cache)
 
 if __name__ == '__main__':
-	args, unknown_args = build_parser().parse_known_args()
+	args = build_parser().parse_args()
 	if args.c:
 		gc_cache()
 		sys.exit()
@@ -39,7 +40,7 @@ if __name__ == '__main__':
 		filelist_string = sys.stdin.read()
 		filelist = filelist_string.split('\n')
 	else:
-		filelist = unknown_args
+		filelist = args.path
 	app = QApplication([])
 	filelist_tmp = list(reversed(filelist))
 	var.image_loader.preload(filelist_tmp, var.load_all)

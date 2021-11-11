@@ -14,7 +14,7 @@ Mouse(image mode):
 
 * drag right button move left/right: next/prev image
 
-* drag right button move up: enther grid mode
+* drag right button move up: enter grid mode
 
 Mouse(grid mode):
 

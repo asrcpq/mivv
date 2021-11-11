@@ -5,7 +5,6 @@ import argparse
 from PyQt5.QtWidgets import QApplication
 
 from main_window import MainWindow
-
 import var
 
 def build_parser():
@@ -14,6 +13,7 @@ def build_parser():
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
+	parser.add_argument('-p', action = "store_true", help = "never write")
 	parser.add_argument('path', type=str, nargs='*')
 	return parser
 
@@ -35,6 +35,8 @@ if __name__ == '__main__':
 		var.load_all = False
 	if args.t:
 		var.start_in_grid_mode = True
+	if args.p:
+		var.private_mode = True
 	if args.i:
 		var.expand_dir = False
 		filelist_string = sys.stdin.read()

@@ -85,28 +85,37 @@ class ImageLoader():
 			return (1, ty)
 		return (2, ty)
 
-	# nocheck, abspath must exist
 	@staticmethod
-	def create_cache(abspath):
+	def save_cache(pixmap, path):
+		if var.private_mode:
+			var.logger.debug(f"No cache(private mode): {path}")
+			return
+		dirname = os.path.dirname(path)
+		Path(dirname).mkdir(parents = True, exist_ok = True)
+		if pixmap:
+			var.logger.info(f"Cached: {path}")
+			pixmap.save(path)
+		else:
+			var.logger.info(f"Touch-cached: {path}")
+			open(path, "w").close()
+
+	# nocheck, abspath must exist
+	def create_cache(self, abspath):
 		pixmap = QPixmap(abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
 		if pixmap.isNull():
 			raise Exception(f"Read fail: {abspath}")
 		if pixmap.width() <= var.cache_size or \
 			pixmap.height() <= var.cache_size:
-			var.logger.info(f"Touch-cached: {abspath}")
-			open(cached_path, "w").close()
-			return
-		dirname = os.path.dirname(cached_path)
-		Path(dirname).mkdir(parents = True, exist_ok = True)
+			self.save_cache(None, cached_path)
+			return pixmap
 		pixmap_resize = pixmap.scaled(
 			var.cache_size,
 			var.cache_size,
 			Qt.KeepAspectRatio,
 			Qt.SmoothTransformation,
 		)
-		pixmap_resize.save(cached_path)
-		var.logger.info(f"Cached: {abspath}")
+		self.save_cache(pixmap_resize, cached_path)
 		return pixmap_resize
 
 	# nocheck, abspath, cached_path must exist

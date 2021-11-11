@@ -60,4 +60,6 @@ Keyboard:
 
 ## todo(maybe)
 
+* decide support fixed view size resize or not(need a fill mode with proportional resize)
+
 * async load + memory management

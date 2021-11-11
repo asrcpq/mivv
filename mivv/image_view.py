@@ -20,7 +20,7 @@ class Imageview(QGraphicsView):
 		self.content = None
 		self.last_mouse_pos = None
 		self.last_angle = None
-		self.scaling_factor = 1.0
+		self.scaling_factor = None
 		self.flip = [1.0, 1.0]
 		self.center = None
 		self.original_scaling_factor = None
@@ -40,7 +40,6 @@ class Imageview(QGraphicsView):
 		else:
 			raise Exception("wk or nk is not valid number")
 		self.original_scaling_factor = osf
-		self.set_move_dist()
 		self.original_scaling_limit = [
 			osf / var.zoom_level_limit[1],
 			osf / var.zoom_level_limit[0],
@@ -62,11 +61,11 @@ class Imageview(QGraphicsView):
 
 	def resizeEvent(self, _e):
 		# original scaling factor is set in main_window
+		self.scale_view(1.0, False) # prevent overflow
 		self.render()
 
 	def load(self):
 		self.setCursor(Qt.WaitCursor)
-		self.scaling_factor = 1.0
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
 
@@ -97,6 +96,8 @@ class Imageview(QGraphicsView):
 		else:
 			raise Exception('Unreachable code.')
 		self.set_original_scaling_factor()
+		self.scale_view(1.0, True)
+		self.set_move_dist()
 		self.set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)

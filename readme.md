@@ -65,3 +65,7 @@ Low quality gif scaling(efficiency)
 ## todo
 
 * async load + memory management
+
+* make keybind configurable
+
+* python packaging

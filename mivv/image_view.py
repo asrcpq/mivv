@@ -1,10 +1,11 @@
+from math import atan2, pi
+import sys
+
 from PyQt5.QtWidgets import (
 	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
-
-from math import atan2, pi
 import var
 
 class Imageview(QGraphicsView):
@@ -71,6 +72,9 @@ class Imageview(QGraphicsView):
 		filename = var.image_loader.filelist[var.current_idx]
 		if ty == 1:
 			pixmap = QPixmap(filename)
+			# filelist has fixed so we can do nothing here
+			if pixmap.isNull():
+				raise Exception('Read fail, this is a bug.')
 			self.content_size = pixmap.size()
 			item = QGraphicsPixmapItem()
 			item.setPixmap(pixmap)

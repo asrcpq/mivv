@@ -87,7 +87,9 @@ class Gridview(QWidget):
 	def reset_layout(self):
 		self.grid_offset = var.grid_sizes[self.grid_size_idx] + self.grid_space
 		count_h = (self.width() - self.grid_space) // self.grid_offset
+		count_h = max(count_h, 1)
 		count_v = (self.height() - self.grid_space) // self.grid_offset
+		count_v = max(count_v, 1)
 		if self.count_h == count_h and self.count_v == count_v:
 			return False
 		for j in range(0, count_v):

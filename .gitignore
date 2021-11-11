@@ -1,5 +1,5 @@
 /core
+/venv
 *.png
 *.log
-/venv
 __pycache__

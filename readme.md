@@ -58,10 +58,6 @@ Keyboard:
 
 Low quality gif scaling(efficiency)
 
-## bugs
-
-* chance of grid mode cursor index overflow(hard to reproduce)
-
 ## todo
 
 * async load + memory management

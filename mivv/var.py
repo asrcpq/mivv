@@ -1,18 +1,9 @@
-import logging
 import os
-import sys
 
+from logger import get_logger
 from image_loader import ImageLoader
 
-logger = logging.getLogger()
-logger.setLevel(logging.WARN)
-log_format = '%(levelname)s: %(message)s'
-formatter = logging.Formatter(log_format)
-handler = logging.StreamHandler(sys.stderr)
-handler.setLevel(logging.DEBUG)
-handler.setFormatter(formatter)
-logger.addHandler(handler)
-
+# config values
 cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
 ext_type = {
 	".png": 1,
@@ -40,8 +31,10 @@ grid_move_pan = 50 # grid mode pixels moved to trigger navigation
 guesture_move = 30
 bar_height = 10
 
-# values change at runtime
+# global values
+logger = get_logger()
 hidpi = None
+private_mode = False
 load_all = True # argv
 expand_dir = True # argv
 start_in_grid_mode = False

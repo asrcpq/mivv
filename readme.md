@@ -54,14 +54,8 @@ Keyboard:
 
 3. `python3 mivv xxx.png` or `hpm/entrypoint xxx.png`
 
-## notes
-
-Low quality gif scaling(efficiency)
-
-## todo
+## todo(maybe)
 
 * async load + memory management
 
 * make keybind configurable
-
-* python packaging

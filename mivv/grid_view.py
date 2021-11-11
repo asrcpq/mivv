@@ -181,6 +181,7 @@ class Gridview(QWidget):
 			self.grid_size_idx = len(var.grid_sizes) - 1
 		if old_idx == self.grid_size_idx:
 			return
+		self.parent().set_label()
 		self.xreset_layout()
 
 	def key_handler(self, e):

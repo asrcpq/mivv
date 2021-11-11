@@ -148,18 +148,18 @@ class Imageview(QGraphicsView):
 			self.scaling_factor = self.original_scaling_limit[1]
 		self.set_move_dist()
 
-	def key_handler_navigation(self, e):
-		if e.key() == Qt.Key_N:
+	def key_handler_navigation(self, k):
+		if k == Qt.Key_N:
 			if var.keymod_shift:
 				self.navigate_image(-1, False)
 			else:
 				self.navigate_image(1, False)
-		elif e.key() == Qt.Key_G:
+		elif k == Qt.Key_G:
 			if var.keymod_shift:
 				self.navigate_image(len(var.image_loader.filelist) - 1, True)
 			else:
 				self.navigate_image(0, True)
-		elif e.key() == Qt.Key_R:
+		elif k == Qt.Key_R:
 			self.load()
 			self.render()
 		else:
@@ -169,45 +169,45 @@ class Imageview(QGraphicsView):
 	def set_move_dist(self):
 		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
-	def key_handler_transform(self, e):
-		if e.key() == Qt.Key_H:
+	def key_handler_transform(self, k):
+		if k == Qt.Key_H or k == Qt.Key_Left:
 			self.center[0] -= self.move_dist
-		elif e.key() == Qt.Key_L:
+		elif k == Qt.Key_L or k == Qt.Key_Right:
 			self.center[0] += self.move_dist
-		elif e.key() == Qt.Key_J:
+		elif k == Qt.Key_J or k == Qt.Key_Down:
 			self.center[1] += self.move_dist
-		elif e.key() == Qt.Key_K:
+		elif k == Qt.Key_K or k == Qt.Key_Up:
 			self.center[1] -= self.move_dist
-		elif e.key() == Qt.Key_O:
+		elif k == Qt.Key_O:
 			self.scale_view(var.scaling_mult, False)
-		elif e.key() == Qt.Key_I:
+		elif k == Qt.Key_I:
 			self.scale_view(1 / var.scaling_mult, False)
-		elif e.key() == Qt.Key_1:
+		elif k == Qt.Key_1:
 			self.scale_view(self.original_scaling_factor, True)
 			self.set_move_dist()
-		elif e.key() == Qt.Key_Underscore:
+		elif k == Qt.Key_Underscore:
 			self.flip[1] *= -1
-		elif e.key() == Qt.Key_Bar:
+		elif k == Qt.Key_Bar:
 			self.flip[0] *= -1
-		elif e.key() == Qt.Key_W:
+		elif k == Qt.Key_W:
 			t = self.content_size / 2
 			self.center = [t.width(), t.height()]
 			self.scale_view(1.0, True)
 			self.rotation = 0
 			self.set_move_dist()
-		elif e.key() == Qt.Key_Less:
+		elif k == Qt.Key_Less:
 			self.rotation -= 90
-		elif e.key() == Qt.Key_Greater:
+		elif k == Qt.Key_Greater:
 			self.rotation += 90
 		else:
 			return False
 		self.render()
 		return True
 
-	def key_handler_movie(self, e):
+	def key_handler_movie(self, k):
 		if not isinstance(self.content, QMovie):
 			return False
-		if e.key() == Qt.Key_Space:
+		if k == Qt.Key_Space:
 			s = self.content.state()
 			if s == QMovie.Running:
 				self.content.setPaused(True)
@@ -215,7 +215,7 @@ class Imageview(QGraphicsView):
 				self.content.setPaused(False)
 			else:
 				var.logger.error("Unknown state")
-		if e.key() == Qt.Key_S:
+		if k == Qt.Key_S:
 			n = self.content.currentFrameNumber()
 			var.logger.debug(f"Frame before keypress: {n}")
 			self.content.jumpToFrame(n + 1)
@@ -223,12 +223,12 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def key_handler(self, e):
-		if self.key_handler_navigation(e):
+	def key_handler(self, k):
+		if self.key_handler_navigation(k):
 			return
-		if self.key_handler_transform(e):
+		if self.key_handler_transform(k):
 			return
-		if self.key_handler_movie(e):
+		if self.key_handler_movie(k):
 			return
 
 	def mouse_shift_rotate(self, pos):

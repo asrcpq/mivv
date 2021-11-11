@@ -186,33 +186,37 @@ class Gridview(QWidget):
 		self.parent().set_label()
 		self.xreset_layout()
 
-	def key_handler(self, e):
-		if e.key() == Qt.Key_L:
+	def key_handler(self, k):
+		if k == Qt.Key_L or k == Qt.Key_Right:
 			self.offset_cursor(1, False)
-		elif e.key() == Qt.Key_H:
+		elif k == Qt.Key_H or k == Qt.Key_Left:
 			self.offset_cursor(-1, False)
-		elif e.key() == Qt.Key_J:
+		elif k == Qt.Key_J or k == Qt.Key_Down:
 			self.offset_cursor(self.count_h, False)
-		elif e.key() == Qt.Key_K:
+		elif k == Qt.Key_K or k == Qt.Key_Up:
 			self.offset_cursor(-self.count_h, False)
-		elif e.key() == Qt.Key_G:
+		elif k == Qt.Key_G:
 			if var.keymod_shift:
 				self.offset_cursor(len(var.image_loader.filelist) - 1, True)
 			else:
 				self.offset_cursor(0, True)
-		elif e.key() == Qt.Key_O:
+		elif k == Qt.Key_O:
 			self.set_zoom_level(-1, False)
-		elif e.key() == Qt.Key_I:
+		elif k == Qt.Key_I:
 			self.set_zoom_level(1, False)
-		elif e.key() == Qt.Key_0:
+		elif k == Qt.Key_0 or k == Qt.Key_AsciiCircum:
+			self.offset_cursor(-self.cursor[0], False)
+		elif k == Qt.Key_Dollar:
+			self.offset_cursor(self.count_h - self.cursor[0] - 1, False)
+		elif k == Qt.Key_1:
 			self.set_zoom_level(var.grid_size_idx_default, True)
-		elif e.key() == Qt.Key_B and var.keymod_control:
+		elif k == Qt.Key_B and var.keymod_control:
 			self.offset_cursor(-self.count_h * self.count_v)
-		elif e.key() == Qt.Key_F and var.keymod_control:
+		elif k == Qt.Key_F and var.keymod_control:
 			self.offset_cursor(self.count_h * self.count_v)
-		elif e.key() == Qt.Key_U and var.keymod_control:
+		elif k == Qt.Key_U and var.keymod_control:
 			self.offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
-		elif e.key() == Qt.Key_D and var.keymod_control:
+		elif k == Qt.Key_D and var.keymod_control:
 			self.offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
 	def mouseMoveEvent(self, e):

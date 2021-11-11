@@ -88,28 +88,30 @@ class MainWindow(QMainWindow):
 
 	@staticmethod
 	def keyReleaseEvent(e):
-		if e.key() == Qt.Key_Shift:
+		k = e.key()
+		if k == Qt.Key_Shift:
 			var.keymod_shift = False
-		elif e.key() == Qt.Key_Control:
+		elif k == Qt.Key_Control:
 			var.keymod_control = False
 
 	def keyPressEvent(self, e):
-		if e.key() == Qt.Key_Shift:
+		k = e.key()
+		if k == Qt.Key_Shift:
 			var.keymod_shift = True
-		elif e.key() == Qt.Key_Control:
+		elif k == Qt.Key_Control:
 			var.keymod_control = True
-		elif e.key() == Qt.Key_Return:
+		elif k == Qt.Key_Return or k == Qt.Key_Tab:
 			if self.mode == 1:
 				self.grid_mode()
 			elif self.mode == 2:
 				self.image_mode()
-		elif e.key() == Qt.Key_Escape or e.key() == Qt.Key_Q:
+		elif k == Qt.Key_Escape or k == Qt.Key_Q:
 			sys.exit()
 		else:
 			if self.mode == 1:
-				self.image_view.key_handler(e)
+				self.image_view.key_handler(k)
 			elif self.mode == 2:
-				self.grid_view.key_handler(e)
+				self.grid_view.key_handler(k)
 			self.set_label()
 
 	def resizeEvent(self, _e):

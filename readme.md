@@ -32,7 +32,7 @@ Keyboard:
 
 * n/N: next/prev image
 
-* hjkl: move
+* hjkl,ctrl-bfud,0$^: move
 
 * 1: 100% zoom
 
@@ -61,5 +61,3 @@ Keyboard:
 ## todo(maybe)
 
 * async load + memory management
-
-* make keybind configurable

@@ -1,3 +1,4 @@
+import logging
 import sys
 import os
 import argparse
@@ -14,7 +15,13 @@ def build_parser():
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
 	parser.add_argument('-p', action = "store_true", help = "never write")
-	parser.add_argument('path', type=str, nargs='*')
+	parser.add_argument(
+		'--loglevel',
+		type = str,
+		default = "warn",
+		help = "set log level(default: warn)",
+	)
+	parser.add_argument('path', type = str, nargs='*')
 	return parser
 
 def gc_cache():
@@ -25,6 +32,20 @@ def gc_cache():
 			if not os.path.isfile(root_path):
 				print("clean", root_path)
 				os.remove(cache)
+
+def set_loglevel(loglevel):
+	if loglevel == "debug":
+		var.logger.setLevel(logging.DEBUG)
+	elif loglevel == "info":
+		var.logger.setLevel(logging.INFO)
+	elif loglevel == "warn":
+		var.logger.setLevel(logging.WARN)
+	elif loglevel == "error":
+		var.logger.setLevel(logging.ERROR)
+	elif loglevel == "critical":
+		var.logger.setLevel(logging.CRITICAL)
+	else:
+		raise Exception("Unknown log level:", loglevel)
 
 if __name__ == '__main__':
 	args = build_parser().parse_args()
@@ -37,6 +58,7 @@ if __name__ == '__main__':
 		var.start_in_grid_mode = True
 	if args.p:
 		var.private_mode = True
+	set_loglevel(args.loglevel)
 	if args.i:
 		var.expand_dir = False
 		filelist_string = sys.stdin.read()

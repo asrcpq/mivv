@@ -28,11 +28,11 @@ Mouse(grid mode):
 
 Keyboard:
 
-* enter: toggle image/grid mode
+* enter or tab: toggle image/grid mode
 
 * n/N: next/prev image
 
-* hjkl,ctrl-bfud,0$^: move
+* hjkl or arrow, ctrl-bfud, 0$^: move
 
 * 1: 100% zoom
 

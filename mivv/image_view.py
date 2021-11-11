@@ -97,8 +97,7 @@ class Imageview(QGraphicsView):
 		else:
 			raise Exception('Unreachable code.')
 		self.set_original_scaling_factor()
-		t = self.content_size / 2
-		self.center = [t.width(), t.height()]
+		self.set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
 		self.setCursor(Qt.ArrowCursor)
@@ -166,6 +165,10 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
+	def set_content_center(self):
+		t = self.content_size / 2
+		self.center = [t.width() - 0.5, t.height() - 0.5]
+
 	def set_move_dist(self):
 		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
@@ -190,8 +193,7 @@ class Imageview(QGraphicsView):
 		elif k == Qt.Key_Bar:
 			self.flip[0] *= -1
 		elif k == Qt.Key_W:
-			t = self.content_size / 2
-			self.center = [t.width(), t.height()]
+			self.set_content_center()
 			self.scale_view(1.0, True)
 			self.rotation = 0
 			self.set_move_dist()

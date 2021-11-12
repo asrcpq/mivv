@@ -29,6 +29,7 @@ grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
 guesture_move = 30
 bar_height = 10
+background = "rgba(0, 0, 0, 100)"
 
 # global values
 logger = get_logger()

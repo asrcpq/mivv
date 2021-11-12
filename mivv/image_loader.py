@@ -19,6 +19,7 @@ class ImageLoader():
 		while filelist_tmp:
 			file = filelist_tmp[-1]
 			filelist_tmp.pop()
+			var.logger.debug(f"Preprocessing: {file}")
 			if not file or file.isspace():
 				continue
 			if not os.access(file, os.R_OK):
@@ -93,7 +94,7 @@ class ImageLoader():
 		if var.private_mode or not var.cache_path:
 			var.logger.debug(f"No cache(private mode): {path}")
 			return
-		cached_path = var.cache_path + abspath + ".jpg"
+		cached_path = var.cache_path + path + ".jpg"
 		dirname = os.path.dirname(path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
 		if pixmap:

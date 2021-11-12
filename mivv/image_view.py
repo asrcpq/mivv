@@ -13,7 +13,7 @@ import var
 class Imageview(QGraphicsView):
 	def __init__(self, parent = None):
 		super().__init__(parent)
-		self.setStyleSheet("background-color: black;")
+		self.setStyleSheet(f"background-color: {var.background};")
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -31,7 +31,7 @@ class Imageview(QGraphicsView):
 		self.rotation = None
 		self.move_dist = 10
 
-	def set_original_scaling_factor(self):
+	def _set_original_scaling_factor(self):
 		wk = self.width() / self.content_size.width()
 		hk = self.height() / self.content_size.height()
 		# w bound
@@ -47,7 +47,7 @@ class Imageview(QGraphicsView):
 			osf / var.zoom_level_limit[0],
 		]
 
-	def compute_view_size(self):
+	def _compute_view_size(self):
 		wk = self.width() / self.content_size.width()
 		hk = self.height() / self.content_size.height()
 		# w bound
@@ -62,11 +62,18 @@ class Imageview(QGraphicsView):
 		return QSizeF(w, h)
 
 	def resizeEvent(self, _e):
+		# open failed
+		if not self.content:
+			self.parent().set_label()
+			return
 		# original scaling factor is set in main_window
-		self.scale_view(1.0, False) # prevent overflow
+		self._set_original_scaling_factor()
+		self._scale_view(1.0, False) # prevent overflow
+		self.parent().set_label()
 		self.render()
 
 	def load(self):
+		self.content = None
 		self.setCursor(Qt.WaitCursor)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
@@ -78,7 +85,9 @@ class Imageview(QGraphicsView):
 			self.content = pixmap
 			# filelist has fixed so we can do nothing here
 			if pixmap.isNull():
-				raise Exception('Read fail, this is a bug.')
+				var.logger.error(f"Read error: {filename}")
+				self.content = None
+				return False
 			self.content_size = pixmap.size()
 			item = QGraphicsPixmapItem()
 			item.setPixmap(pixmap)
@@ -86,6 +95,7 @@ class Imageview(QGraphicsView):
 			scene = QGraphicsScene()
 			scene.addItem(item)
 		elif ty == 2:
+			# todo: error open?
 			movie = QMovie(filename)
 			movie.start()
 			self.content = movie
@@ -96,21 +106,23 @@ class Imageview(QGraphicsView):
 			scene = QGraphicsScene()
 			scene.addWidget(label)
 		else:
-			raise Exception('Unreachable code.')
-		self.set_original_scaling_factor()
-		self.scale_view(1.0, True)
+			var.logger.error(f"Unknown type: {ty}")
+			return False
+		self._set_original_scaling_factor()
+		self._scale_view(1.0, True)
 		self.canvas_item = CanvasItem(self.content_size)
 		scene.addItem(self.canvas_item)
-		self.set_move_dist()
-		self.set_content_center()
+		self._set_move_dist()
+		self._set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
 		self.setCursor(Qt.ArrowCursor)
+		return True
 
 	def render(self):
 		if not self.content_size:
 			return
-		size = self.compute_view_size()
+		size = self._compute_view_size()
 		sx = self.viewport().width() / size.width()
 		sy = self.viewport().height() / size.height()
 		if sx <= sy:
@@ -126,7 +138,7 @@ class Imageview(QGraphicsView):
 		self.setTransform(qtrans)
 		self.centerOn(self.center[0], self.center[1])
 
-	def navigate_image(self, offset, abs_pos = False):
+	def _navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
 		if abs_pos:
 			var.current_idx = offset
@@ -141,7 +153,7 @@ class Imageview(QGraphicsView):
 		self.load()
 		self.render()
 
-	def scale_view(self, offset, abs_k = False):
+	def _scale_view(self, offset, abs_k = False):
 		if abs_k:
 			self.scaling_factor = offset
 		else:
@@ -150,19 +162,19 @@ class Imageview(QGraphicsView):
 			self.scaling_factor = self.original_scaling_limit[0]
 		if self.scaling_factor > self.original_scaling_limit[1]:
 			self.scaling_factor = self.original_scaling_limit[1]
-		self.set_move_dist()
+		self._set_move_dist()
 
-	def key_handler_navigation(self, k):
+	def _key_handler_navigation(self, k):
 		if k == Qt.Key_N:
 			if var.keymod_shift:
-				self.navigate_image(-1, False)
+				self._navigate_image(-1, False)
 			else:
-				self.navigate_image(1, False)
+				self._navigate_image(1, False)
 		elif k == Qt.Key_G:
 			if var.keymod_shift:
-				self.navigate_image(len(var.image_loader.filelist) - 1, True)
+				self._navigate_image(len(var.image_loader.filelist) - 1, True)
 			else:
-				self.navigate_image(0, True)
+				self._navigate_image(0, True)
 		elif k == Qt.Key_R:
 			self.load()
 			self.render()
@@ -170,14 +182,14 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def set_content_center(self):
+	def _set_content_center(self):
 		t = self.content_size / 2
 		self.center = [t.width() - 0.5, t.height() - 0.5]
 
-	def set_move_dist(self):
+	def _set_move_dist(self):
 		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
-	def key_handler_transform(self, k):
+	def _key_handler_transform(self, k):
 		if k == Qt.Key_H or k == Qt.Key_Left:
 			self.center[0] -= self.move_dist
 		elif k == Qt.Key_L or k == Qt.Key_Right:
@@ -187,21 +199,21 @@ class Imageview(QGraphicsView):
 		elif k == Qt.Key_K or k == Qt.Key_Up:
 			self.center[1] -= self.move_dist
 		elif k == Qt.Key_O:
-			self.scale_view(var.scaling_mult, False)
+			self._scale_view(var.scaling_mult, False)
 		elif k == Qt.Key_I:
-			self.scale_view(1 / var.scaling_mult, False)
+			self._scale_view(1 / var.scaling_mult, False)
 		elif k == Qt.Key_1:
-			self.scale_view(self.original_scaling_factor, True)
-			self.set_move_dist()
+			self._scale_view(self.original_scaling_factor, True)
+			self._set_move_dist()
 		elif k == Qt.Key_Underscore:
 			self.flip[1] *= -1
 		elif k == Qt.Key_Bar:
 			self.flip[0] *= -1
 		elif k == Qt.Key_W:
-			self.set_content_center()
-			self.scale_view(1.0, True)
+			self._set_content_center()
+			self._scale_view(1.0, True)
 			self.rotation = 0
-			self.set_move_dist()
+			self._set_move_dist()
 		elif k == Qt.Key_Less:
 			self.rotation -= 90
 		elif k == Qt.Key_Greater:
@@ -211,7 +223,7 @@ class Imageview(QGraphicsView):
 		self.render()
 		return True
 
-	def key_handler_movie(self, k):
+	def _key_handler_movie(self, k):
 		if not isinstance(self.content, QMovie):
 			return False
 		if k == Qt.Key_Space:
@@ -231,14 +243,17 @@ class Imageview(QGraphicsView):
 		return True
 
 	def key_handler(self, k):
-		if self.key_handler_navigation(k):
+		if self._key_handler_navigation(k):
 			return
-		if self.key_handler_transform(k):
+		if not self.content:
+			var.logger.info("Key ignored, because content is invalid.")
 			return
-		if self.key_handler_movie(k):
+		if self._key_handler_transform(k):
+			return
+		if self._key_handler_movie(k):
 			return
 
-	def mouse_shift_rotate(self, pos):
+	def _mouse_shift_rotate(self, pos):
 		c = self.viewport().rect().center()
 		p1 = pos - c
 		angle = atan2(p1.x(), p1.y()) / pi * 180 * self.flip[0] * self.flip[1]
@@ -258,7 +273,7 @@ class Imageview(QGraphicsView):
 			self.last_mouse_angle -= var.image_move_rotate * k
 		self.render()
 
-	def mouse_ctrl_zoom(self, pos):
+	def _mouse_ctrl_zoom(self, pos):
 		if self.mouse_mode != 1:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 1
@@ -266,15 +281,15 @@ class Imageview(QGraphicsView):
 		self.setCursor(Qt.SizeVerCursor)
 		dp = pos - self.last_mouse_pos
 		if dp.y() > var.image_move_zoom:
-			self.scale_view(var.scaling_mult_mouse, False)
+			self._scale_view(var.scaling_mult_mouse, False)
 			self.last_mouse_pos = pos
 		elif dp.y() < -var.image_move_zoom:
-			self.scale_view(1 / var.scaling_mult_mouse, False)
+			self._scale_view(1 / var.scaling_mult_mouse, False)
 			self.last_mouse_pos = pos
 		self.parent().set_label()
 		self.render()
 
-	def mouse_pan(self, pos):
+	def _mouse_pan(self, pos):
 		pos = QTransform()\
 			.rotate(-self.rotation)\
 			.scale(self.flip[0], self.flip[1])\
@@ -285,7 +300,7 @@ class Imageview(QGraphicsView):
 			return
 		self.setCursor(Qt.CrossCursor)
 		dp = pos - self.last_mouse_pos
-		view_size_w = self.compute_view_size().width()
+		view_size_w = self._compute_view_size().width()
 		dp *= -view_size_w / self.width()
 		self.center[0] += dp.x()
 		self.center[1] += dp.y()
@@ -325,15 +340,15 @@ class Imageview(QGraphicsView):
 		pos = e.localPos()
 		if e.buttons() & Qt.MiddleButton:
 			if self.mouse_mode == 3:
-				return self.mouse_shift_rotate(pos)
+				return self._mouse_shift_rotate(pos)
 			elif self.mouse_mode == 1:
-				return self.mouse_ctrl_zoom(pos)
+				return self._mouse_ctrl_zoom(pos)
 			elif var.keymod_shift:
-				return self.mouse_shift_rotate(pos)
+				return self._mouse_shift_rotate(pos)
 			elif var.keymod_control:
-				return self.mouse_ctrl_zoom(pos)
+				return self._mouse_ctrl_zoom(pos)
 			else:
-				return self.mouse_pan(pos)
+				return self._mouse_pan(pos)
 		elif e.buttons() & Qt.RightButton:
 			pos = e.localPos()
 			if self.mouse_mode == 0:
@@ -347,9 +362,9 @@ class Imageview(QGraphicsView):
 			if dp.y() < -var.guesture_move:
 				self.parent().grid_mode()
 			elif dp.x() < -var.guesture_move:
-				self.navigate_image(-1, False)
+				self._navigate_image(-1, False)
 			elif dp.x() > var.guesture_move:
-				self.navigate_image(1, False)
+				self._navigate_image(1, False)
 			else:
 				return
 			self.setCursor(Qt.ArrowCursor)

@@ -4,7 +4,6 @@ from logger import get_logger
 from image_loader import ImageLoader
 
 # config values
-cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
 ext_type = {
 	".png": 1,
 	".PNG": 1,
@@ -43,7 +42,15 @@ image_loader = ImageLoader()
 keymod_shift = False
 keymod_control = False
 
-config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
-if os.path.isfile(config_path):
-	# pylint: disable=W0122
-	exec(compile(open(config_path, "rb").read(), config_path, 'exec'))
+if "XDG_CONFIG_HOME" in os.environ:
+	config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"
+	if os.path.isfile(config_path):
+		# pylint: disable=W0122
+		exec(compile(open(config_path, "rb").read(), config_path, 'exec'))
+
+# logger is used here, so after include user conf
+if "XDG_CACHE_HOME" in os.environ:
+	cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
+else:
+	logger.warn("XDG_CACHE_HOME not set. Will not read/write cache.")
+	cache_path = None

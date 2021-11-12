@@ -6,7 +6,11 @@ PyQt5 simple image viewer.
 
 ## control
 
-Mouse(image mode):
+Tablet(image mode):
+
+* draw
+
+Mouse/Tablet(image mode):
 
 * drag middle button: pan
 
@@ -18,7 +22,7 @@ Mouse(image mode):
 
 * drag right button move up: enter grid mode
 
-Mouse(grid mode):
+Mouse/Tablet(grid mode):
 
 * drag middle: move cursor
 
@@ -52,17 +56,22 @@ Keyboard:
 
 ## usage
 
-1. have `XDG_CONFIG_HOME` and `XDG_CACHE_HOME` set
+1. have pyqt5 installed
 
-2. have pyqt5 installed
+2. `python3 mivv --help`
 
-3. `python3 mivv xxx.png` or `hpm/entrypoint xxx.png`
+3. config file locates at `$XDG_CONFIG_HOME/mivv/config.py`,
+check `mivv/var.py` for values to override.
 
 ## todo(maybe)
 
 * toggle bar
 
-* efficient update draw rect
+* transparent background
+
+* disable draw
+
+* more draw: clear, undo, colorpicker, fill...
 
 * decide support fixed view size resize or not(need a fill mode with proportional resize)
 

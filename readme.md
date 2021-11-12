@@ -34,7 +34,7 @@ Keyboard:
 
 * hjkl or arrow, ctrl-bfud, 0$^: move
 
-* 1: 100% zoom
+* 1/w: 1:1 view/fill view
 
 * i/o: zoom in/out
 
@@ -59,6 +59,10 @@ Keyboard:
 3. `python3 mivv xxx.png` or `hpm/entrypoint xxx.png`
 
 ## todo(maybe)
+
+* toggle bar
+
+* efficient update draw rect
 
 * decide support fixed view size resize or not(need a fill mode with proportional resize)
 

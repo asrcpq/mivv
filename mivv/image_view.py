@@ -5,8 +5,9 @@ from PyQt5.QtWidgets import (
 	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF, QEvent
 
+from canvas import Canvas
 import var
 
 class Imageview(QGraphicsView):
@@ -18,6 +19,8 @@ class Imageview(QGraphicsView):
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
 		self.content = None
+		self.canvas = None
+		self.canvas_item = None
 		self.last_mouse_pos = None
 		self.last_angle = None
 		self.scaling_factor = None
@@ -97,6 +100,9 @@ class Imageview(QGraphicsView):
 			raise Exception('Unreachable code.')
 		self.set_original_scaling_factor()
 		self.scale_view(1.0, True)
+		self.canvas = Canvas(self.content_size)
+		self.canvas_item = QGraphicsPixmapItem(self.canvas)
+		scene.addItem(self.canvas_item)
 		self.set_move_dist()
 		self.set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
@@ -288,6 +294,34 @@ class Imageview(QGraphicsView):
 		self.last_mouse_pos = pos
 		self.render()
 		self.mouse_mode = 2
+
+	def tabletEvent(self, e):
+		pos = e.posF()
+		pos = self.mapToScene(pos.x(), pos.y())
+		ty = e.type()
+		if not self.canvas.on_draw and e.buttons() == Qt.LeftButton and ty == QEvent.TabletPress:
+			var.logger.debug("Tablet press")
+			self.canvas.update_pos(pos)
+			self.canvas.on_draw = True
+			return
+		if not self.canvas.on_draw:
+			return
+		if ty == QEvent.TabletRelease:
+			var.logger.debug("Tablet release")
+			self.canvas.update_pos(pos)
+			self.canvas.draw()
+			self.canvas_item.setPixmap(self.canvas)
+			self.canvas_item.update()
+			self.canvas.on_draw = False
+			return
+		if e.buttons() != Qt.LeftButton:
+			self.canvas.on_draw = False
+			False
+		if ty == QEvent.TabletMove:
+			self.canvas.update_pos(pos)
+			self.canvas.draw()
+			self.canvas_item.setPixmap(self.canvas)
+			self.canvas_item.update()
 
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QPixmap, QMovie, QTransform
 from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF, QEvent
 
-from canvas import Canvas
+from canvas import CanvasItem
 import var
 
 class Imageview(QGraphicsView):
@@ -19,7 +19,6 @@ class Imageview(QGraphicsView):
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
 		self.content = None
-		self.canvas = None
 		self.canvas_item = None
 		self.last_mouse_pos = None
 		self.last_angle = None
@@ -100,8 +99,7 @@ class Imageview(QGraphicsView):
 			raise Exception('Unreachable code.')
 		self.set_original_scaling_factor()
 		self.scale_view(1.0, True)
-		self.canvas = Canvas(self.content_size)
-		self.canvas_item = QGraphicsPixmapItem(self.canvas)
+		self.canvas_item = CanvasItem(self.content_size)
 		scene.addItem(self.canvas_item)
 		self.set_move_dist()
 		self.set_content_center()
@@ -299,29 +297,29 @@ class Imageview(QGraphicsView):
 		pos = e.posF()
 		pos = self.mapToScene(pos.x(), pos.y())
 		ty = e.type()
-		if not self.canvas.on_draw and e.buttons() == Qt.LeftButton and ty == QEvent.TabletPress:
+		if (
+			not self.canvas_item.on_draw and \
+			e.buttons() == Qt.LeftButton and \
+			ty == QEvent.TabletPress
+		):
 			var.logger.debug("Tablet press")
-			self.canvas.update_pos(pos)
-			self.canvas.on_draw = True
+			self.canvas_item.update_pos(pos)
+			self.canvas_item.on_draw = True
 			return
-		if not self.canvas.on_draw:
+		if not self.canvas_item.on_draw:
 			return
 		if ty == QEvent.TabletRelease:
 			var.logger.debug("Tablet release")
-			self.canvas.update_pos(pos)
-			self.canvas.draw()
-			self.canvas_item.setPixmap(self.canvas)
-			self.canvas_item.update()
-			self.canvas.on_draw = False
+			self.canvas_item.update_pos(pos)
+			self.canvas_item.draw()
+			self.canvas_item.on_draw = False
 			return
 		if e.buttons() != Qt.LeftButton:
-			self.canvas.on_draw = False
+			self.canvas_item.on_draw = False
 			False
 		if ty == QEvent.TabletMove:
-			self.canvas.update_pos(pos)
-			self.canvas.draw()
-			self.canvas_item.setPixmap(self.canvas)
-			self.canvas_item.update()
+			self.canvas_item.update_pos(pos)
+			self.canvas_item.draw()
 
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()

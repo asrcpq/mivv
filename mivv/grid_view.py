@@ -8,7 +8,7 @@ class Gridview(QWidget):
 	def __init__(self, parent = None):
 		super().__init__(parent)
 		self.setMouseTracking(True)
-		self.setStyleSheet("background-color: black;")
+		self.setStyleSheet(f"background-color: {var.background};")
 		self.y_offset = 0
 		self.grid_size_idx = 2
 		self.grid_space = 10
@@ -20,7 +20,7 @@ class Gridview(QWidget):
 		self.mouse_mode = 0
 		self.last_mouse_pos = None
 
-	def get_idx(self, i, j):
+	def _get_idx(self, i, j):
 		return (j + self.y_offset) * self.count_h + i
 
 	def toggle_highlight(self, up):
@@ -76,7 +76,7 @@ class Gridview(QWidget):
 				self.cursor[1] = cy_plus_offset - self.y_offset
 		self.toggle_highlight(True) # after refresh all labels are initialized
 
-	def xreset_layout(self):
+	def _xreset_layout(self):
 		for label_row in self.labels:
 			for label in label_row:
 				label.close()
@@ -124,7 +124,7 @@ class Gridview(QWidget):
 					self.labels[j].append(label)
 				else:
 					label = self.labels[j][i]
-				idx = self.get_idx(i, j)
+				idx = self._get_idx(i, j)
 				if idx >= len(var.image_loader.filelist):
 					self.labels[j][i].hide()
 				else:
@@ -141,8 +141,9 @@ class Gridview(QWidget):
 
 	def resizeEvent(self, _e):
 		self.reset_layout()
+		self.parent().set_label()
 
-	def cursor_select(self, x, y):
+	def _cursor_select(self, x, y):
 		new_idx = (self.y_offset + y) * self.count_h + x
 		if new_idx == var.current_idx:
 			self.parent().image_mode()
@@ -150,7 +151,7 @@ class Gridview(QWidget):
 		var.current_idx = new_idx
 		self.set_cursor(False)
 
-	def offset_cursor(self, offset, abs_pos = False):
+	def _offset_cursor(self, offset, abs_pos = False):
 		old_idx = var.current_idx
 		if abs_pos:
 			var.current_idx = offset
@@ -161,14 +162,16 @@ class Gridview(QWidget):
 		elif var.current_idx >= len(var.image_loader.filelist):
 			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \
 					len(var.image_loader.filelist):
+				var.logger.debug("scroll overflow restrict")
 				var.current_idx = len(var.image_loader.filelist) - 1
 				self.set_cursor(False)
 			else:
+				var.logger.debug("scroll overflow cancel")
 				var.current_idx = old_idx
 		else:
 			self.set_cursor(False)
 
-	def set_zoom_level(self, dz, abs_zoom = False):
+	def _set_zoom_level(self, dz, abs_zoom = False):
 		old_idx = self.grid_size_idx
 		if abs_zoom:
 			if self.grid_size_idx != dz:
@@ -184,40 +187,40 @@ class Gridview(QWidget):
 		if old_idx == self.grid_size_idx:
 			return
 		self.parent().set_label()
-		self.xreset_layout()
+		self._xreset_layout()
 
 	def key_handler(self, k):
 		if k == Qt.Key_L or k == Qt.Key_Right:
-			self.offset_cursor(1, False)
+			self._offset_cursor(1, False)
 		elif k == Qt.Key_H or k == Qt.Key_Left:
-			self.offset_cursor(-1, False)
+			self._offset_cursor(-1, False)
 		elif k == Qt.Key_J or k == Qt.Key_Down:
-			self.offset_cursor(self.count_h, False)
+			self._offset_cursor(self.count_h, False)
 		elif k == Qt.Key_K or k == Qt.Key_Up:
-			self.offset_cursor(-self.count_h, False)
+			self._offset_cursor(-self.count_h, False)
 		elif k == Qt.Key_G:
 			if var.keymod_shift:
-				self.offset_cursor(len(var.image_loader.filelist) - 1, True)
+				self._offset_cursor(len(var.image_loader.filelist) - 1, True)
 			else:
-				self.offset_cursor(0, True)
+				self._offset_cursor(0, True)
 		elif k == Qt.Key_O:
-			self.set_zoom_level(-1, False)
+			self._set_zoom_level(-1, False)
 		elif k == Qt.Key_I:
-			self.set_zoom_level(1, False)
+			self._set_zoom_level(1, False)
 		elif k == Qt.Key_0 or k == Qt.Key_AsciiCircum:
-			self.offset_cursor(-self.cursor[0], False)
+			self._offset_cursor(-self.cursor[0], False)
 		elif k == Qt.Key_Dollar:
-			self.offset_cursor(self.count_h - self.cursor[0] - 1, False)
+			self._offset_cursor(self.count_h - self.cursor[0] - 1, False)
 		elif k == Qt.Key_1:
-			self.set_zoom_level(var.grid_size_idx_default, True)
+			self._set_zoom_level(var.grid_size_idx_default, True)
 		elif k == Qt.Key_B and var.keymod_control:
-			self.offset_cursor(-self.count_h * self.count_v)
+			self._offset_cursor(-self.count_h * self.count_v)
 		elif k == Qt.Key_F and var.keymod_control:
-			self.offset_cursor(self.count_h * self.count_v)
+			self._offset_cursor(self.count_h * self.count_v)
 		elif k == Qt.Key_U and var.keymod_control:
-			self.offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
+			self._offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
 		elif k == Qt.Key_D and var.keymod_control:
-			self.offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
+			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
@@ -231,26 +234,26 @@ class Gridview(QWidget):
 				self.setCursor(Qt.SizeVerCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.grid_move_zoom:
-					self.set_zoom_level(-1, False)
+					self._set_zoom_level(-1, False)
 					self.last_mouse_pos = e.localPos()
 				elif dp.y() < -var.grid_move_zoom:
-					self.set_zoom_level(1, False)
+					self._set_zoom_level(1, False)
 					self.last_mouse_pos = e.localPos()
 			# pan
 			else:
 				self.setCursor(Qt.CrossCursor)
 				dp = e.localPos() - self.last_mouse_pos
 				if dp.y() > var.grid_move_pan:
-					self.offset_cursor(self.count_h, False)
+					self._offset_cursor(self.count_h, False)
 					self.last_mouse_pos = e.localPos()
 				elif dp.y() < -var.grid_move_pan:
-					self.offset_cursor(-self.count_h, False)
+					self._offset_cursor(-self.count_h, False)
 					self.last_mouse_pos = e.localPos()
 				if dp.x() > var.grid_move_pan:
-					self.offset_cursor(1, False)
+					self._offset_cursor(1, False)
 					self.last_mouse_pos = e.localPos()
 				elif dp.x() < -var.grid_move_pan:
-					self.offset_cursor(-1, False)
+					self._offset_cursor(-1, False)
 					self.last_mouse_pos = e.localPos()
 				self.parent().set_label()
 		elif e.buttons() & Qt.LeftButton:
@@ -261,7 +264,7 @@ class Gridview(QWidget):
 				cy = int((et.y() - self.grid_space / 2) / self.grid_offset)
 				if cx < self.count_h and cx >= 0 and \
 					cy < self.count_v and cy >= 0:
-					self.cursor_select(cx, cy)
+					self._cursor_select(cx, cy)
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

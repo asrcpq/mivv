@@ -11,11 +11,12 @@ import var
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super().__init__()
-		self.setStyleSheet("background-color: black;")
+		self.setStyleSheet(f"background-color: {var.background};")
 		self.setWindowTitle("mivv")
 		var.hidpi = self.devicePixelRatioF()
 		self.setGeometry(0, 0, 640, 480)
 
+		self.mode = 2 # for image load error fallback
 		self.image_view = Imageview(self)
 		self.grid_view = Gridview(self)
 
@@ -23,7 +24,7 @@ class MainWindow(QMainWindow):
 		font = QFont("monospace", var.bar_height - 1)
 		for name in ["filename", "info"]:
 			label = QLabel(name, self)
-			label.setStyleSheet("color: #FFFFFF;")
+			label.setStyleSheet("color: white;")
 			label.setFont(font)
 			labels.append(label)
 		self.fn_label = labels[0]
@@ -37,10 +38,13 @@ class MainWindow(QMainWindow):
 
 	def set_label(self):
 		if self.mode == 1:
-			zoom_level_percent = 100 / \
-				self.image_view.scaling_factor * \
-				self.image_view.original_scaling_factor
-			scaling_string = f"{zoom_level_percent:.1f}%"
+			try:
+				zoom_level_percent = 100 / \
+					self.image_view.scaling_factor * \
+					self.image_view.original_scaling_factor
+				scaling_string = f"{zoom_level_percent:.1f}%"
+			except:
+				scaling_string = "err!"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
 		self.info_label.setText(
@@ -77,10 +81,10 @@ class MainWindow(QMainWindow):
 		self.set_label() # only for zoom level
 
 	def image_mode(self):
-		self.grid_view.hide()
-		self.image_view.resize(self.width(), self.height() - var.bar_height)
-		self.image_view.show()
 		self.image_view.load()
+		self.image_view.resize(self.width(), self.height() - var.bar_height)
+		self.grid_view.hide()
+		self.image_view.show()
 		if self.isVisible():
 			self.image_view.render()
 		self.mode = 1
@@ -116,10 +120,6 @@ class MainWindow(QMainWindow):
 
 	def resizeEvent(self, _e):
 		if self.mode == 1:
-			# put it in ImageView's resizeEvent will be too late for label set here
-			self.image_view.set_original_scaling_factor()
 			self.image_view.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:
 			self.grid_view.resize(self.width(), self.height() - var.bar_height)
-		# set label after apply scaling factor
-		self.set_label()

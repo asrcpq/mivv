@@ -79,6 +79,8 @@ class ImageLoader():
 		if ext not in var.ext_type:
 			return (0, 0)
 		ty = var.ext_type[ext]
+		if not var.cache_path:
+			return (2, ty)
 		if abspath.startswith(var.cache_path):
 			return (1, ty)
 		cached_path = var.cache_path + abspath + ".jpg"
@@ -88,9 +90,10 @@ class ImageLoader():
 
 	@staticmethod
 	def save_cache(pixmap, path):
-		if var.private_mode:
+		if var.private_mode or not var.cache_path:
 			var.logger.debug(f"No cache(private mode): {path}")
 			return
+		cached_path = var.cache_path + abspath + ".jpg"
 		dirname = os.path.dirname(path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
 		if pixmap:
@@ -102,13 +105,13 @@ class ImageLoader():
 
 	# nocheck, abspath must exist
 	def create_cache(self, abspath):
+		var.logger.info(f"Generating cache: {abspath}")
 		pixmap = QPixmap(abspath)
-		cached_path = var.cache_path + abspath + ".jpg"
 		if pixmap.isNull():
 			raise Exception(f"Read fail: {abspath}")
 		if pixmap.width() <= var.cache_size or \
 			pixmap.height() <= var.cache_size:
-			self.save_cache(None, cached_path)
+			self.save_cache(None, abspath)
 			return pixmap
 		pixmap_resize = pixmap.scaled(
 			var.cache_size,
@@ -116,7 +119,7 @@ class ImageLoader():
 			Qt.KeepAspectRatio,
 			Qt.SmoothTransformation,
 		)
-		self.save_cache(pixmap_resize, cached_path)
+		self.save_cache(pixmap_resize, abspath)
 		return pixmap_resize
 
 	# nocheck, abspath, cached_path must exist

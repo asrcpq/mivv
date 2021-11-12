@@ -48,7 +48,7 @@ Keyboard:
 
 * bar/underscore: flipping
 
-* q/escape: quit
+* q or escape: quit
 
 * space: gif pause/resume
 

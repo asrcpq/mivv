@@ -109,7 +109,8 @@ class ImageLoader():
 		var.logger.info(f"Generating cache: {abspath}")
 		pixmap = QPixmap(abspath)
 		if pixmap.isNull():
-			raise Exception(f"Read fail: {abspath}")
+			var.logger.warning(f"Create cache read fail: {abspath}")
+			return None
 		if pixmap.width() <= var.cache_size or \
 			pixmap.height() <= var.cache_size:
 			self.save_cache(None, abspath)

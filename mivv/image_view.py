@@ -85,7 +85,7 @@ class Imageview(QGraphicsView):
 			self.content = pixmap
 			# filelist has fixed so we can do nothing here
 			if pixmap.isNull():
-				var.logger.error(f"Read error: {filename}")
+				var.logger.warning(f"Load image error: {filename}")
 				self.content = None
 				return False
 			self.content_size = pixmap.size()
@@ -97,6 +97,10 @@ class Imageview(QGraphicsView):
 		elif ty == 2:
 			# todo: error open?
 			movie = QMovie(filename)
+			if not movie.isValid():
+				var.logger.warning(f"Load movie error: {filename}")
+				self.content = None
+				return False
 			movie.start()
 			self.content = movie
 			label = QLabel()

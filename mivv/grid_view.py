@@ -110,6 +110,7 @@ class Gridview(QWidget):
 		return True
 
 	def refresh(self):
+		var.logger.debug('Grid mode refresh')
 		grid_size = var.grid_sizes[self.grid_size_idx]
 		for j in range(self.count_v):
 			if j >= len(self.labels):
@@ -132,13 +133,16 @@ class Gridview(QWidget):
 				else:
 					if not var.image_loader.pixmaps[idx]:
 						var.image_loader.pixmaps[idx] = var.image_loader.load_by_idx(idx)
-					pixmap_resize = var.image_loader.pixmaps[idx].scaled(
-						grid_size,
-						grid_size,
-						Qt.KeepAspectRatio,
-						Qt.SmoothTransformation,
-					)
-					label.setPixmap(pixmap_resize)
+					if not var.image_loader.pixmaps[idx]:
+						var.logger.warning(f"Not loaded {idx}")
+					else:
+						pixmap_resize = var.image_loader.pixmaps[idx].scaled(
+							grid_size,
+							grid_size,
+							Qt.KeepAspectRatio,
+							Qt.SmoothTransformation,
+						)
+						label.setPixmap(pixmap_resize)
 					label.show()
 
 	def resizeEvent(self, _e):
@@ -160,6 +164,7 @@ class Gridview(QWidget):
 		else:
 			var.current_idx += offset
 		if var.current_idx < 0:
+			var.logger.debug("scroll overflow cancel 0")
 			var.current_idx = old_idx
 		elif var.current_idx >= len(var.image_loader.filelist):
 			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \
@@ -168,7 +173,7 @@ class Gridview(QWidget):
 				var.current_idx = len(var.image_loader.filelist) - 1
 				self.set_cursor(False)
 			else:
-				var.logger.debug("scroll overflow cancel")
+				var.logger.debug("scroll overflow cancel max")
 				var.current_idx = old_idx
 		else:
 			self.set_cursor(False)

@@ -26,9 +26,11 @@ class Gridview(QWidget):
 	def toggle_highlight(self, up):
 		try:
 			if up:
-				self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: 1px solid red;")
+				self.labels[self.cursor[1]][self.cursor[0]]\
+					.setStyleSheet(f"border: 3px double {var.border_color};")
 			else:
-				self.labels[self.cursor[1]][self.cursor[0]].setStyleSheet("border: none;")
+				self.labels[self.cursor[1]][self.cursor[0]]\
+					.setStyleSheet("border: none;")
 		except IndexError:
 			pass
 

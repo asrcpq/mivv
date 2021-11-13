@@ -4,26 +4,50 @@ from glob import glob
 from pathlib import Path
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread, QObject
 
 import var
 
-class ImageLoader():
-	def __init__(self):
-		self.filelist = []
+class ImageLoader(QObject):
+	def __init__(self, callback):
+		super().__init__()
 		self.typelist = []
-		self.cached_state = []
+		self.filelist = []
 		self.pixmaps = []
+		self.has_image = False
+		self.has_image_callback = callback
 
-	def preload(self, filelist_tmp, load_all = True):
-		while filelist_tmp:
-			file = filelist_tmp[-1]
-			filelist_tmp.pop()
+	def get_result(self, pixmap, file, ty):
+		var.logger.debug(f"Received: {file}")
+		self.pixmaps.append(pixmap)
+		self.filelist.append(file)
+		self.typelist.append(ty)
+		if not self.has_image:
+			self.has_image = True
+			self.has_image_callback()
+
+	def load(self, filelist):
+		self.loader_thread = ImageLoaderThread(filelist)
+		self.loader_thread.result.connect(self.get_result)
+		self.loader_thread.start()
+
+class ImageLoaderThread(QThread):
+	result = pyqtSignal(object, str, int)
+
+	def __init__(self, filelist):
+		QThread.__init__(self)
+		self.filelist = filelist
+
+	def run(self):
+		filelist = self.filelist
+		while filelist:
+			file = filelist[-1]
+			filelist.pop()
 			var.logger.debug(f"Preprocessing: {file}")
 			if not file or file.isspace():
 				continue
 			if not os.access(file, os.R_OK):
-				var.logger.warning(f"Permission denied: {file}")
+				var.logger.error(f"Permission denied: {file}")
 				continue
 			if os.path.isdir(file):
 				if var.expand_dir:
@@ -31,63 +55,21 @@ class ImageLoader():
 					for file in glob(os.path.join(file, "*")):
 						if os.path.isfile(file):
 							file_filtered.append(file)
-					filelist_tmp += sorted(file_filtered, reverse = True)
+					filelist += sorted(file_filtered, reverse = True)
 				continue
-			state, ty = self._validate(file)
-			if state == 0:
+			if not os.path.exists(file):
 				continue
-			if state == 1:
-				self.cached_state.append(True)
-			elif state == 2:
-				self.cached_state.append(False)
-			else:
-				sys.exit(127)
-			self.filelist.append(file)
-			self.typelist.append(ty)
-			self.pixmaps.append(None)
-		if load_all:
-			self._load_all()
-		if len(self.filelist) == 0:
-			var.logger.error("Nothing loaded, exiting")
-			sys.exit(1)
-
-	def _load_all(self):
-		for idx in range(len(self.filelist)):
-			pixmap = self.load_by_idx(idx)
-			self.pixmaps[idx] = pixmap
-
-	def load_by_idx(self, idx):
-		file = self.filelist[idx]
-		abspath = os.path.abspath(file)
-		if self.cached_state[idx]:
+			_filename, ext = os.path.splitext(file)
+			if ext not in var.ext_type:
+				continue
+			ty = var.ext_type[ext]
+			abspath = os.path.abspath(file)
 			pixmap = self._load_cache(abspath)
-		else:
-			pixmap = self._create_cache(abspath)
-		var.logger.debug(f"Loaded: {file}")
-		return pixmap
-
-	# return (status, ext_type)
-	# 0: invalid file
-	# 1: cache found
-	# 2: no cache
-	@staticmethod
-	def _validate(path):
-		abspath = os.path.abspath(path)
-		if not os.path.exists(abspath):
-			# remove cache? maybe not
-			return (0, 0)
-		_filename, ext = os.path.splitext(abspath)
-		if ext not in var.ext_type:
-			return (0, 0)
-		ty = var.ext_type[ext]
-		if not var.cache_path:
-			return (2, ty)
-		if abspath.startswith(var.cache_path):
-			return (1, ty)
-		cached_path = var.cache_path + abspath + ".jpg"
-		if os.path.exists(cached_path):
-			return (1, ty)
-		return (2, ty)
+			var.logger.debug(f"Loaded: {file}")
+			if pixmap is None:
+				var.logger.error(f"Load fail: {file}")
+				continue
+			self.result.emit(pixmap, file, ty)
 
 	@staticmethod
 	def _save_cache(pixmap, path):
@@ -127,10 +109,17 @@ class ImageLoader():
 	# nocheck, abspath, cached_path must exist
 	def _load_cache(self, abspath):
 		cached_path = var.cache_path + abspath + ".jpg"
-		if abspath.startswith(var.cache_path) or os.path.getsize(cached_path) == 0:
-			var.logger.debug(f"Use original file for thumbnail: {abspath}")
+		if not var.cache_path or abspath.startswith(var.cache_path):
+			var.logger.debug(f"Original file as cache: {abspath}")
 			return QPixmap(abspath)
-		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
-			var.logger.info(f"Update: {abspath}")
+		cached_path = var.cache_path + abspath + ".jpg"
+		if not os.path.exists(cached_path):
+			var.logger.info(f"Generate cache: {abspath}")
 			return self._create_cache(abspath)
+		if os.path.getmtime(abspath) > os.path.getmtime(cached_path):
+			var.logger.info(f"Update cache: {abspath}")
+			return self._create_cache(abspath)
+		if os.path.getsize(cached_path) == 0:
+			var.logger.debug(f"Original file as cache: {abspath}")
+			return QPixmap(abspath)
 		return QPixmap(cached_path)

@@ -73,10 +73,14 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def load(self):
+		var.logger.info(f"Start loading id {var.current_idx}")
 		self.content = None
 		self.setCursor(Qt.WaitCursor)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
+
+		if var.current_idx == -1:
+			return
 
 		ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
@@ -142,7 +146,7 @@ class Imageview(QGraphicsView):
 		self.setTransform(qtrans)
 		self.centerOn(self.center[0], self.center[1])
 
-	def _navigate_image(self, offset, abs_pos = False):
+	def navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
 		if abs_pos:
 			var.current_idx = offset
@@ -171,14 +175,14 @@ class Imageview(QGraphicsView):
 	def _key_handler_navigation(self, k):
 		if k == Qt.Key_N:
 			if var.keymod_shift:
-				self._navigate_image(-1, False)
+				self.navigate_image(-1, False)
 			else:
-				self._navigate_image(1, False)
+				self.navigate_image(1, False)
 		elif k == Qt.Key_G:
 			if var.keymod_shift:
-				self._navigate_image(len(var.image_loader.filelist) - 1, True)
+				self.navigate_image(len(var.image_loader.filelist) - 1, True)
 			else:
-				self._navigate_image(0, True)
+				self.navigate_image(0, True)
 		elif k == Qt.Key_R:
 			self.load()
 			self.render()

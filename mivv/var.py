@@ -1,7 +1,6 @@
 import os
 
 from logger import get_logger
-from image_loader import ImageLoader
 
 # config values
 ext_type = {
@@ -35,12 +34,11 @@ border_color = "rgb(255, 255, 255)"
 # global values
 logger = get_logger()
 hidpi = None
+image_loader = None
 private_mode = False
-load_all = True # argv
 expand_dir = True # argv
 start_in_grid_mode = False
-current_idx = 0
-image_loader = ImageLoader()
+current_idx = -1
 keymod_shift = False
 keymod_control = False
 

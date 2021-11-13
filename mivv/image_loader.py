@@ -1,6 +1,6 @@
 import os
 import sys
-from glob import glob
+from glob import glob, escape
 from pathlib import Path
 
 from PyQt5.QtGui import QPixmap
@@ -13,7 +13,6 @@ class ImageLoader():
 		self.typelist = []
 		self.filelist = []
 		self.pixmaps = []
-		self.has_image = False
 		self.finished = False
 		self.callback = callback
 
@@ -23,6 +22,7 @@ class ImageLoader():
 			if len(self.filelist) == 0:
 				var.logger.error(f"No file loaded")
 				var.app.quit()
+				return
 			self.finished = True
 			self.callback()
 			return
@@ -30,8 +30,6 @@ class ImageLoader():
 		self.pixmaps.append(pixmap)
 		self.filelist.append(file)
 		self.typelist.append(ty)
-		if not self.has_image:
-			self.has_image = True
 		self.callback()
 
 	def load(self, filelist, expand_level):
@@ -68,8 +66,9 @@ class ImageLoaderThread(QThread):
 			if os.path.isdir(file):
 				if self.expand_level >= 2:
 					file_filtered = []
-					for file in glob(os.path.join(file, "*")):
-						if self.expand_level == 3 or os.path.isfile(file):
+					escaped_file = escape(file)
+					for file in glob(os.path.join(escaped_file, "*")):
+						if self.expand_level >= 3 or os.path.isfile(file):
 							file_filtered.append(file)
 					filelist += sorted(file_filtered, reverse = True)
 				continue
@@ -101,10 +100,10 @@ class ImageLoaderThread(QThread):
 		dirname = os.path.dirname(cached_path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
 		if pixmap:
-			var.logger.info(f"Cached: {cached_path}")
+			var.logger.debug(f"Cached: {cached_path}")
 			pixmap.save(cached_path)
 		else:
-			var.logger.info(f"Touch-cached: {cached_path}")
+			var.logger.debug(f"Touch-cached: {cached_path}")
 			open(cached_path, "w").close()
 
 	# nocheck, abspath must exist

@@ -175,6 +175,8 @@ class Imageview(QGraphicsView):
 				self.navigate_image(-1, False)
 			else:
 				self.navigate_image(1, False)
+		elif k == Qt.Key_P:
+			self.navigate_image(-1, False)
 		elif k == Qt.Key_G:
 			if var.keymod_shift:
 				self.navigate_image(len(var.image_loader.filelist) - 1, True)

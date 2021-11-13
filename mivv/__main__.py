@@ -31,6 +31,7 @@ def build_parser():
 		default = 0,
 		help = "expand level: 1(ignore dir), 2, 3(recursive)",
 	)
+	parser.add_argument('-r', action = "store_true", help = "recursive(override expand-level with 3)")
 	parser.add_argument('path', type = str, nargs='*')
 	return parser
 
@@ -84,6 +85,9 @@ if __name__ == '__main__':
 			expand_level = 2
 	else:
 		expand_level = args.expand_level
+	if args.r:
+		expand_level = 3
+	var.logger.info(f"Expand level: {expand_level}")
 	app = QApplication([])
 	filelist_raw = list(reversed(filelist))
 	image_loader = ImageLoader(loader_callback)

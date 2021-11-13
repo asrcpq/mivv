@@ -15,9 +15,14 @@ class ImageLoader(QObject):
 		self.filelist = []
 		self.pixmaps = []
 		self.has_image = False
+		self.finished = False
 		self.has_image_callback = callback
 
+	# None None None => finished
 	def get_result(self, pixmap, file, ty):
+		if not pixmap:
+			self.finished = True
+			return
 		var.logger.debug(f"Received: {file}")
 		self.pixmaps.append(pixmap)
 		self.filelist.append(file)
@@ -70,6 +75,7 @@ class ImageLoaderThread(QThread):
 				var.logger.error(f"Load fail: {file}")
 				continue
 			self.result.emit(pixmap, file, ty)
+		self.result.emit(None, None, None)
 
 	@staticmethod
 	def _save_cache(pixmap, path):

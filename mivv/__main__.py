@@ -1,3 +1,6 @@
+from time import time
+startup_time = time()
+
 import logging
 import sys
 import os
@@ -69,4 +72,5 @@ if __name__ == '__main__':
 	filelist_tmp = list(reversed(filelist))
 	var.image_loader.preload(filelist_tmp, var.load_all)
 	main_window = MainWindow()
+	var.logger.info(f"Elapsed: {time() - startup_time:.03f} secs")
 	app.exec()

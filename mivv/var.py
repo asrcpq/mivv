@@ -38,7 +38,6 @@ image_loader = None
 main_window = None
 app = None
 private_mode = False
-expand_dir = True # argv
 start_in_grid_mode = False
 current_idx = 0
 keymod_shift = False

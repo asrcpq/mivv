@@ -73,4 +73,6 @@ if __name__ == '__main__':
 	image_loader.load(filelist_raw)
 	var.image_loader = image_loader
 	var.logger.info(f"Elapsed: {time() - startup_time:.03f} secs")
+	var.app = app
 	app.exec()
+	var.image_loader.stop()

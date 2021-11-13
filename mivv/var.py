@@ -35,6 +35,7 @@ border_color = "rgb(255, 255, 255)"
 logger = get_logger()
 hidpi = None
 image_loader = None
+app = None
 private_mode = False
 expand_dir = True # argv
 start_in_grid_mode = False

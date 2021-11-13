@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
 			elif self.mode == 2:
 				self.image_mode()
 		elif k == Qt.Key_Escape or k == Qt.Key_Q:
-			sys.exit()
+			var.app.quit()
 		else:
 			if self.mode == 1:
 				self.image_view.key_handler(k)

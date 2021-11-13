@@ -54,9 +54,14 @@ class MainWindow(QMainWindow):
 				scaling_string = "err!"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
+		if not var.image_loader.finished:
+			unfinished_indicator = "+"
+		else:
+			unfinished_indicator = ""
 		self.info_label.setText(
 			f" {scaling_string} " \
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
+			f"{unfinished_indicator}" \
 		)
 		self.info_label.adjustSize()
 		width = self.info_label.geometry().width()

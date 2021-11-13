@@ -65,6 +65,8 @@ check `mivv/var.py` for values to override.
 
 ## todo(maybe)
 
+* solve the exit bug
+
 * toggle bar
 
 * transparent background
@@ -74,5 +76,3 @@ check `mivv/var.py` for values to override.
 * more draw: clear, undo, colorpicker, fill...
 
 * decide support fixed view size resize or not(need a fill mode with proportional resize)
-
-* async load + memory management

@@ -4,13 +4,12 @@ from glob import glob
 from pathlib import Path
 
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread, QObject
+from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread
 
 import var
 
-class ImageLoader(QObject):
+class ImageLoader():
 	def __init__(self, callback):
-		super().__init__()
 		self.typelist = []
 		self.filelist = []
 		self.pixmaps = []
@@ -36,16 +35,23 @@ class ImageLoader(QObject):
 		self.loader_thread.result.connect(self.get_result)
 		self.loader_thread.start()
 
+	def stop(self):
+		var.logger.debug("Stopping loader thread.")
+		self.loader_thread.stop()
+
 class ImageLoaderThread(QThread):
 	result = pyqtSignal(object, str, int)
 
 	def __init__(self, filelist):
 		QThread.__init__(self)
 		self.filelist = filelist
+		self.alive = True
 
 	def run(self):
 		filelist = self.filelist
 		while filelist:
+			if not self.alive:
+				return
 			file = filelist[-1]
 			filelist.pop()
 			var.logger.debug(f"Preprocessing: {file}")
@@ -76,6 +82,10 @@ class ImageLoaderThread(QThread):
 				continue
 			self.result.emit(pixmap, file, ty)
 		self.result.emit(None, None, None)
+
+	def stop(self):
+		self.alive = False
+		self.wait()
 
 	@staticmethod
 	def _save_cache(pixmap, path):

@@ -132,7 +132,7 @@ class Gridview(QWidget):
 					self.labels[j][i].hide()
 				else:
 					if not var.image_loader.pixmaps[idx]:
-						var.image_loader.pixmaps[idx] = var.image_loader.load_by_idx(idx)
+						var.image_loader.pixmaps[idx] = var.image_loader.pixmaps[idx]
 					if not var.image_loader.pixmaps[idx]:
 						var.logger.warning(f"Not loaded {idx}")
 					else:
@@ -152,6 +152,7 @@ class Gridview(QWidget):
 	def _cursor_select(self, x, y):
 		new_idx = (self.y_offset + y) * self.count_h + x
 		if new_idx == var.current_idx:
+			self.setCursor(Qt.WaitCursor)
 			self.parent().image_mode()
 			return
 		var.current_idx = new_idx

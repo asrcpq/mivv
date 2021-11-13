@@ -15,6 +15,7 @@ import var
 def build_parser():
 	parser = argparse.ArgumentParser(description = "mivv")
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
+	#parser.add_argument('-r', action = "store_true", help = "recursive mode") TODO
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
 	parser.add_argument('-p', action = "store_true", help = "never write")
@@ -50,6 +51,11 @@ def set_loglevel(loglevel):
 	else:
 		raise Exception("Unknown log level:", loglevel)
 
+def loader_callback():
+	if not var.main_window:
+		var.main_window = MainWindow()
+	var.main_window.loader_callback()
+
 if __name__ == '__main__':
 	args = build_parser().parse_args()
 	if args.c:
@@ -68,8 +74,7 @@ if __name__ == '__main__':
 		filelist = args.path
 	app = QApplication([])
 	filelist_raw = list(reversed(filelist))
-	main_window = MainWindow(filelist_raw)
-	image_loader = ImageLoader(main_window.loader_callback)
+	image_loader = ImageLoader(loader_callback)
 	image_loader.load(filelist_raw)
 	var.image_loader = image_loader
 	var.logger.info(f"Elapsed: {time() - startup_time:.03f} secs")

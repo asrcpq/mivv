@@ -79,9 +79,6 @@ class Imageview(QGraphicsView):
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
 
-		if var.current_idx == -1:
-			return
-
 		ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
 		if ty == 1:

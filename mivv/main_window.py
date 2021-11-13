@@ -9,7 +9,7 @@ from image_view import Imageview
 import var
 
 class MainWindow(QMainWindow):
-	def __init__(self, filelist_raw):
+	def __init__(self):
 		super().__init__()
 		self.setStyleSheet(f"background-color: {var.background};")
 		self.setWindowTitle("mivv")
@@ -37,13 +37,11 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def loader_callback(self):
-		if var.current_idx == -1 and self.mode == 1:
-			self.image_view.navigate_image(0, True)
-			self.set_label()
+		self.set_label()
+		if self.mode == 2:
+			self.grid_view.update_filelist()
 
 	def set_label(self):
-		if var.current_idx == -1:
-			return
 		if self.mode == 1:
 			try:
 				zoom_level_percent = 100 / \

@@ -18,6 +18,7 @@ class Gridview(QWidget):
 		self.cursor = [0, 0]
 		self.labels = []
 		self.mouse_mode = 0
+		self.filelist_len = len(var.image_loader.filelist) # cached length for update check
 		self.last_mouse_pos = None
 
 	def _get_idx(self, i, j):
@@ -78,6 +79,8 @@ class Gridview(QWidget):
 				self.cursor[1] = cy_plus_offset - self.y_offset
 		self.toggle_highlight(True) # after refresh all labels are initialized
 
+	# xreset is for thumbnail resize
+	# reset is for window resize
 	def _xreset_layout(self):
 		for label_row in self.labels:
 			for label in label_row:
@@ -85,7 +88,20 @@ class Gridview(QWidget):
 		self.labels = []
 		self.reset_layout()
 
-	# layout = a x b images in screen
+	def update_filelist(self):
+		var_flen = len(var.image_loader.filelist)
+		if self.filelist_len == var_flen:
+			return
+		if self.filelist_len > var_flen:
+			raise Exception("Global filelist shrinked, This is a bug.")
+		var.logger.debug("Update grid view filelist")
+		if (
+			self.y_offset * self.count_h <= self.filelist_len and \
+			self.filelist_len < (self.y_offset + self.count_v) * self.count_h \
+		):
+			self.refresh()
+		self.filelist_len = var_flen
+
 	def reset_layout(self):
 		self.grid_offset = var.grid_sizes[self.grid_size_idx] + self.grid_space
 		count_h = (self.width() - self.grid_space) // self.grid_offset
@@ -109,6 +125,8 @@ class Gridview(QWidget):
 		self.set_cursor(True)
 		return True
 
+	# no_update means don't change existing thumbnail
+	# used for filelist update
 	def refresh(self):
 		var.logger.debug('Grid mode refresh')
 		grid_size = var.grid_sizes[self.grid_size_idx]
@@ -131,8 +149,6 @@ class Gridview(QWidget):
 				if idx >= len(var.image_loader.filelist):
 					self.labels[j][i].hide()
 				else:
-					if not var.image_loader.pixmaps[idx]:
-						var.image_loader.pixmaps[idx] = var.image_loader.pixmaps[idx]
 					if not var.image_loader.pixmaps[idx]:
 						var.logger.warning(f"Not loaded {idx}")
 					else:

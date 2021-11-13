@@ -15,12 +15,16 @@ class ImageLoader():
 		self.pixmaps = []
 		self.has_image = False
 		self.finished = False
-		self.has_image_callback = callback
+		self.callback = callback
 
 	# None None None => finished
 	def get_result(self, pixmap, file, ty):
 		if not pixmap:
+			if len(self.filelist) == 0:
+				var.logger.error(f"No file loaded")
+				var.app.quit()
 			self.finished = True
+			self.callback()
 			return
 		var.logger.debug(f"Received: {file}")
 		self.pixmaps.append(pixmap)
@@ -28,7 +32,7 @@ class ImageLoader():
 		self.typelist.append(ty)
 		if not self.has_image:
 			self.has_image = True
-			self.has_image_callback()
+		self.callback()
 
 	def load(self, filelist):
 		self.loader_thread = ImageLoaderThread(filelist)

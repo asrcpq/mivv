@@ -381,9 +381,9 @@ class Imageview(QGraphicsView):
 			if dp.y() < -var.guesture_move:
 				self.parent().grid_mode()
 			elif dp.x() < -var.guesture_move:
-				self._navigate_image(-1, False)
+				self.navigate_image(-1, False)
 			elif dp.x() > var.guesture_move:
-				self._navigate_image(1, False)
+				self.navigate_image(1, False)
 			else:
 				return
 			self.setCursor(Qt.ArrowCursor)

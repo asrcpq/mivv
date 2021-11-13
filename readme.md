@@ -65,13 +65,17 @@ check `mivv/var.py` for values to override.
 
 ## todo(maybe)
 
-* solve the exit bug
+* natural sort file(but keep order in arg/stdin) by default, add option to disable
 
 * toggle bar
 
 * transparent background
 
 * disable draw
+
+* measure tool
+
+* left up align
 
 * more draw: clear, undo, colorpicker, fill...
 

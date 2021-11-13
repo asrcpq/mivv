@@ -34,8 +34,8 @@ class ImageLoader():
 			self.has_image = True
 		self.callback()
 
-	def load(self, filelist):
-		self.loader_thread = ImageLoaderThread(filelist)
+	def load(self, filelist, expand_level):
+		self.loader_thread = ImageLoaderThread(filelist, expand_level)
 		self.loader_thread.result.connect(self.get_result)
 		self.loader_thread.start()
 
@@ -46,9 +46,10 @@ class ImageLoader():
 class ImageLoaderThread(QThread):
 	result = pyqtSignal(object, str, int)
 
-	def __init__(self, filelist):
+	def __init__(self, filelist, expand_level):
 		QThread.__init__(self)
 		self.filelist = filelist
+		self.expand_level = expand_level
 		self.alive = True
 
 	def run(self):
@@ -65,10 +66,10 @@ class ImageLoaderThread(QThread):
 				var.logger.error(f"Permission denied: {file}")
 				continue
 			if os.path.isdir(file):
-				if var.expand_dir:
+				if self.expand_level >= 2:
 					file_filtered = []
 					for file in glob(os.path.join(file, "*")):
-						if os.path.isfile(file):
+						if self.expand_level == 3 or os.path.isfile(file):
 							file_filtered.append(file)
 					filelist += sorted(file_filtered, reverse = True)
 				continue

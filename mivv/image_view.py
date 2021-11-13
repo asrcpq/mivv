@@ -246,6 +246,15 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
+	def _key_handler_canvas(self, k):
+		if k == Qt.Key_C:
+			self.scene().removeItem(self.canvas_item)
+			self.canvas_item = CanvasItem(self.content_size)
+			self.scene().addItem(self.canvas_item)
+		else:
+			return False
+		return True
+
 	def key_handler(self, k):
 		if self._key_handler_navigation(k):
 			return
@@ -255,6 +264,8 @@ class Imageview(QGraphicsView):
 		if self._key_handler_transform(k):
 			return
 		if self._key_handler_movie(k):
+			return
+		if self._key_handler_canvas(k):
 			return
 
 	def _mouse_shift_rotate(self, pos):

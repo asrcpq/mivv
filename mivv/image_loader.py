@@ -1,7 +1,8 @@
-import os
-import sys
 from glob import glob, escape
 from pathlib import Path
+import os
+import re
+import sys
 
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread
@@ -32,8 +33,8 @@ class ImageLoader():
 		self.typelist.append(ty)
 		self.callback()
 
-	def load(self, filelist, expand_level):
-		self.loader_thread = ImageLoaderThread(filelist, expand_level)
+	def load(self, filelist, expand_level, sort_method):
+		self.loader_thread = ImageLoaderThread(filelist, expand_level, sort_method)
 		self.loader_thread.result.connect(self.get_result)
 		self.loader_thread.start()
 
@@ -44,10 +45,26 @@ class ImageLoader():
 class ImageLoaderThread(QThread):
 	result = pyqtSignal(object, str, int)
 
-	def __init__(self, filelist, expand_level):
+	@staticmethod
+	def dict_sort(l): 
+		return sorted(l, reverse = True)
+
+	@staticmethod
+	def natural_sort(l): 
+		convert = lambda text: int(text) if text.isdigit() else text
+		alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+		return sorted(l, key=alphanum_key, reverse = True)
+
+	def __init__(self, filelist, expand_level, sort_method = 0):
 		QThread.__init__(self)
 		self.filelist = filelist
 		self.expand_level = expand_level
+		if sort_method == 1:
+			self.sorter = self.dict_sort
+		elif sort_method == 2:
+			self.sorter = self.natural_sort
+		else:
+			self.sorter = lambda l: l
 		self.alive = True
 
 	def run(self):
@@ -68,7 +85,7 @@ class ImageLoaderThread(QThread):
 					escaped_file = escape(file)
 					g = glob(os.path.join(escaped_file, "*"))
 					if self.expand_level >= 3:
-						filelist += sorted(list(g), reverse = True)
+						filelist += self.sorter(list(g))
 					else:
 						for file in g:
 							file_filtered = []

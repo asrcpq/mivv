@@ -22,8 +22,6 @@ see control.md for keybind
 
 ## todo(maybe)
 
-* natural sort file(but keep order in arg/stdin) by default, add option to disable
-
 * toggle bar
 
 * transparent background

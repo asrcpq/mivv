@@ -48,6 +48,12 @@ class MainWindow(QMainWindow):
 			self.fn_label.setStyleSheet("color: white;")
 
 	def set_label(self):
+		status_string = ""
+		if self.mode == 1:
+			if self.image_view.lock_size:
+				status_string += "W"
+		if status_string:
+			status_string = f"[{status_string}]"
 		if self.mode == 1:
 			try:
 				zoom_level_percent = 100 / \
@@ -63,7 +69,8 @@ class MainWindow(QMainWindow):
 		else:
 			unfinished_indicator = ""
 		self.info_label.setText(
-			f" {scaling_string} " \
+			f" {status_string} " \
+			f"{scaling_string} " \
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
 			f"{unfinished_indicator}" \
 		)

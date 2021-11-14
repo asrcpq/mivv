@@ -52,6 +52,8 @@ class MainWindow(QMainWindow):
 		if self.mode == 1:
 			if self.image_view.lock_size:
 				status_string += "W"
+			if var.preload_thumbnail:
+				status_string += "T"
 		if status_string:
 			status_string = f"[{status_string}]"
 		if self.mode == 1:

@@ -38,6 +38,11 @@ def build_parser():
 		default = 2,
 		help = "sort method: 0(disable), 1(dict), 2(default, natural)",
 	)
+	parser.add_argument(
+		'--preload-thumbnail',
+		action = "store_true",
+		help = "display scaled thumbnail while loading",
+	)
 	parser.add_argument('path', type = str, nargs='*')
 	return parser
 
@@ -93,6 +98,8 @@ if __name__ == '__main__':
 		expand_level = args.expand_level
 	if args.r:
 		expand_level = 3
+	if args.preload_thumbnail:
+		var.preload_thumbnail = True
 	var.logger.info(f"Expand level: {expand_level}")
 	app = QApplication([])
 	filelist_raw = list(reversed(filelist))

@@ -83,9 +83,9 @@ class _ImageLoaderThread(QThread):
 			if os.path.isdir(file):
 				if self.expand_level >= 2:
 					escaped_file = escape(file)
-					g = glob(os.path.join(escaped_file, "*"))
+					g = self.sorter(list(glob(os.path.join(escaped_file, "*"))))
 					if self.expand_level >= 3:
-						filelist += self.sorter(list(g))
+						filelist += g
 					else:
 						for file in g:
 							file_filtered = []

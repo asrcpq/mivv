@@ -47,3 +47,9 @@ Keyboard:
 * space: gif pause/resume
 
 * s: gif frame forward
+
+* W: toggle size lock(resize and image navigation won't change zoom level)
+
+* T: toggle preload thumbnail
+
+* c: clear canvas

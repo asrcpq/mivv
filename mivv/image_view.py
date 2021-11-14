@@ -91,9 +91,12 @@ class Imageview(QGraphicsView):
 	def update_content(self, content):
 		if self.last_content_item:
 			self.scene().removeItem(self.last_content_item)
+		if not var.preload_thumbnail:
+			self._reset_scene()
 		if self.ty == 1:
 			content = QPixmap.fromImage(content)
 			self.content = content
+			self.content_size = content.size()
 			if self.content.isNull():
 				var.logger.error(f"Load image error")
 				self.content = None
@@ -104,6 +107,7 @@ class Imageview(QGraphicsView):
 			self.scene().addItem(item)
 		elif self.ty == 2:
 			self.content = QMovie(content)
+			self.content_size = self.content.currentImage().size()
 			if not self.content.isValid():
 				var.logger.error(f"Load movie error")
 				self.content = None
@@ -116,8 +120,26 @@ class Imageview(QGraphicsView):
 		else:
 			var.logger.error(f"Unknown type: {ty}")
 			return False
+		if not var.preload_thumbnail:
+			self._finish_loading()
 		self.setCursor(Qt.ArrowCursor)
 		self.parent().label_busy(False)
+
+	def _finish_loading(self):
+		self._set_original_scaling_factor()
+		if not self.lock_size or not self.zoom_level:
+			self._scale_view(1.0, True)
+		else:
+			self._scale_view(self.original_scaling_factor / self.zoom_level, True)
+		self._set_move_dist()
+		self._set_content_center()
+		self._set_canvas()
+		self.render()
+
+	def _reset_scene(self):
+		scene = QGraphicsScene()
+		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
+		self.setScene(scene)
 
 	def load(self):
 		var.logger.info(f"Start loading id {var.current_idx}")
@@ -130,28 +152,20 @@ class Imageview(QGraphicsView):
 		self.ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
 		self.load_data.emit(filename, self.ty)
-		self.content_size = QImageReader(filename).size()
-		if self.content_size.width() == -1:
-			var.logger.error(f"Load image size error: {filename}")
-			self.content = None
-			return False
-		scene = QGraphicsScene()
-		pixmap = var.image_loader.pixmaps[var.current_idx].scaled(self.content_size)
-		self.content = pixmap
-		item = QGraphicsPixmapItem()
-		self.last_content_item = item
-		item.setPixmap(pixmap)
-		scene.addItem(item)
-		self._set_original_scaling_factor()
-		if not self.lock_size or not self.zoom_level:
-			self._scale_view(1.0, True)
-		else:
-			self._scale_view(self.original_scaling_factor / self.zoom_level, True)
-		self._set_move_dist()
-		self._set_content_center()
-		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
-		self.setScene(scene)
-		self._set_canvas()
+		if var.preload_thumbnail:
+			self._reset_scene()
+			self.content_size = QImageReader(filename).size()
+			if self.content_size.width() == -1:
+				var.logger.error(f"Load image size error: {filename}")
+				self.content = None
+				return False
+			pixmap = var.image_loader.pixmaps[var.current_idx].scaled(self.content_size)
+			self.content = pixmap
+			item = QGraphicsPixmapItem()
+			self.last_content_item = item
+			item.setPixmap(pixmap)
+			self.scene().addItem(item)
+			self._finish_loading()
 		return True
 
 	def render(self):
@@ -257,6 +271,9 @@ class Imageview(QGraphicsView):
 				self._scale_view(1.0, True)
 				self.rotation = 0
 				self._set_move_dist()
+		elif k == Qt.Key_T:
+			if var.keymod_shift:
+				var.preload_thumbnail = not var.preload_thumbnail
 		elif k == Qt.Key_Less:
 			self.rotation -= 90
 		elif k == Qt.Key_Greater:

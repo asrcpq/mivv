@@ -48,11 +48,10 @@ class MainWindow(QMainWindow):
 
 	def set_label(self):
 		status_string = ""
-		if self.mode == 1:
-			if self.image_view.lock_size:
-				status_string += "W"
-			if var.preload_thumbnail:
-				status_string += "T"
+		if var.lock_size:
+			status_string += "W"
+		if var.preload_thumbnail:
+			status_string += "T"
 		if status_string:
 			status_string = f"[{status_string}]"
 		if self.mode == 1:
@@ -133,6 +132,14 @@ class MainWindow(QMainWindow):
 				self.image_mode()
 		elif k == Qt.Key_Escape or k == Qt.Key_Q:
 			var.app.quit()
+		elif k == Qt.Key_W:
+			if var.keymod_shift:
+				var.lock_size = not var.lock_size
+				self.set_label()
+		elif k == Qt.Key_T:
+			if var.keymod_shift:
+				var.preload_thumbnail = not var.preload_thumbnail
+				self.set_label()
 		else:
 			if self.mode == 1:
 				self.image_view.key_handler(k)

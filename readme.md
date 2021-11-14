@@ -33,5 +33,3 @@ see control.md for keybind
 * left up align
 
 * more draw: clear, undo, colorpicker, fill...
-
-* decide support fixed view size resize or not(need a fill mode with proportional resize)

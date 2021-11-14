@@ -218,7 +218,7 @@ class Imageview(QGraphicsView):
 
 	def _set_content_center(self):
 		t = self.content_size / 2
-		self.center = [t.width() - 0.5, t.height() - 0.5]
+		self.center = [t.width(), t.height()]
 
 	def _set_move_dist(self):
 		self.move_dist = var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor

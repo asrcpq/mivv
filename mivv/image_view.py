@@ -36,7 +36,6 @@ class Imageview(QGraphicsView):
 		self.mouse_mode = 0
 		self.rotation = None
 		self.move_dist = 10
-		self.lock_size = False # on resize
 		self.loader_thread = _ContentLoaderThread()
 		self.loader_thread.result.connect(self.update_content)
 		self.load_data.connect(self.loader_thread.feed_data)
@@ -81,7 +80,7 @@ class Imageview(QGraphicsView):
 		o_osf = self.original_scaling_factor
 		self._set_original_scaling_factor()
 		osf = self.original_scaling_factor
-		if not self.lock_size:
+		if not var.lock_size:
 			self._scale_view(1.0, False)
 		else:
 			self._scale_view(osf / o_osf, False) # prevent overflow
@@ -127,7 +126,7 @@ class Imageview(QGraphicsView):
 
 	def _finish_loading(self):
 		self._set_original_scaling_factor()
-		if not self.lock_size or not self.zoom_level:
+		if not var.lock_size or not self.zoom_level:
 			self._scale_view(1.0, True)
 		else:
 			self._scale_view(self.original_scaling_factor / self.zoom_level, True)
@@ -149,7 +148,7 @@ class Imageview(QGraphicsView):
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
 		# if size not locked, zoom_level is unknown
-		if not self.lock_size:
+		if not var.lock_size:
 			self.zoom_level = None
 			# else, zoom level won't change
 
@@ -261,24 +260,19 @@ class Imageview(QGraphicsView):
 			self._scale_view(1 / var.scaling_mult, False)
 		elif k == Qt.Key_1:
 			self._scale_view(self.original_scaling_factor, True)
-			self.lock_size = True
+			var.lock_size = True
 			self._set_move_dist()
 		elif k == Qt.Key_Underscore:
 			self.flip[1] *= -1
 		elif k == Qt.Key_Bar:
 			self.flip[0] *= -1
 		elif k == Qt.Key_W:
-			if var.keymod_shift:
-				self.lock_size = not self.lock_size
-			else:
-				self.lock_size = False
+			if not var.keymod_shift:
+				var.lock_size = False
 				self._set_content_center()
 				self._scale_view(1.0, True)
 				self.rotation = 0
 				self._set_move_dist()
-		elif k == Qt.Key_T:
-			if var.keymod_shift:
-				var.preload_thumbnail = not var.preload_thumbnail
 		elif k == Qt.Key_Less:
 			self.rotation -= 90
 		elif k == Qt.Key_Greater:

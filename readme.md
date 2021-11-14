@@ -6,7 +6,7 @@ PyQt5 simple image viewer.
 
 ## features
 
-* async image load and caching
+* async image/thumbnail loading
 
 * free rotation
 

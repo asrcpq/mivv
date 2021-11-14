@@ -87,7 +87,7 @@ class Imageview(QGraphicsView):
 		if self.ty == 1:
 			content = QPixmap.fromImage(content)
 			self.content = content
-			if content.isNull():
+			if self.content.isNull():
 				var.logger.error(f"Load image error")
 				self.content = None
 				return False
@@ -96,15 +96,15 @@ class Imageview(QGraphicsView):
 			item.setTransformationMode(Qt.SmoothTransformation)
 			self.scene().addItem(item)
 		elif self.ty == 2:
-			self.content = content
-			if not content.isValid():
+			self.content = QMovie(content)
+			if not self.content.isValid():
 				var.logger.error(f"Load movie error")
 				self.content = None
 				return False
-			content.start()
+			self.content.start()
 			label = QLabel()
 			label.resize(self.content_size)
-			label.setMovie(content)
+			label.setMovie(self.content)
 			self.scene().addWidget(label)
 		else:
 			var.logger.error(f"Unknown type: {ty}")
@@ -435,7 +435,8 @@ class _ContentLoaderThread(QThread):
 			if self.ty == 1:
 				result = QImage(self.filename)
 			elif self.ty == 2:
-				result = QMovie(self.filename)
+				result = self.filename
+				# result = QMovie(self.filename)
 			else:
 				result = None
 			if self.run_flag:

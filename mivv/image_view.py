@@ -36,8 +36,9 @@ class Imageview(QGraphicsView):
 		self.rotation = None
 		self.move_dist = 10
 		self.loader_thread = _ContentLoaderThread()
-		self.loader_thread.result.connect(self.get_result)
+		self.loader_thread.result.connect(self.update_content)
 		self.load_data.connect(self.loader_thread.feed_data)
+		self.last_content_item = None # thumbnail or image(gif mode)
 
 	def _set_original_scaling_factor(self):
 		wk = self.width() / self.content_size.width()
@@ -80,37 +81,34 @@ class Imageview(QGraphicsView):
 		self.parent().set_label()
 		self.render()
 
-	def get_result(self, content):
-		scene = QGraphicsScene()
+	def update_content(self, content):
+		if self.last_content_item:
+			self.scene().removeItem(self.last_content_item)
 		if self.ty == 1:
 			content = QPixmap.fromImage(content)
 			self.content = content
 			if content.isNull():
-				var.logger.error(f"Load image error: {filename}")
+				var.logger.error(f"Load image error")
 				self.content = None
 				return False
 			item = QGraphicsPixmapItem()
 			item.setPixmap(content)
 			item.setTransformationMode(Qt.SmoothTransformation)
-			scene.addItem(item)
+			self.scene().addItem(item)
 		elif self.ty == 2:
+			self.content = content
 			if not content.isValid():
-				var.logger.error(f"Load movie error: {filename}")
+				var.logger.error(f"Load movie error")
 				self.content = None
 				return False
 			content.start()
-			self.content = content
 			label = QLabel()
 			label.resize(self.content_size)
 			label.setMovie(content)
-			scene.addWidget(label)
+			self.scene().addWidget(label)
 		else:
 			var.logger.error(f"Unknown type: {ty}")
 			return False
-		self.canvas_item = CanvasItem(self.content_size)
-		scene.addItem(self.canvas_item)
-		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
-		self.setScene(scene)
 
 	def load(self):
 		var.logger.info(f"Start loading id {var.current_idx}")
@@ -118,6 +116,7 @@ class Imageview(QGraphicsView):
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
 
+		self.last_content_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
 		self.load_data.emit(filename, self.ty)
@@ -130,6 +129,7 @@ class Imageview(QGraphicsView):
 		pixmap = var.image_loader.pixmaps[var.current_idx].scaled(self.content_size)
 		self.content = pixmap
 		item = QGraphicsPixmapItem()
+		self.last_content_item = item
 		item.setPixmap(pixmap)
 		scene.addItem(item)
 		self._set_original_scaling_factor()
@@ -138,6 +138,7 @@ class Imageview(QGraphicsView):
 		self._set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
+		self._set_canvas()
 		self.setCursor(Qt.ArrowCursor)
 		return True
 
@@ -266,11 +267,16 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
+	def _set_canvas(self):
+		self.canvas_item = CanvasItem(self.content_size)
+		self.canvas_item.setZValue(1)
+		self.scene().addItem(self.canvas_item)
+
 	def _key_handler_canvas(self, k):
 		if k == Qt.Key_C:
-			self.scene().removeItem(self.canvas_item)
-			self.canvas_item = CanvasItem(self.content_size)
-			self.scene().addItem(self.canvas_item)
+			if self.canvas_item:
+				self.scene().removeItem(self.canvas_item)
+			self._set_canvas()
 		else:
 			return False
 		return True

@@ -135,6 +135,7 @@ class Imageview(QGraphicsView):
 		self._set_content_center()
 		self._set_canvas()
 		self.render()
+		self.parent().set_label()
 
 	def _reset_scene(self):
 		scene = QGraphicsScene()
@@ -147,6 +148,10 @@ class Imageview(QGraphicsView):
 		self.parent().label_busy(True)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
+		# if size not locked, zoom_level is unknown
+		if not self.lock_size:
+			self.zoom_level = None
+			# else, zoom level won't change
 
 		self.last_content_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]

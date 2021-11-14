@@ -34,7 +34,7 @@ class ImageLoader():
 		self.callback()
 
 	def load(self, filelist, expand_level, sort_method):
-		self.loader_thread = ImageLoaderThread(filelist, expand_level, sort_method)
+		self.loader_thread = _ImageLoaderThread(filelist, expand_level, sort_method)
 		self.loader_thread.result.connect(self.get_result)
 		self.loader_thread.start()
 
@@ -42,7 +42,7 @@ class ImageLoader():
 		var.logger.debug("Stopping loader thread.")
 		self.loader_thread.stop()
 
-class ImageLoaderThread(QThread):
+class _ImageLoaderThread(QThread):
 	result = pyqtSignal(object, str, int)
 
 	@staticmethod

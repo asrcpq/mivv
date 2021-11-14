@@ -4,13 +4,18 @@ import sys
 from PyQt5.QtWidgets import (
 	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QMovie, QTransform
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF, QEvent
+from PyQt5.QtGui import QPixmap, QMovie, QTransform, QImageReader, QImage
+from PyQt5.QtCore import (
+	Qt, QRectF, QSizeF, QPointF, QEvent,
+	pyqtSlot, pyqtSignal, QThread
+)
 
 from canvas import CanvasItem
 import var
 
 class Imageview(QGraphicsView):
+	load_data = pyqtSignal(str, int)
+
 	def __init__(self, parent = None):
 		super().__init__(parent)
 		self.setStyleSheet(f"background-color: {var.background};")
@@ -30,6 +35,9 @@ class Imageview(QGraphicsView):
 		self.mouse_mode = 0
 		self.rotation = None
 		self.move_dist = 10
+		self.loader_thread = _ContentLoaderThread()
+		self.loader_thread.result.connect(self.get_result)
+		self.load_data.connect(self.loader_thread.feed_data)
 
 	def _set_original_scaling_factor(self):
 		wk = self.width() / self.content_size.width()
@@ -72,51 +80,60 @@ class Imageview(QGraphicsView):
 		self.parent().set_label()
 		self.render()
 
-	def load(self):
-		var.logger.info(f"Start loading id {var.current_idx}")
-		self.content = None
-		self.setCursor(Qt.WaitCursor)
-		self.flip = [1.0, 1.0]
-		self.rotation = 0
-
-		ty = var.image_loader.typelist[var.current_idx]
-		filename = var.image_loader.filelist[var.current_idx]
-		if ty == 1:
-			pixmap = QPixmap(filename)
-			self.content = pixmap
-			# filelist has fixed so we can do nothing here
-			if pixmap.isNull():
-				var.logger.warning(f"Load image error: {filename}")
+	def get_result(self, content):
+		scene = QGraphicsScene()
+		if self.ty == 1:
+			content = QPixmap.fromImage(content)
+			self.content = content
+			if content.isNull():
+				var.logger.error(f"Load image error: {filename}")
 				self.content = None
 				return False
-			self.content_size = pixmap.size()
 			item = QGraphicsPixmapItem()
-			item.setPixmap(pixmap)
+			item.setPixmap(content)
 			item.setTransformationMode(Qt.SmoothTransformation)
-			scene = QGraphicsScene()
 			scene.addItem(item)
-		elif ty == 2:
-			# todo: error open?
-			movie = QMovie(filename)
-			if not movie.isValid():
-				var.logger.warning(f"Load movie error: {filename}")
+		elif self.ty == 2:
+			if not content.isValid():
+				var.logger.error(f"Load movie error: {filename}")
 				self.content = None
 				return False
-			movie.start()
-			self.content = movie
+			content.start()
+			self.content = content
 			label = QLabel()
-			self.content_size = movie.currentPixmap().size()
 			label.resize(self.content_size)
-			label.setMovie(movie)
-			scene = QGraphicsScene()
+			label.setMovie(content)
 			scene.addWidget(label)
 		else:
 			var.logger.error(f"Unknown type: {ty}")
 			return False
-		self._set_original_scaling_factor()
-		self._scale_view(1.0, True)
 		self.canvas_item = CanvasItem(self.content_size)
 		scene.addItem(self.canvas_item)
+		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
+		self.setScene(scene)
+
+	def load(self):
+		var.logger.info(f"Start loading id {var.current_idx}")
+		self.setCursor(Qt.WaitCursor)
+		self.flip = [1.0, 1.0]
+		self.rotation = 0
+
+		self.ty = var.image_loader.typelist[var.current_idx]
+		filename = var.image_loader.filelist[var.current_idx]
+		self.load_data.emit(filename, self.ty)
+		self.content_size = QImageReader(filename).size()
+		if self.content_size.width() == -1:
+			var.logger.error(f"Load image size error: {filename}")
+			self.content = None
+			return False
+		scene = QGraphicsScene()
+		pixmap = var.image_loader.pixmaps[var.current_idx].scaled(self.content_size)
+		self.content = pixmap
+		item = QGraphicsPixmapItem()
+		item.setPixmap(pixmap)
+		scene.addItem(item)
+		self._set_original_scaling_factor()
+		self._scale_view(1.0, True)
 		self._set_move_dist()
 		self._set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
@@ -390,3 +407,34 @@ class Imageview(QGraphicsView):
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0
+
+class _ContentLoaderThread(QThread):
+	result = pyqtSignal(object)
+
+	def __init__(self):
+		QThread.__init__(self)
+		self.filenames = None
+		self.run_flag = False
+		self.tys = None
+
+	def feed_data(self, filename, ty):
+		self.filename = filename
+		self.ty = ty
+		self.run_flag = True
+		self.start()
+
+	def run(self):
+		while self.run_flag:
+			self.run_flag = False
+			if self.ty == 1:
+				result = QImage(self.filename)
+			elif self.ty == 2:
+				result = QMovie(self.filename)
+			else:
+				result = None
+			if self.run_flag:
+				continue
+			self.result.emit(result)
+
+	def stop(self):
+		self.wait()

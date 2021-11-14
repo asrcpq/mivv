@@ -41,6 +41,12 @@ class MainWindow(QMainWindow):
 		if self.mode == 2:
 			self.grid_view.update_filelist()
 
+	def label_busy(self, busy):
+		if busy:
+			self.fn_label.setStyleSheet("color: red;")
+		else:
+			self.fn_label.setStyleSheet("color: white;")
+
 	def set_label(self):
 		if self.mode == 1:
 			try:

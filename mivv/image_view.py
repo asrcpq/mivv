@@ -109,10 +109,13 @@ class Imageview(QGraphicsView):
 		else:
 			var.logger.error(f"Unknown type: {ty}")
 			return False
+		self.setCursor(Qt.ArrowCursor)
+		self.parent().label_busy(False)
 
 	def load(self):
 		var.logger.info(f"Start loading id {var.current_idx}")
 		self.setCursor(Qt.WaitCursor)
+		self.parent().label_busy(True)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
 
@@ -139,7 +142,6 @@ class Imageview(QGraphicsView):
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
 		self.setScene(scene)
 		self._set_canvas()
-		self.setCursor(Qt.ArrowCursor)
 		return True
 
 	def render(self):

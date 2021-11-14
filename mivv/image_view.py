@@ -28,6 +28,7 @@ class Imageview(QGraphicsView):
 		self.last_mouse_pos = None
 		self.last_angle = None
 		self.scaling_factor = None
+		self.zoom_level = None
 		self.flip = [1.0, 1.0]
 		self.center = None
 		self.original_scaling_factor = None
@@ -35,7 +36,7 @@ class Imageview(QGraphicsView):
 		self.mouse_mode = 0
 		self.rotation = None
 		self.move_dist = 10
-		self.lock_size = False
+		self.lock_size = False # on resize
 		self.loader_thread = _ContentLoaderThread()
 		self.loader_thread.result.connect(self.update_content)
 		self.load_data.connect(self.loader_thread.feed_data)
@@ -124,7 +125,6 @@ class Imageview(QGraphicsView):
 		self.parent().label_busy(True)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
-		self.lock_size = False
 
 		self.last_content_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]
@@ -143,7 +143,10 @@ class Imageview(QGraphicsView):
 		item.setPixmap(pixmap)
 		scene.addItem(item)
 		self._set_original_scaling_factor()
-		self._scale_view(1.0, True)
+		if not self.lock_size or not self.zoom_level:
+			self._scale_view(1.0, True)
+		else:
+			self._scale_view(self.original_scaling_factor / self.zoom_level, True)
 		self._set_move_dist()
 		self._set_content_center()
 		scene.setSceneRect(QRectF(-5e6, -5e6, 1e7, 1e7))
@@ -195,6 +198,7 @@ class Imageview(QGraphicsView):
 		if self.scaling_factor > self.original_scaling_limit[1]:
 			self.scaling_factor = self.original_scaling_limit[1]
 		self._set_move_dist()
+		self.zoom_level = self.original_scaling_factor / self.scaling_factor
 
 	def _key_handler_navigation(self, k):
 		if k == Qt.Key_N:

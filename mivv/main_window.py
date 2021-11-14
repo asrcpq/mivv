@@ -56,9 +56,7 @@ class MainWindow(QMainWindow):
 			status_string = f"[{status_string}]"
 		if self.mode == 1:
 			try:
-				zoom_level_percent = 100 / \
-					self.image_view.scaling_factor * \
-					self.image_view.original_scaling_factor
+				zoom_level_percent = 100 * self.image_view.zoom_level
 				scaling_string = f"{zoom_level_percent:.1f}%"
 			except:
 				scaling_string = "err!"

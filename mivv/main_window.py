@@ -37,7 +37,6 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def loader_callback(self):
-		self.set_label()
 		if self.mode == 2:
 			self.grid_view.update_filelist()
 
@@ -61,7 +60,7 @@ class MainWindow(QMainWindow):
 				zoom_level_percent = 100 * self.image_view.zoom_level
 				scaling_string = f"{zoom_level_percent:.1f}%"
 			except:
-				scaling_string = "err!"
+				scaling_string = "?%"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
 		if not var.image_loader.finished:

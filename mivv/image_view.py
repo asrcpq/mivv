@@ -35,6 +35,7 @@ class Imageview(QGraphicsView):
 		self.mouse_mode = 0
 		self.rotation = None
 		self.move_dist = 10
+		self.lock_size = False
 		self.loader_thread = _ContentLoaderThread()
 		self.loader_thread.result.connect(self.update_content)
 		self.load_data.connect(self.loader_thread.feed_data)
@@ -76,8 +77,13 @@ class Imageview(QGraphicsView):
 			self.parent().set_label()
 			return
 		# original scaling factor is set in main_window
+		o_osf = self.original_scaling_factor
 		self._set_original_scaling_factor()
-		self._scale_view(1.0, False) # prevent overflow
+		osf = self.original_scaling_factor
+		if not self.lock_size:
+			self._scale_view(1.0, False)
+		else:
+			self._scale_view(osf / o_osf, False) # prevent overflow
 		self.parent().set_label()
 		self.render()
 
@@ -118,6 +124,7 @@ class Imageview(QGraphicsView):
 		self.parent().label_busy(True)
 		self.flip = [1.0, 1.0]
 		self.rotation = 0
+		self.lock_size = False
 
 		self.last_content_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]
@@ -231,16 +238,21 @@ class Imageview(QGraphicsView):
 			self._scale_view(1 / var.scaling_mult, False)
 		elif k == Qt.Key_1:
 			self._scale_view(self.original_scaling_factor, True)
+			self.lock_size = True
 			self._set_move_dist()
 		elif k == Qt.Key_Underscore:
 			self.flip[1] *= -1
 		elif k == Qt.Key_Bar:
 			self.flip[0] *= -1
 		elif k == Qt.Key_W:
-			self._set_content_center()
-			self._scale_view(1.0, True)
-			self.rotation = 0
-			self._set_move_dist()
+			if var.keymod_shift:
+				self.lock_size = not self.lock_size
+			else:
+				self.lock_size = False
+				self._set_content_center()
+				self._scale_view(1.0, True)
+				self.rotation = 0
+				self._set_move_dist()
 		elif k == Qt.Key_Less:
 			self.rotation -= 90
 		elif k == Qt.Key_Greater:

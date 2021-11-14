@@ -4,7 +4,7 @@ import os
 import re
 import sys
 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread
 
 import var
@@ -18,8 +18,8 @@ class ImageLoader():
 		self.callback = callback
 
 	# None None None => finished
-	def get_result(self, pixmap, file, ty):
-		if not pixmap:
+	def get_result(self, image, file, ty):
+		if not image:
 			if len(self.filelist) == 0:
 				var.logger.error(f"No file loaded")
 				var.app.quit()
@@ -28,7 +28,7 @@ class ImageLoader():
 			self.callback()
 			return
 		var.logger.debug(f"Received: {file}")
-		self.pixmaps.append(pixmap)
+		self.pixmaps.append(QPixmap.fromImage(image))
 		self.filelist.append(file)
 		self.typelist.append(ty)
 		self.callback()
@@ -130,7 +130,7 @@ class _ImageLoaderThread(QThread):
 	# nocheck, abspath must exist
 	def _create_cache(self, abspath):
 		var.logger.info(f"Generating cache: {abspath}")
-		pixmap = QPixmap(abspath)
+		pixmap = QImage(abspath)
 		if pixmap.isNull():
 			var.logger.warning(f"Create cache read fail: {abspath}")
 			return None
@@ -152,7 +152,7 @@ class _ImageLoaderThread(QThread):
 		cached_path = var.cache_path + abspath + ".jpg"
 		if not var.cache_path or abspath.startswith(var.cache_path):
 			var.logger.debug(f"Original file as cache: {abspath}")
-			return QPixmap(abspath)
+			return QImage(abspath)
 		cached_path = var.cache_path + abspath + ".jpg"
 		if not os.path.exists(cached_path):
 			var.logger.info(f"Generate cache: {abspath}")
@@ -162,5 +162,5 @@ class _ImageLoaderThread(QThread):
 			return self._create_cache(abspath)
 		if os.path.getsize(cached_path) == 0:
 			var.logger.debug(f"Original file as cache: {abspath}")
-			return QPixmap(abspath)
-		return QPixmap(cached_path)
+			return QImage(abspath)
+		return QImage(cached_path)

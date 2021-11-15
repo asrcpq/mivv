@@ -59,7 +59,7 @@ class Imageview(QGraphicsView):
 	def resizeEvent(self, _e):
 		# open failed
 		if not self.content:
-			self.parent().set_label()
+			var.main_window.set_label()
 			return
 		# original scaling factor is set in main_window
 		o_osf = self.viewport_data.original_scaling_factor
@@ -69,7 +69,7 @@ class Imageview(QGraphicsView):
 			self._scale_view(1.0, False)
 		else:
 			self._scale_view(osf / o_osf, False) # prevent overflow
-		self.parent().set_label()
+		var.main_window.set_label()
 		self.render()
 
 	def update_content(self, content):
@@ -112,7 +112,7 @@ class Imageview(QGraphicsView):
 		if not var.preload_thumbnail:
 			self._finish_loading()
 		self.setCursor(Qt.ArrowCursor)
-		self.parent().label_busy(False)
+		var.main_window.label_busy(False)
 
 	def _finish_loading(self):
 		self._set_original_scaling_factor()
@@ -127,8 +127,9 @@ class Imageview(QGraphicsView):
 		self._set_content_center()
 		self._set_canvas()
 		self.render()
-		self.show()
-		self.parent().set_label()
+		# parent() is dirty
+		self.parent().show()
+		var.main_window.set_label()
 
 	def _reset_scene(self):
 		scene = QGraphicsScene()
@@ -139,7 +140,7 @@ class Imageview(QGraphicsView):
 		var.logger.info(f"Start loading id {var.current_idx}")
 		self.viewport_data.new_image_initialize()
 		self.setCursor(Qt.WaitCursor)
-		self.parent().label_busy(True)
+		var.main_window.label_busy(True)
 		# if size not locked, zoom_level is unknown
 		if not var.lock_size:
 			self.viewport_data.zoom_level = None
@@ -341,7 +342,7 @@ class Imageview(QGraphicsView):
 		elif dp.y() < -var.image_move_zoom:
 			self._scale_view(1 / var.scaling_mult_mouse, False)
 			self.last_mouse_pos = pos
-		self.parent().set_label()
+		var.main_window.set_label()
 		self.render()
 
 	def _mouse_pan(self, pos):
@@ -410,7 +411,7 @@ class Imageview(QGraphicsView):
 				return
 			dp = pos - self.last_mouse_pos
 			if dp.y() < -var.guesture_move:
-				self.parent().grid_mode()
+				var.main_window.grid_mode()
 			elif dp.x() < -var.guesture_move:
 				self.navigate_image(-1, False)
 			elif dp.x() > var.guesture_move:

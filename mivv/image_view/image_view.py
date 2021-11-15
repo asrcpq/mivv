@@ -1,18 +1,15 @@
 from math import atan2, pi
-import sys
 
 from PyQt5.QtWidgets import (
-	QApplication, QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
+	QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QMovie, QTransform, QImageReader, QImage
-from PyQt5.QtCore import (
-	Qt, QRectF, QSizeF, QPointF, QEvent, pyqtSignal
-)
+from PyQt5.QtGui import QPixmap, QMovie, QImageReader
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal
 
+from mivv import var
 from .canvas import CanvasItem
 from .viewport_data import _ViewportData
 from .content_loader_thread import _ContentLoaderThread
-from mivv import var
 
 class Imageview(QGraphicsView):
 	load_data = pyqtSignal(str, int)
@@ -25,8 +22,10 @@ class Imageview(QGraphicsView):
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.content_size = None
 		self.content = None
+		self.ty = None
 		self.canvas_item = None
 		self.last_mouse_pos = None
+		self.last_mouse_angle = None
 		self.last_angle = None
 		self.mouse_mode = 0
 		self.viewport_data = _ViewportData()
@@ -82,7 +81,7 @@ class Imageview(QGraphicsView):
 			self.content = content
 			self.content_size = content.size()
 			if self.content.isNull():
-				var.logger.error(f"Load image error")
+				var.logger.error("Load image error")
 				self.content = None
 				return False
 			item = QGraphicsPixmapItem()
@@ -93,7 +92,7 @@ class Imageview(QGraphicsView):
 			self.content = QMovie(content)
 			self.content_size = self.content.currentImage().size()
 			if not self.content.isValid():
-				var.logger.error(f"Load movie error")
+				var.logger.error("Load movie error")
 				self.content = None
 				return False
 			self.content.start()
@@ -102,7 +101,7 @@ class Imageview(QGraphicsView):
 			label.setMovie(self.content)
 			self.scene().addWidget(label)
 		else:
-			var.logger.error(f"Unknown type: {ty}")
+			var.logger.error(f"Unknown type: {self.ty}")
 			return False
 		if not var.preload_thumbnail:
 			self._finish_loading()
@@ -218,7 +217,7 @@ class Imageview(QGraphicsView):
 		self.viewport_data.content_center = [t.width(), t.height()]
 
 	def _set_move_dist(self):
-		self.move_dist = self.viewport_data._get_move_dist()
+		self.move_dist = self.viewport_data.get_move_dist()
 
 	def _key_handler_transform(self, k):
 		if k == Qt.Key_H or k == Qt.Key_Left:
@@ -238,9 +237,9 @@ class Imageview(QGraphicsView):
 			var.lock_size = True
 			self._set_move_dist()
 		elif k == Qt.Key_Underscore:
-			self.viewport_data.flip(1)
+			self.viewport_data.set_flip(1)
 		elif k == Qt.Key_Bar:
-			self.viewport_data.flip(0)
+			self.viewport_data.set_flip(0)
 		elif k == Qt.Key_W:
 			if not var.keymod_shift:
 				var.lock_size = False
@@ -378,7 +377,7 @@ class Imageview(QGraphicsView):
 			return
 		if e.buttons() != Qt.LeftButton:
 			self.canvas_item.on_draw = False
-			False
+			return
 		if ty == QEvent.TabletMove:
 			self.canvas_item.update_pos(pos)
 			self.canvas_item.draw()
@@ -388,14 +387,13 @@ class Imageview(QGraphicsView):
 		if e.buttons() & Qt.MiddleButton:
 			if self.mouse_mode == 3:
 				return self._mouse_shift_rotate(pos)
-			elif self.mouse_mode == 1:
+			if self.mouse_mode == 1:
 				return self._mouse_ctrl_zoom(pos)
-			elif var.keymod_shift:
+			if var.keymod_shift:
 				return self._mouse_shift_rotate(pos)
-			elif var.keymod_control:
+			if var.keymod_control:
 				return self._mouse_ctrl_zoom(pos)
-			else:
-				return self._mouse_pan(pos)
+			return self._mouse_pan(pos)
 		elif e.buttons() & Qt.RightButton:
 			pos = e.localPos()
 			if self.mouse_mode == 0:

@@ -2,10 +2,9 @@ from glob import glob, escape
 from pathlib import Path
 import os
 import re
-import sys
 
 from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread
+from PyQt5.QtCore import Qt, pyqtSignal, QThread
 
 from mivv import var
 
@@ -16,12 +15,13 @@ class ImageLoader():
 		self.pixmaps = []
 		self.finished = False
 		self.callback = callback
+		self.loader_thread = None
 
 	# None None None => finished
 	def get_result(self, image, file, ty):
 		if not image:
 			if len(self.filelist) == 0:
-				var.logger.error(f"No file loaded")
+				var.logger.error("No file loaded")
 				var.app.quit()
 				return
 			self.finished = True
@@ -46,11 +46,11 @@ class _ImageLoaderThread(QThread):
 	result = pyqtSignal(object, str, int)
 
 	@staticmethod
-	def dict_sort(l): 
+	def dict_sort(l):
 		return sorted(l, reverse = True)
 
 	@staticmethod
-	def natural_sort(l): 
+	def natural_sort(l):
 		convert = lambda text: int(text) if text.isdigit() else text
 		alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
 		return sorted(l, key=alphanum_key, reverse = True)

@@ -6,9 +6,9 @@ class _ContentLoaderThread(QThread):
 
 	def __init__(self):
 		QThread.__init__(self)
-		self.filenames = None
+		self.filename = None
 		self.run_flag = False
-		self.tys = None
+		self.ty = None
 
 	def feed_data(self, filename, ty):
 		self.filename = filename

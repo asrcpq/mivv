@@ -16,7 +16,7 @@ PyQt5 simple image viewer.
 
 1. have pyqt5 installed
 
-2. `python3 mivv --help`
+2. `PYTHONPATH=. python3 mivv --help`
 
 see control.md for keybind
 

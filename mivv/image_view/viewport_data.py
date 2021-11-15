@@ -1,3 +1,5 @@
+from math import ceil, floor
+
 from PyQt5.QtGui import QTransform
 
 from mivv import var
@@ -69,6 +71,13 @@ class _ViewportData():
 
 	def rotate(self, degree):
 		self.rotation += degree
+
+	# direction +1(next 90) or -1(prev 90)
+	def rotate90(self, direction):
+		if direction == -1:
+			self.rotation = (ceil(self.rotation / 90) - 1) * 90
+		else:
+			self.rotation = (floor(self.rotation / 90) + 1) * 90
 
 	def move(self, dx, dy):
 		self.content_center[0] += dx

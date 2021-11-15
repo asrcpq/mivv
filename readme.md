@@ -33,3 +33,5 @@ see control.md for keybind
 * left up align
 
 * more draw: clear, undo, colorpicker, fill...
+
+* rotation + fill?

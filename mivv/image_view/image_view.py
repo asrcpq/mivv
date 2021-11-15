@@ -248,10 +248,9 @@ class Imageview(QGraphicsView):
 				self.viewport_data.set_rotation(0)
 				self._set_move_dist()
 		elif k == Qt.Key_Less:
-			# TODO, set to 0 90 180 270
-			self.viewport_data.rotate(-90)
+			self.viewport_data.rotate90(-1)
 		elif k == Qt.Key_Greater:
-			self.viewport_data.rotate(90)
+			self.viewport_data.rotate90(1)
 		else:
 			return False
 		self.render()

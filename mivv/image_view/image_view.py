@@ -6,12 +6,12 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QPixmap, QMovie, QTransform, QImageReader, QImage
 from PyQt5.QtCore import (
-	Qt, QRectF, QSizeF, QPointF, QEvent,
-	pyqtSlot, pyqtSignal, QThread
+	Qt, QRectF, QSizeF, QPointF, QEvent, pyqtSignal
 )
 
-from mivv.canvas import CanvasItem
+from .canvas import CanvasItem
 from .viewport_data import _ViewportData
+from .content_loader_thread import _ContentLoaderThread
 from mivv import var
 
 class Imageview(QGraphicsView):
@@ -122,6 +122,7 @@ class Imageview(QGraphicsView):
 		self._set_content_center()
 		self._set_canvas()
 		self.render()
+		self.show()
 		self.parent().set_label()
 
 	def _reset_scene(self):
@@ -187,7 +188,6 @@ class Imageview(QGraphicsView):
 		if old_idx == var.current_idx:
 			return
 		self.load()
-		self.render()
 
 	def _scale_view(self, offset, abs_k = False):
 		self.viewport_data.scale_view(offset, abs_k)
@@ -422,35 +422,3 @@ class Imageview(QGraphicsView):
 
 	def get_zoom_level(self):
 		return self.viewport_data.zoom_level
-
-class _ContentLoaderThread(QThread):
-	result = pyqtSignal(object)
-
-	def __init__(self):
-		QThread.__init__(self)
-		self.filenames = None
-		self.run_flag = False
-		self.tys = None
-
-	def feed_data(self, filename, ty):
-		self.filename = filename
-		self.ty = ty
-		self.run_flag = True
-		self.start()
-
-	def run(self):
-		while self.run_flag:
-			self.run_flag = False
-			if self.ty == 1:
-				result = QImage(self.filename)
-			elif self.ty == 2:
-				result = self.filename
-				# result = QMovie(self.filename)
-			else:
-				result = None
-			if self.run_flag:
-				continue
-			self.result.emit(result)
-
-	def stop(self):
-		self.wait()

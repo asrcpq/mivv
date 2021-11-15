@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QWidget
+from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 
-from thumbnail import Thumbnail
+from mivv.thumbnail import Thumbnail
 from mivv import var
 
 class Gridview(QWidget):

@@ -1,6 +1,6 @@
 import os
 
-from logger import get_logger
+from mivv.logger import get_logger
 
 # config values
 ext_type = {
@@ -55,5 +55,5 @@ if "XDG_CONFIG_HOME" in os.environ:
 if "XDG_CACHE_HOME" in os.environ:
 	cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
 else:
-	logger.warn("XDG_CACHE_HOME not set. Will not read/write cache.")
+	logger.warning("XDG_CACHE_HOME not set. Will not read/write cache.")
 	cache_path = None

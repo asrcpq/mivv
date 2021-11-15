@@ -10,7 +10,7 @@ class _ViewportData():
 		self.content_center = None
 		self.original_scaling_factor = None
 		self.original_scaling_limit = None
-		self.rotation = None
+		self.rotation: float = 0
 
 	def scale_view(self, offset, abs_k = False):
 		if abs_k:
@@ -37,14 +37,14 @@ class _ViewportData():
 			osf / var.zoom_level_limit[0],
 		]
 
-	def _get_move_dist(self):
+	def get_move_dist(self):
 		return var.k_move * var.hidpi * self.scaling_factor / self.original_scaling_factor
 
 	# whether invert rotation angle
 	def rotate_multiplier(self):
 		return self.flip[0] * self.flip[1]
 
-	def flip(self, axis: int):
+	def set_flip(self, axis: int):
 		self.flip[axis] = -self.flip[axis]
 
 	def get_transform(self, k):

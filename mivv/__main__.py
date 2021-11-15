@@ -1,16 +1,16 @@
-from time import time
-startup_time = time()
-
 import logging
 import sys
 import os
 import argparse
+from time import time
 
 from PyQt5.QtWidgets import QApplication
 
-from main_window import MainWindow
-from image_loader import ImageLoader
+from mivv.main_window import MainWindow
+from mivv.image_loader import ImageLoader
 from mivv import var
+
+startup_time = time()
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "mivv")

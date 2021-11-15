@@ -6,12 +6,12 @@ class Canvas(QPixmap):
 	def __init__(self, size):
 		super().__init__(size)
 		self.positions = [None, None] # last, new
-		self.fill(Qt.transparent);
+		self.fill(Qt.transparent)
 		self.pen = QPen(Qt.green)
 		self.pen.setWidth(5)
 
 	def draw(self) -> QRectF:
-		if self.positions[0] == None or self.positions[1] == None:
+		if not self.positions[0] or not self.positions[1]:
 			return
 		painter = QPainter(self)
 		painter.setBrush(Qt.green)
@@ -38,7 +38,7 @@ class CanvasItem(QGraphicsItem):
 	def boundingRect(self):
 		return QRectF(self.canvas.rect())
 
-	def paint(self, painter, option, widget):
+	def paint(self, painter, option, _widget):
 		painter.drawPixmap(option.rect, self.canvas)
 
 	def draw(self):

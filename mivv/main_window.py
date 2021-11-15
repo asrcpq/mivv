@@ -1,11 +1,9 @@
-import sys
-
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
-from grid_view import Gridview
-from image_view.image_view import Imageview
+from mivv.grid_view import Gridview
+from mivv.image_view.image_view import Imageview
 from mivv import var
 
 class MainWindow(QMainWindow):
@@ -130,8 +128,7 @@ class MainWindow(QMainWindow):
 				self.image_mode()
 		elif k == Qt.Key_Escape or k == Qt.Key_Q:
 			var.app.quit()
-		elif k == Qt.Key_W:
-			if var.keymod_shift:
+		elif k == Qt.Key_W and var.keymod_shift:
 				var.lock_size = not var.lock_size
 				self.set_label()
 		elif k == Qt.Key_T:

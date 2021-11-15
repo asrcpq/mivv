@@ -106,9 +106,6 @@ class MainWindow(QMainWindow):
 		self.image_view.load()
 		self.image_view.resize(self.width(), self.height() - var.bar_height)
 		self.grid_view.hide()
-		self.image_view.show()
-		if self.isVisible():
-			self.image_view.render()
 		self.mode = 1
 		self.set_label() # only for zoom level
 

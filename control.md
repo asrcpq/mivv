@@ -53,3 +53,5 @@ Keyboard:
 * T: toggle preload thumbnail
 
 * c: clear canvas
+
+* B: toggle chessboard background

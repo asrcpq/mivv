@@ -40,6 +40,7 @@ keymod_shift = False
 keymod_control = False
 preload_thumbnail = False
 lock_size = False # on resize
+chessboard_background = False
 
 if "XDG_CONFIG_HOME" in os.environ:
 	config_path = f"{os.environ['XDG_CONFIG_HOME']}/mivv/config.py"

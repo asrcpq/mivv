@@ -113,15 +113,19 @@ class MainWindow(QMainWindow):
 	def keyReleaseEvent(e):
 		k = e.key()
 		if k == Qt.Key_Shift:
+			var.logger.debug("Shift release")
 			var.keymod_shift = False
 		elif k == Qt.Key_Control:
+			var.logger.debug("Control release")
 			var.keymod_control = False
 
 	def keyPressEvent(self, e):
 		k = e.key()
 		if k == Qt.Key_Shift:
+			var.logger.debug("Shift pressed")
 			var.keymod_shift = True
 		elif k == Qt.Key_Control:
+			var.logger.debug("Control pressed")
 			var.keymod_control = True
 		elif k == Qt.Key_Return or k == Qt.Key_Tab:
 			if self.mode == 1:
@@ -151,3 +155,11 @@ class MainWindow(QMainWindow):
 			self.image_display.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:
 			self.grid_view.resize(self.width(), self.height() - var.bar_height)
+
+		# bug: randomly modifier keyreleaseevent not triggered during resize
+		# when wm resize involves shift key to be pressed, like in i3wm.
+		# This can be fixed after wayland key modifier works
+		# during mouse event(see QTBUG-61488)
+		# then we don't need to implement our own modifier tracker
+		var.keymod_shift = False
+		var.keymod_control = False

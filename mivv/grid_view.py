@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtCore import Qt
 
 from thumbnail import Thumbnail
-import var
+from mivv import var
 
 class Gridview(QWidget):
 	def __init__(self, parent = None):

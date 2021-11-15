@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication
 
 from main_window import MainWindow
 from image_loader import ImageLoader
-import var
+from mivv import var
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "mivv")

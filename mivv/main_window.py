@@ -37,6 +37,7 @@ class MainWindow(QMainWindow):
 		self.show()
 
 	def loader_callback(self):
+		self.set_label()
 		if self.mode == 2:
 			self.grid_view.update_filelist()
 

@@ -35,3 +35,5 @@ see control.md for keybind
 * more draw: clear, undo, colorpicker, fill...
 
 * rotation + fill?
+
+* file identifier(instead of by extension)?

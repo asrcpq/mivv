@@ -23,7 +23,8 @@ class _ContentLoaderThread(QThread):
 				result = QImage(self.filename)
 			elif self.ty == 2:
 				result = self.filename
-				# result = QMovie(self.filename)
+			elif self.ty == 3:
+				result = self.filename
 			else:
 				result = None
 			if self.run_flag:

@@ -4,7 +4,7 @@ from PyQt5.QtCore import Qt, QRectF
 
 class Canvas(QPixmap):
 	def __init__(self, size):
-		super().__init__(size)
+		super().__init__(size.width(), size.height())
 		self.positions = [None, None] # last, new
 		self.fill(Qt.transparent)
 		self.pen = QPen(Qt.green)

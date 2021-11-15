@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import (
 	QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QImageReader
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal
+from PyQt5.QtCore import Qt, QRectF, QSize, QSizeF, QEvent, pyqtSignal
+from PyQt5.QtSvg import QGraphicsSvgItem
 
 from mivv import var
 from .canvas import CanvasItem
@@ -20,7 +21,7 @@ class Imageview(QGraphicsView):
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.content_size = None
+		self.content_size: QSizeF = QSizeF()
 		self.content = None
 		self.ty = None
 		self.canvas_item = None
@@ -100,6 +101,11 @@ class Imageview(QGraphicsView):
 			label.resize(self.content_size)
 			label.setMovie(self.content)
 			self.scene().addWidget(label)
+		elif self.ty == 3:
+			item = QGraphicsSvgItem(content)
+			self.content = item
+			self.content_size = item.boundingRect().size()
+			self.scene().addItem(item)
 		else:
 			var.logger.error(f"Unknown type: {self.ty}")
 			return False

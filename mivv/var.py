@@ -5,15 +5,11 @@ from mivv.logger import get_logger
 # config values
 ext_type = {
 	".png": 1,
-	".PNG": 1,
 	".jpg": 1,
-	".JPG": 1,
 	".jpeg": 1,
-	".JPEG": 1,
 	".bmp": 1,
-	".BMP": 1,
 	".gif": 2,
-	".GIF": 2,
+	".svg": 3,
 }
 cache_size = 256
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes

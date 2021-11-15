@@ -3,7 +3,7 @@ from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from mivv.grid_view import Gridview
-from mivv.image_view.image_view import Imageview
+from mivv.image_display import ImageDisplay
 from mivv import var
 
 class MainWindow(QMainWindow):
@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
 		self.setGeometry(0, 0, 640, 480)
 
 		self.mode = None
-		self.image_view = Imageview(self)
+		self.image_display = ImageDisplay(self)
 		self.grid_view = Gridview(self)
 
 		labels = []
@@ -28,6 +28,7 @@ class MainWindow(QMainWindow):
 		self.fn_label = labels[0]
 		self.info_label = labels[1]
 
+	def initialize_view(self):
 		if var.start_in_grid_mode:
 			self.grid_mode()
 		else:
@@ -55,7 +56,7 @@ class MainWindow(QMainWindow):
 			status_string = f"[{status_string}]"
 		if self.mode == 1:
 			try:
-				zoom_level_percent = 100 * self.image_view.get_zoom_level()
+				zoom_level_percent = 100 * self.image_display.get_zoom_level()
 				scaling_string = f"{zoom_level_percent:.1f}%"
 			except TypeError:
 				scaling_string = "?%"
@@ -92,7 +93,7 @@ class MainWindow(QMainWindow):
 		)
 
 	def grid_mode(self):
-		self.image_view.hide()
+		self.image_display.hide()
 		if not self.grid_view.reset_layout():
 			self.grid_view.set_cursor(False)
 		self.grid_view.resize(self.width(), self.height() - var.bar_height)
@@ -101,8 +102,9 @@ class MainWindow(QMainWindow):
 		self.set_label() # only for zoom level
 
 	def image_mode(self):
-		self.image_view.load()
-		self.image_view.resize(self.width(), self.height() - var.bar_height)
+		# TODO no load if image not changed
+		self.image_display.load()
+		self.image_display.resize(self.width(), self.height() - var.bar_height)
 		self.grid_view.hide()
 		self.mode = 1
 		self.set_label() # only for zoom level
@@ -138,13 +140,14 @@ class MainWindow(QMainWindow):
 			self.set_label()
 		else:
 			if self.mode == 1:
-				self.image_view.key_handler(k)
+				self.image_display.key_handler(k)
 			elif self.mode == 2:
 				self.grid_view.key_handler(k)
 			self.set_label()
 
 	def resizeEvent(self, _e):
+		var.logger.info(f"Resized to {self.width()} {self.height()}")
 		if self.mode == 1:
-			self.image_view.resize(self.width(), self.height() - var.bar_height)
+			self.image_display.resize(self.width(), self.height() - var.bar_height)
 		elif self.mode == 2:
 			self.grid_view.resize(self.width(), self.height() - var.bar_height)

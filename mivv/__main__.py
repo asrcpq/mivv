@@ -72,6 +72,8 @@ def set_loglevel(loglevel):
 def loader_callback():
 	if not var.main_window:
 		var.main_window = MainWindow()
+		# initialize_view use var.main_window, thus needs to be split
+		var.main_window.initialize_view()
 	var.main_window.loader_callback()
 
 if __name__ == '__main__':

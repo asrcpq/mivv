@@ -96,7 +96,7 @@ class _ImageLoaderThread(QThread):
 			if not os.path.exists(file):
 				continue
 			_filename, ext = os.path.splitext(file)
-			if ext not in var.ext_type:
+			if ext.casefold() not in var.ext_type:
 				continue
 			ty = var.ext_type[ext]
 			abspath = os.path.abspath(file)

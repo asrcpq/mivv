@@ -7,7 +7,7 @@ import sys
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import Qt, pyqtSlot, pyqtSignal, QThread
 
-import var
+from mivv import var
 
 class ImageLoader():
 	def __init__(self, callback):

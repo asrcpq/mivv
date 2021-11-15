@@ -5,8 +5,8 @@ from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from grid_view import Gridview
-from image_view import Imageview
-import var
+from image_view.image_view import Imageview
+from mivv import var
 
 class MainWindow(QMainWindow):
 	def __init__(self):
@@ -57,9 +57,9 @@ class MainWindow(QMainWindow):
 			status_string = f"[{status_string}]"
 		if self.mode == 1:
 			try:
-				zoom_level_percent = 100 * self.image_view.zoom_level
+				zoom_level_percent = 100 * self.image_view.get_zoom_level()
 				scaling_string = f"{zoom_level_percent:.1f}%"
-			except:
+			except TypeError:
 				scaling_string = "?%"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"

@@ -17,7 +17,8 @@ class Imageview(QGraphicsView):
 
 	def __init__(self, parent = None):
 		super().__init__(parent)
-		self.setStyleSheet(f"background-color: {var.background};")
+		#self.setStyleSheet(f"background-color: {var.background};")
+		self.setAttribute(Qt.WA_TranslucentBackground)
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -59,7 +60,6 @@ class Imageview(QGraphicsView):
 	def resizeEvent(self, _e):
 		# open failed
 		if not self.content:
-			var.main_window.set_label()
 			return
 		# original scaling factor is set in main_window
 		o_osf = self.viewport_data.original_scaling_factor
@@ -69,7 +69,6 @@ class Imageview(QGraphicsView):
 			self._scale_view(1.0, False)
 		else:
 			self._scale_view(osf / o_osf, False) # prevent overflow
-		var.main_window.set_label()
 		self.render()
 
 	def update_content(self, content):

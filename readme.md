@@ -4,16 +4,6 @@ PyQt5 simple image viewer.
 
 ![demo](https://asrcpq.github.io/resources/2111/mivv_demo.gif)
 
-## Security note
-
-Because mivv write data to cache, there is possiblity that
-mivv still have unknown serious bugs that cause file corruption.
-A good idea is to wrap this program with firejail, for example:
-
-`firejail --noprofile --read-only=$HOME --read-write=$XDG_CACHE_HOME mivv`
-
-Please consider reporting a bug if any violation is observed.
-
 ## features
 
 * async image/thumbnail loading
@@ -30,6 +20,12 @@ Please consider reporting a bug if any violation is observed.
 
 see control.md for keybind
 
+## known bugs that cannot be fixed, because limitations of QT framework
+
+* huge image crash
+
+* pdf/complete svg support
+
 ## todo(maybe)
 
 * toggle bar
@@ -45,7 +41,5 @@ see control.md for keybind
 * more draw: clear, undo, colorpicker, fill...
 
 * rotation + fill?
-
-* file identifier(instead of by extension)?
 
 * memory management

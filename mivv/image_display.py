@@ -10,6 +10,8 @@ class ImageDisplay(QLabel):
 		super().__init__(parent)
 		self.image_view = Imageview(self)
 		self.background = None
+		if var.chessboard_background:
+			self.set_background()
 
 	def get_zoom_level(self):
 		return self.image_view.get_zoom_level()

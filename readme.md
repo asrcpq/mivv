@@ -20,9 +20,7 @@ PyQt5 simple image viewer.
 
 see control.md for keybind
 
-## known bugs that cannot be fixed, because limitations of QT framework
-
-* huge image crash
+## known QT bugs/limitations that cannot be fixed
 
 * pdf/complete svg support
 
@@ -43,3 +41,9 @@ see control.md for keybind
 * rotation + fill?
 
 * memory management
+
+	* more image cache(next prev)
+
+	* prevent huge image from being loaded
+
+	* load thumbnails dynamically

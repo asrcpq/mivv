@@ -62,6 +62,8 @@ class MainWindow(QMainWindow):
 				scaling_string = "?%"
 		elif self.mode == 2:
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
+		else:
+			scaling_string = "?%"
 		if not var.image_loader.finished:
 			unfinished_indicator = "+"
 		else:

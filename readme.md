@@ -37,3 +37,5 @@ see control.md for keybind
 * rotation + fill?
 
 * file identifier(instead of by extension)?
+
+* memory management

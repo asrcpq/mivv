@@ -92,7 +92,6 @@ class Imageview(QGraphicsView):
 			self.content = QMovie(content)
 			# don't use content size, gif image identified as movie breaks
 			self.content_size = QImageReader(content).size()
-			print(self.content_size)
 			if not self.content.isValid():
 				var.logger.error("Load movie error")
 				self.content = None

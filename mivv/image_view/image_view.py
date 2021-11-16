@@ -362,6 +362,7 @@ class Imageview(QGraphicsView):
 
 	def tabletEvent(self, e):
 		pos = e.posF()
+		pressure = e.pressure()
 		pos = self.mapToScene(pos.x(), pos.y())
 		ty = e.type()
 		if (
@@ -370,23 +371,24 @@ class Imageview(QGraphicsView):
 			ty == QEvent.TabletPress
 		):
 			var.logger.debug("Tablet press")
-			self.canvas_item.update_pos(pos)
+			self.canvas_item.draw(pos, pressure)
 			self.canvas_item.on_draw = True
 			return
 		if not self.canvas_item.on_draw:
 			return
 		if ty == QEvent.TabletRelease:
 			var.logger.debug("Tablet release")
-			self.canvas_item.update_pos(pos)
-			self.canvas_item.draw()
+			self.canvas_item.finish()
+			# generate undo patch here
 			self.canvas_item.on_draw = False
 			return
 		if e.buttons() != Qt.LeftButton:
 			self.canvas_item.on_draw = False
 			return
 		if ty == QEvent.TabletMove:
-			self.canvas_item.update_pos(pos)
-			self.canvas_item.draw()
+			self.canvas_item.draw(pos, pressure)
+		# TODO: get update rect
+		self.update()
 
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()

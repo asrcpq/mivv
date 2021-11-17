@@ -14,10 +14,11 @@ class Canvas(QPixmap):
 		self.mb = DummyBrush()
 
 	def draw(self, pos, pressure):
-		pixmap_patch, p = self.mb.draw(pos, pressure)
+		pixmap_patch, p = self.mb.draw(self, pos, pressure)
 		if not pixmap_patch:
 			return
 		painter = QPainter(self)
+		painter.setCompositionMode(QPainter.CompositionMode_Source)
 		painter.drawPixmap(p, pixmap_patch)
 
 	def finish(self):
@@ -40,3 +41,6 @@ class CanvasItem(QGraphicsItem):
 
 	def finish(self):
 		self.canvas.finish()
+
+	def set_operator(self, is_eraser):
+		self.canvas.mb.erase_mode = is_eraser

@@ -18,7 +18,7 @@ PyQt5 simple image viewer.
 
 2. `PYTHONPATH=. python3 mivv --help`
 
-see control.md for keybind
+see `mivv/var.py` for keybind
 
 ## known QT bugs/limitations that cannot be fixed
 

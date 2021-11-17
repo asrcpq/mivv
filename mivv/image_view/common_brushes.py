@@ -21,7 +21,7 @@ class DummyBrush():
 		if len(self.hist_pos) == 1:
 			return (None, None)
 		if self.erase_mode:
-			size = 3 * self.size # larger eraser
+			size = 5 * self.size # larger eraser
 		else:
 			size = self.size
 		s0 = pressure * size

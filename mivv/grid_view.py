@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import Qt
 
 from mivv.thumbnail import Thumbnail
+from mivv.keydef import Keydef
 from mivv import var
 
 class Gridview(QWidget):
@@ -214,36 +215,35 @@ class Gridview(QWidget):
 		self._xreset_layout()
 
 	def key_handler(self, k):
-		if k == Qt.Key_L or k == Qt.Key_Right:
+		if k == Keydef.view_right:
 			self._offset_cursor(1, False)
-		elif k == Qt.Key_H or k == Qt.Key_Left:
+		elif k == Keydef.view_left:
 			self._offset_cursor(-1, False)
-		elif k == Qt.Key_J or k == Qt.Key_Down:
+		elif k == Keydef.view_down:
 			self._offset_cursor(self.count_h, False)
-		elif k == Qt.Key_K or k == Qt.Key_Up:
+		elif k == Keydef.view_up:
 			self._offset_cursor(-self.count_h, False)
-		elif k == Qt.Key_G:
-			if var.keymod_shift:
-				self._offset_cursor(len(var.image_loader.filelist) - 1, True)
-			else:
-				self._offset_cursor(0, True)
-		elif k == Qt.Key_O:
+		elif k == Keydef.view_last:
+			self._offset_cursor(len(var.image_loader.filelist) - 1, True)
+		elif k == Keydef.view_first:
+			self._offset_cursor(0, True)
+		elif k == Keydef.view_zoom_out:
 			self._set_zoom_level(-1, False)
-		elif k == Qt.Key_I:
+		elif k == Keydef.view_zoom_in:
 			self._set_zoom_level(1, False)
-		elif k == Qt.Key_0 or k == Qt.Key_AsciiCircum:
-			self._offset_cursor(-self.cursor[0], False)
-		elif k == Qt.Key_Dollar:
-			self._offset_cursor(self.count_h - self.cursor[0] - 1, False)
-		elif k == Qt.Key_1:
+		elif k == Keydef.view_zoom_origin:
 			self._set_zoom_level(var.grid_size_idx_default, True)
-		elif k == Qt.Key_B and var.keymod_control:
+		elif k == Keydef.grid_hol:
+			self._offset_cursor(-self.cursor[0], False)
+		elif k == Keydef.grid_eol:
+			self._offset_cursor(self.count_h - self.cursor[0] - 1, False)
+		elif k == Keydef.grid_page_up:
 			self._offset_cursor(-self.count_h * self.count_v)
-		elif k == Qt.Key_F and var.keymod_control:
+		elif k == Keydef.grid_page_down:
 			self._offset_cursor(self.count_h * self.count_v)
-		elif k == Qt.Key_U and var.keymod_control:
+		elif k == Keydef.grid_page_up_half:
 			self._offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
-		elif k == Qt.Key_D and var.keymod_control:
+		elif k == Keydef.grid_page_down_half:
 			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
 	def mouseMoveEvent(self, e):

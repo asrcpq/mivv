@@ -8,6 +8,7 @@ from PyQt5.QtCore import Qt, QRectF, QSize, QSizeF, QEvent, pyqtSignal
 from PyQt5.QtSvg import QGraphicsSvgItem
 
 from mivv import var
+from mivv.keydef import Keydef
 from .canvas import CanvasItem
 from .viewport_data import _ViewportData
 from .content_loader_thread import _ContentLoaderThread
@@ -200,19 +201,15 @@ class Imageview(QGraphicsView):
 		self._set_move_dist()
 
 	def _key_handler_navigation(self, k):
-		if k == Qt.Key_N:
-			if var.keymod_shift:
-				self.navigate_image(-1, False)
-			else:
-				self.navigate_image(1, False)
-		elif k == Qt.Key_P:
+		if k == Keydef.view_next:
+			self.navigate_image(1, False)
+		elif k == Keydef.view_prev:
 			self.navigate_image(-1, False)
-		elif k == Qt.Key_G:
-			if var.keymod_shift:
-				self.navigate_image(len(var.image_loader.filelist) - 1, True)
-			else:
-				self.navigate_image(0, True)
-		elif k == Qt.Key_R:
+		elif k == Keydef.view_last:
+			self.navigate_image(len(var.image_loader.filelist) - 1, True)
+		elif k == Keydef.view_first:
+			self.navigate_image(0, True)
+		elif k == Keydef.image_navi_reload:
 			self.load()
 			self.render()
 		else:
@@ -227,36 +224,36 @@ class Imageview(QGraphicsView):
 		self.move_dist = self.viewport_data.get_move_dist()
 
 	def _key_handler_transform(self, k):
-		if k == Qt.Key_H or k == Qt.Key_Left:
+		if k == Keydef.view_left:
 			self.viewport_data.move(-self.move_dist, 0)
-		elif k == Qt.Key_L or k == Qt.Key_Right:
+		elif k == Keydef.view_right:
 			self.viewport_data.move(self.move_dist, 0)
-		elif k == Qt.Key_J or k == Qt.Key_Down:
+		elif k == Keydef.view_down:
 			self.viewport_data.move(0, self.move_dist)
-		elif k == Qt.Key_K or k == Qt.Key_Up:
+		elif k == Keydef.view_up:
 			self.viewport_data.move(0, -self.move_dist)
-		elif k == Qt.Key_O:
+		elif k == Keydef.view_zoom_out:
 			self._scale_view(var.scaling_mult, False)
-		elif k == Qt.Key_I:
+		elif k == Keydef.view_zoom_in:
 			self._scale_view(1 / var.scaling_mult, False)
-		elif k == Qt.Key_1:
+		elif k == Keydef.view_zoom_origin:
 			self._scale_view(self.viewport_data.original_scaling_factor, True)
 			var.lock_size = True
 			self._set_move_dist()
-		elif k == Qt.Key_Underscore:
+		elif k == Keydef.image_view_mirror_h:
 			self.viewport_data.set_flip(1)
-		elif k == Qt.Key_Bar:
+		elif k == Keydef.image_view_mirror_v:
 			self.viewport_data.set_flip(0)
-		elif k == Qt.Key_W:
+		elif k == Keydef.image_view_zoom_fill:
 			if not var.keymod_shift:
 				var.lock_size = False
 				self._set_content_center()
 				self._scale_view(1.0, True)
 				self.viewport_data.set_rotation(0)
 				self._set_move_dist()
-		elif k == Qt.Key_Less:
+		elif k == Keydef.image_view_ccw:
 			self.viewport_data.rotate90(-1)
-		elif k == Qt.Key_Greater:
+		elif k == Keydef.image_view_cw:
 			self.viewport_data.rotate90(1)
 		else:
 			return False
@@ -266,7 +263,7 @@ class Imageview(QGraphicsView):
 	def _key_handler_movie(self, k):
 		if not isinstance(self.content, QMovie):
 			return False
-		if k == Qt.Key_Space:
+		if k == Keydef.image_movie_pause_toggle:
 			s = self.content.state()
 			if s == QMovie.Running:
 				self.content.setPaused(True)
@@ -274,7 +271,7 @@ class Imageview(QGraphicsView):
 				self.content.setPaused(False)
 			else:
 				var.logger.error("Unknown state")
-		if k == Qt.Key_S:
+		if k == Keydef.image_movie_frame_forward:
 			n = self.content.currentFrameNumber()
 			var.logger.debug(f"Frame before keypress: {n}")
 			self.content.jumpToFrame(n + 1)
@@ -289,14 +286,14 @@ class Imageview(QGraphicsView):
 		self.scene().addItem(self.canvas_item)
 
 	def _key_handler_canvas(self, k):
-		if k == Qt.Key_C:
+		if k == Keydef.image_canvas_clear:
 			if self.canvas_item:
 				self.scene().removeItem(self.canvas_item)
 			self._set_canvas()
-		elif k == Qt.Key_E and var.keymod_shift:
+		elif k == Keydef.image_canvas_eraser:
 			if self.canvas_item:
 				self.canvas_item.set_operator(True)
-		elif k == Qt.Key_A:
+		elif k == Keydef.image_canvas_pen:
 			if self.canvas_item:
 				self.canvas_item.set_operator(False)
 		else:

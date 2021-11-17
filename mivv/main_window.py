@@ -2,9 +2,10 @@ from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
+from mivv import var
 from mivv.grid_view import Gridview
 from mivv.image_display import ImageDisplay
-from mivv import var
+from mivv.keydef import Keydef
 
 class MainWindow(QMainWindow):
 	def __init__(self):
@@ -122,26 +123,33 @@ class MainWindow(QMainWindow):
 			var.keymod_control = False
 
 	def keyPressEvent(self, e):
-		k = e.key()
-		if k == Qt.Key_Shift:
+		if e.key() == Qt.Key_Shift:
 			var.logger.debug("Shift pressed")
 			var.keymod_shift = True
-		elif k == Qt.Key_Control:
+			return
+		elif e.key() == Qt.Key_Control:
 			var.logger.debug("Control pressed")
 			var.keymod_control = True
-		elif k == Qt.Key_Return or k == Qt.Key_Tab:
+			return
+		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
+		try:
+			k = var.keymap[(e.key(), bit)]
+		except KeyError:
+			return
+		var.logger.info(k)
+		if k == Keydef.toggle_grid_mode:
 			if self.mode == 1:
 				self.grid_mode()
 			elif self.mode == 2:
 				self.image_mode()
 			else:
 				raise Exception('Unknown mode')
-		elif k == Qt.Key_Escape or k == Qt.Key_Q:
+		elif k == Keydef.quit:
 			var.app.quit()
-		elif k == Qt.Key_W and var.keymod_shift:
+		elif k == Keydef.lock_size:
 			var.lock_size = not var.lock_size
 			self.set_label()
-		elif k == Qt.Key_T and var.keymod_shift:
+		elif k == Keydef.preload_thumbnail:
 			var.preload_thumbnail = not var.preload_thumbnail
 			self.set_label()
 		else:

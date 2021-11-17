@@ -30,6 +30,7 @@ Keydef = Enum('Keydef', [
 	'image_canvas_eraser',
 	'image_canvas_pen',
 	'image_canvas_clear',
+	'image_chessboard',
 	# grid_mode
 	'grid_hol',
 	'grid_eol',

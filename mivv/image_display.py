@@ -3,6 +3,7 @@ from PyQt5.QtGui import QPixmap, QPainter, QColor
 from PyQt5.QtCore import Qt
 
 from mivv.image_view.image_view import Imageview
+from mivv.keydef import Keydef
 from mivv import var
 
 class ImageDisplay(QLabel):
@@ -43,7 +44,7 @@ class ImageDisplay(QLabel):
 		var.main_window.set_label()
 
 	def key_handler(self, k):
-		if k == Qt.Key_B and var.keymod_shift:
+		if k == Keydef.image_chessboard:
 			if self.background:
 				self.background = None
 				self.clear()

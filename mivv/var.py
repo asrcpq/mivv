@@ -31,14 +31,12 @@ background = "rgb(0, 0, 0)"
 border_color = "rgb(255, 255, 255)"
 chessboard_background = False # startup value only
 
-# keymap
 # modifier bit: shift 1, control 2
-keymap = {
+keymap_common = {
 	(Qt.Key_Q, 0): Keydef.quit,
 	(Qt.Key_Return, 0): Keydef.toggle_grid_mode,
 	(Qt.Key_W, 1): Keydef.lock_size,
 	(Qt.Key_T, 1): Keydef.preload_thumbnail,
-	# common
 	(Qt.Key_H, 0): Keydef.view_left,
 	(Qt.Key_L, 0): Keydef.view_right,
 	(Qt.Key_K, 0): Keydef.view_up,
@@ -50,7 +48,11 @@ keymap = {
 	(Qt.Key_P, 0): Keydef.view_prev,
 	(Qt.Key_G, 0): Keydef.view_first,
 	(Qt.Key_G, 1): Keydef.view_last,
-	# image mode
+}
+
+keymap_image = {
+	(Qt.Key_PageDown, 0): Keydef.view_next,
+	(Qt.Key_PageUp, 0): Keydef.view_prev,
 	(Qt.Key_W, 0): Keydef.image_view_zoom_fill,
 	(Qt.Key_Greater, 1): Keydef.image_view_cw,
 	(Qt.Key_Less, 1): Keydef.image_view_ccw,
@@ -62,11 +64,16 @@ keymap = {
 	(Qt.Key_E, 1): Keydef.image_canvas_eraser,
 	(Qt.Key_A, 0): Keydef.image_canvas_pen,
 	(Qt.Key_C, 0): Keydef.image_canvas_clear,
-	# grid mode
+	(Qt.Key_B, 1): Keydef.image_chessboard,
+}
+
+keymap_grid = {
 	(Qt.Key_0, 0): Keydef.grid_hol,
 	(Qt.Key_Dollar, 1): Keydef.grid_eol,
 	(Qt.Key_F, 2): Keydef.grid_page_down,
 	(Qt.Key_B, 2): Keydef.grid_page_up,
+	(Qt.Key_PageDown, 0): Keydef.grid_page_down,
+	(Qt.Key_PageUp, 0): Keydef.grid_page_up,
 	(Qt.Key_D, 2): Keydef.grid_page_down_half,
 	(Qt.Key_U, 2): Keydef.grid_page_up_half,
 }

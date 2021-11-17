@@ -132,11 +132,16 @@ class MainWindow(QMainWindow):
 			var.keymod_control = True
 			return
 		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
-		try:
-			k = var.keymap[(e.key(), bit)]
-		except KeyError:
+		k = var.keymap_common.get((e.key(), bit))
+		if not k:
+			if self.mode == 1:
+				k = var.keymap_image.get((e.key(), bit))
+			elif self.mode == 2:
+				k = var.keymap_grid.get((e.key(), bit))
+		if not k:
+			var.logger.debug("Key ignored")
 			return
-		var.logger.info(k)
+		var.logger.debug(k)
 		if k == Keydef.toggle_grid_mode:
 			if self.mode == 1:
 				self.grid_mode()

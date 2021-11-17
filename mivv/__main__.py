@@ -22,8 +22,7 @@ def build_parser():
 		'-l',
 		'--loglevel',
 		type = str,
-		default = "warn",
-		help = "set log level(default: warn)",
+		help = "set log level(debug, info, warn, error, critical)",
 	)
 	parser.add_argument(
 		"--expand-level",
@@ -85,7 +84,9 @@ if __name__ == '__main__':
 		var.start_in_grid_mode = True
 	if args.private:
 		var.private_mode = True
-	set_loglevel(args.loglevel)
+	if args.loglevel:
+		var.loglevel = args.loglevel
+	set_loglevel(var.loglevel)
 	if args.i:
 		filelist_string = sys.stdin.read()
 		filelist = filelist_string.split('\n')

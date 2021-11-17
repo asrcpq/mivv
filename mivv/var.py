@@ -29,6 +29,7 @@ border_color = "rgb(255, 255, 255)"
 chessboard_background = False # startup value only
 
 # configurable but will also change at runtime
+loglevel = "warn"
 lock_size = False # on resize
 preload_thumbnail = True
 

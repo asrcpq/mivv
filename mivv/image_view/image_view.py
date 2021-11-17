@@ -125,7 +125,6 @@ class Imageview(QGraphicsView):
 			)
 		self._set_move_dist()
 		self._set_content_center()
-		self._set_canvas()
 		self.render()
 		# parent() is dirty
 		self.parent().show()
@@ -147,6 +146,7 @@ class Imageview(QGraphicsView):
 			# else, zoom level won't change
 
 		self.last_content_item = None
+		self.canvas_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
 		self.load_data.emit(filename, self.ty)
@@ -283,6 +283,7 @@ class Imageview(QGraphicsView):
 		return True
 
 	def _set_canvas(self):
+		var.logger.info("Create canvas.")
 		self.canvas_item = CanvasItem(self.content_size)
 		self.canvas_item.setZValue(1)
 		self.scene().addItem(self.canvas_item)
@@ -365,15 +366,17 @@ class Imageview(QGraphicsView):
 		pressure = e.pressure()
 		pos = self.mapToScene(pos.x(), pos.y())
 		ty = e.type()
-		if (
-			not self.canvas_item.on_draw and \
-			e.buttons() == Qt.LeftButton and \
-			ty == QEvent.TabletPress
-		):
-			var.logger.debug("Tablet press")
-			self.canvas_item.draw(pos, pressure)
-			self.canvas_item.on_draw = True
-			return
+		if ty == QEvent.TabletPress:
+			if not self.canvas_item:
+				self._set_canvas()
+			if (
+				not self.canvas_item.on_draw and \
+				e.buttons() == Qt.LeftButton
+			):
+				var.logger.debug("Tablet press")
+				self.canvas_item.draw(pos, pressure)
+				self.canvas_item.on_draw = True
+				return
 		if not self.canvas_item.on_draw:
 			return
 		if ty == QEvent.TabletRelease:

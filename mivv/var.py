@@ -1,9 +1,12 @@
+from time import time
 import os
 
 from PyQt5.QtCore import Qt
 
 from mivv.logger import get_logger
 from mivv.keydef import Keydef
+
+startup_time = time()
 
 # config values
 ext_type = {

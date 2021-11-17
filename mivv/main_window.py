@@ -1,3 +1,5 @@
+from time import time
+
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
@@ -35,6 +37,7 @@ class MainWindow(QMainWindow):
 		else:
 			self.image_mode()
 		self.show()
+		var.logger.info(f"Startup time: {time() - var.startup_time:.03f} secs")
 
 	def loader_callback(self):
 		self.set_label()

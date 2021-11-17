@@ -293,6 +293,12 @@ class Imageview(QGraphicsView):
 			if self.canvas_item:
 				self.scene().removeItem(self.canvas_item)
 			self._set_canvas()
+		elif k == Qt.Key_E and var.keymod_shift:
+			if self.canvas_item:
+				self.canvas_item.set_operator(True)
+		elif k == Qt.Key_A:
+			if self.canvas_item:
+				self.canvas_item.set_operator(False)
 		else:
 			return False
 		return True

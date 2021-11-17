@@ -33,7 +33,7 @@ class ImageLoader():
 		self.typelist.append(ty)
 		self.callback()
 
-	def load(self, filelist, expand_level, sort_method):
+	def preload(self, filelist, expand_level, sort_method):
 		self.loader_thread = _ImageLoaderThread(filelist, expand_level, sort_method)
 		self.loader_thread.result.connect(self.get_result)
 		self.loader_thread.start()

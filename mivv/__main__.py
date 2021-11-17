@@ -2,15 +2,12 @@ import logging
 import sys
 import os
 import argparse
-from time import time
 
 from PyQt5.QtWidgets import QApplication
 
 from mivv.main_window import MainWindow
 from mivv.image_loader import ImageLoader
 from mivv import var
-
-startup_time = time()
 
 def build_parser():
 	parser = argparse.ArgumentParser(description = "mivv")
@@ -107,9 +104,8 @@ if __name__ == '__main__':
 	app = QApplication([])
 	filelist_raw = list(reversed(filelist))
 	image_loader = ImageLoader(loader_callback)
-	image_loader.load(filelist_raw, expand_level, args.sort)
+	image_loader.preload(filelist_raw, expand_level, args.sort)
 	var.image_loader = image_loader
-	var.logger.info(f"Elapsed: {time() - startup_time:.03f} secs")
 	var.app = app
 	app.exec()
 	var.image_loader.stop()

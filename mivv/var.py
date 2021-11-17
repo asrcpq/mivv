@@ -52,10 +52,10 @@ keymap = {
 	(Qt.Key_G, 1): Keydef.view_last,
 	# image mode
 	(Qt.Key_W, 0): Keydef.image_view_zoom_fill,
-	(Qt.Key_Greater, 0): Keydef.image_view_cw,
-	(Qt.Key_Less, 0): Keydef.image_view_ccw,
+	(Qt.Key_Greater, 1): Keydef.image_view_cw,
+	(Qt.Key_Less, 1): Keydef.image_view_ccw,
 	(Qt.Key_Bar, 0): Keydef.image_view_mirror_v,
-	(Qt.Key_Underscore, 0): Keydef.image_view_mirror_h,
+	(Qt.Key_Underscore, 1): Keydef.image_view_mirror_h,
 	(Qt.Key_R, 0): Keydef.image_navi_reload,
 	(Qt.Key_Space, 0): Keydef.image_movie_pause_toggle,
 	(Qt.Key_S, 0): Keydef.image_movie_frame_forward,
@@ -64,7 +64,7 @@ keymap = {
 	(Qt.Key_C, 0): Keydef.image_canvas_clear,
 	# grid mode
 	(Qt.Key_0, 0): Keydef.grid_hol,
-	(Qt.Key_Dollar, 0): Keydef.grid_eol,
+	(Qt.Key_Dollar, 1): Keydef.grid_eol,
 	(Qt.Key_F, 2): Keydef.grid_page_down,
 	(Qt.Key_B, 2): Keydef.grid_page_up,
 	(Qt.Key_D, 2): Keydef.grid_page_down_half,

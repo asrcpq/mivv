@@ -202,13 +202,13 @@ class Imageview(QGraphicsView):
 		self._set_move_dist()
 
 	def _key_handler_navigation(self, k):
-		if k == Keydef.view_next:
+		if k == Keydef.image_view_next:
 			self.navigate_image(1, False)
-		elif k == Keydef.view_prev:
+		elif k == Keydef.image_view_prev:
 			self.navigate_image(-1, False)
-		elif k == Keydef.view_last:
+		elif k == Keydef.image_view_last:
 			self.navigate_image(len(var.image_loader.filelist) - 1, True)
-		elif k == Keydef.view_first:
+		elif k == Keydef.image_view_first:
 			self.navigate_image(0, True)
 		elif k == Keydef.image_navi_reload:
 			self.load()
@@ -225,19 +225,19 @@ class Imageview(QGraphicsView):
 		self.move_dist = self.viewport_data.get_move_dist()
 
 	def _key_handler_transform(self, k):
-		if k == Keydef.view_left:
+		if k == Keydef.image_view_left:
 			self.viewport_data.move(-self.move_dist, 0)
-		elif k == Keydef.view_right:
+		elif k == Keydef.image_view_right:
 			self.viewport_data.move(self.move_dist, 0)
-		elif k == Keydef.view_down:
+		elif k == Keydef.image_view_down:
 			self.viewport_data.move(0, self.move_dist)
-		elif k == Keydef.view_up:
+		elif k == Keydef.image_view_up:
 			self.viewport_data.move(0, -self.move_dist)
-		elif k == Keydef.view_zoom_out:
+		elif k == Keydef.image_view_zoom_out:
 			self._scale_view(var.scaling_mult, False)
-		elif k == Keydef.view_zoom_in:
+		elif k == Keydef.image_view_zoom_in:
 			self._scale_view(1 / var.scaling_mult, False)
-		elif k == Keydef.view_zoom_origin:
+		elif k == Keydef.image_view_zoom_origin:
 			self._scale_view(self.viewport_data.original_scaling_factor, True)
 			var.lock_size = True
 			self._set_move_dist()

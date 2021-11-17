@@ -216,23 +216,23 @@ class Gridview(QWidget):
 		self._xreset_layout()
 
 	def key_handler(self, k):
-		if k == Keydef.view_right:
+		if k == Keydef.grid_view_right:
 			self._offset_cursor(1, False)
-		elif k == Keydef.view_left:
+		elif k == Keydef.grid_view_left:
 			self._offset_cursor(-1, False)
-		elif k == Keydef.view_down:
+		elif k == Keydef.grid_view_down:
 			self._offset_cursor(self.count_h, False)
-		elif k == Keydef.view_up:
+		elif k == Keydef.grid_view_up:
 			self._offset_cursor(-self.count_h, False)
-		elif k == Keydef.view_last:
+		elif k == Keydef.grid_view_last:
 			self._offset_cursor(len(var.image_loader.filelist) - 1, True)
-		elif k == Keydef.view_first:
+		elif k == Keydef.grid_view_first:
 			self._offset_cursor(0, True)
-		elif k == Keydef.view_zoom_out:
+		elif k == Keydef.grid_view_zoom_out:
 			self._set_zoom_level(-1, False)
-		elif k == Keydef.view_zoom_in:
+		elif k == Keydef.grid_view_zoom_in:
 			self._set_zoom_level(1, False)
-		elif k == Keydef.view_zoom_origin:
+		elif k == Keydef.grid_view_zoom_origin:
 			self._set_zoom_level(var.grid_size_idx_default, True)
 		elif k == Keydef.grid_hol:
 			self._offset_cursor(-self.cursor[0], False)

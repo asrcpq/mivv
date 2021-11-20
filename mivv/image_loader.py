@@ -149,7 +149,6 @@ class _ImageLoaderThread(QThread):
 
 	# nocheck, abspath, cached_path must exist
 	def _load_cache(self, abspath):
-		cached_path = var.cache_path + abspath + ".jpg"
 		if not var.cache_path or abspath.startswith(var.cache_path):
 			var.logger.debug(f"Original file as cache: {abspath}")
 			return QImage(abspath)

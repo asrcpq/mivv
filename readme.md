@@ -20,9 +20,13 @@ PyQt5 simple image viewer.
 
 see `mivv/var.py` for keybind
 
-## known QT bugs/limitations that cannot be fixed
+## known limitations
 
-* pdf/complete svg support
+* pdf/complete svg support(QT no support)
+
+* Thumbnail use too much memory
+
+	see `memory_manage.md`
 
 ## todo(maybe)
 

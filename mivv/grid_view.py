@@ -247,6 +247,17 @@ class Gridview(QWidget):
 		elif k == Keydef.grid_page_down_half:
 			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
+	def mousePressEvent(self, e):
+		if e.buttons() & Qt.LeftButton:
+			if self.mouse_mode != 3:
+				self.mouse_mode = 3
+			et = e.localPos()
+			cx = int((et.x() - self.grid_space / 2) / self.grid_offset)
+			cy = int((et.y() - self.grid_space / 2) / self.grid_offset)
+			if cx < self.count_h and cx >= 0 and \
+				cy < self.count_v and cy >= 0:
+				self._cursor_select(cx, cy)
+
 	def mouseMoveEvent(self, e):
 		if e.buttons() & Qt.MiddleButton:
 			if self.mouse_mode != 1:
@@ -281,15 +292,6 @@ class Gridview(QWidget):
 					self._offset_cursor(-1, False)
 					self.last_mouse_pos = e.localPos()
 				self.parent().set_label()
-		elif e.buttons() & Qt.LeftButton:
-			if self.mouse_mode != 3:
-				self.mouse_mode = 3
-				et = e.localPos()
-				cx = int((et.x() - self.grid_space / 2) / self.grid_offset)
-				cy = int((et.y() - self.grid_space / 2) / self.grid_offset)
-				if cx < self.count_h and cx >= 0 and \
-					cy < self.count_v and cy >= 0:
-					self._cursor_select(cx, cy)
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

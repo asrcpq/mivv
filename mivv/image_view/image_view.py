@@ -381,7 +381,7 @@ class Imageview(QGraphicsView):
 				self.canvas_item.draw(pos, pressure)
 				self.canvas_item.on_draw = True
 				return
-		if not self.canvas_item.on_draw:
+		if not self.canvas_item or not self.canvas_item.on_draw:
 			return
 		if ty == QEvent.TabletRelease:
 			var.logger.debug("Tablet release")

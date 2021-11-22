@@ -247,6 +247,17 @@ class Gridview(QWidget):
 		elif k == Keydef.grid_page_down_half:
 			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
 
+	def wheelEvent(self, e):
+		ang = e.angleDelta()
+		if ang.y() < 0:
+			self._offset_cursor(self.count_h)
+		elif ang.y() > 0:
+			self._offset_cursor(-self.count_h)
+		if ang.x() < 0:
+			self._offset_cursor(-1)
+		elif ang.x() > 0:
+			self._offset_cursor(1)
+
 	def mousePressEvent(self, e):
 		if e.buttons() & Qt.LeftButton:
 			if self.mouse_mode != 3:

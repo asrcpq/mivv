@@ -22,13 +22,22 @@ see `mivv/var.py` for keybind
 
 ## known limitations
 
-* pdf/complete svg support(QT no support)
+* pdf/complete svg support
 
-* Thumbnail use too much memory
+	* qtsvg only support svg tiny
 
-	see `memory_manage.md`
+	* qtpdf does not have a pyqt version,
+	poppler-qt5 is broken(cannot install in venv)
+
+* Loading all thumbnails use too much memory
+
+	see `memory_management.md`
 
 ## todo(maybe)
+
+* add test
+
+* dedupe filelist
 
 * toggle bar
 

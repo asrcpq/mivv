@@ -98,7 +98,7 @@ class _ImageLoaderThread(QThread):
 			_filename, ext = os.path.splitext(file)
 			if ext.casefold() not in var.ext_type:
 				continue
-			ty = var.ext_type[ext]
+			ty = var.ext_type[ext.casefold()]
 			abspath = os.path.abspath(file)
 			pixmap = self._load_cache(abspath)
 			var.logger.debug(f"Loaded: {file}")

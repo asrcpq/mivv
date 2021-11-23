@@ -39,6 +39,11 @@ def build_parser():
 		action = "store_true",
 		help = "display scaled thumbnail while loading",
 	)
+	parser.add_argument(
+		'--bg-color',
+		type = str,
+		help = "set bg color(qt stylesheet color format)",
+	)
 	parser.add_argument('path', type = str, nargs='*')
 	return parser
 
@@ -100,6 +105,8 @@ if __name__ == '__main__':
 		expand_level = 3
 	if args.preload_thumbnail:
 		var.preload_thumbnail = True
+	if args.bg_color:
+		var.background = args.bg_color
 	var.logger.info(f"Expand level: {expand_level}")
 	app = QApplication([])
 	filelist_raw = list(reversed(filelist))

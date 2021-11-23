@@ -35,6 +35,10 @@ see `mivv/var.py` for keybind
 
 ## todo(maybe)
 
+* font color(busy color)
+
+* svg flicker
+
 * add test
 
 * dedupe filelist

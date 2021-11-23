@@ -32,7 +32,10 @@ guesture_move = 30
 bar_height = 10
 background = "rgb(0, 0, 0)"
 border_color = "rgb(255, 255, 255)"
-chessboard_background = False # startup value only
+chessboard_background = False
+loglevel = "warn"
+lock_size = False # on resize
+preload_thumbnail = True
 
 # modifier bit: shift 1, control 2
 keymap_common = {
@@ -91,11 +94,6 @@ keymap_grid = {
 	(Qt.Key_D, 2): Keydef.grid_page_down_half,
 	(Qt.Key_U, 2): Keydef.grid_page_up_half,
 }
-
-# configurable but will also change at runtime
-loglevel = "warn"
-lock_size = False # on resize
-preload_thumbnail = True
 
 # global values
 logger = get_logger()

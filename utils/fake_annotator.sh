@@ -1,2 +1,2 @@
 #!/bin/zsh
-(){local TMPSUFFIX=.png; mivv -f =(scrot -);}
+(){local TMPSUFFIX=.png; mivv -fp =(scrot -);}

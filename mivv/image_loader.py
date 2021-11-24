@@ -129,7 +129,6 @@ class _ImageLoaderThread(QThread):
 
 	# nocheck, abspath must exist
 	def _create_cache(self, abspath):
-		var.logger.info(f"Generating cache: {abspath}")
 		pixmap = QImage(abspath)
 		if pixmap.isNull():
 			var.logger.warning(f"Create cache read fail: {abspath}")

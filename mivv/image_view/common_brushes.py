@@ -11,7 +11,7 @@ class DummyBrush():
 		self.hist_pressure = []
 		self.s = 0
 		self.spacing = 1
-		self.size = 5
+		self.size = 3
 		self.erase_mode = False
 
 	def draw(self, canvas_pixmap, pos, pressure):
@@ -21,7 +21,7 @@ class DummyBrush():
 		if len(self.hist_pos) == 1:
 			return (None, None)
 		if self.erase_mode:
-			size = 5 * self.size # larger eraser
+			size = 7 * self.size # larger eraser
 		else:
 			size = self.size
 		s0 = pressure * size

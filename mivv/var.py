@@ -34,14 +34,14 @@ background = "rgb(0, 0, 0)"
 border_color = "rgb(255, 255, 255)"
 chessboard_background = False
 loglevel = "warn"
-lock_size = False # on resize
+preserve_viewport = False # on resize
 preload_thumbnail = True
 
 # modifier bit: shift 1, control 2
 keymap_common = {
 	(Qt.Key_Q, 0): Keydef.quit,
 	(Qt.Key_Return, 0): Keydef.toggle_grid_mode,
-	(Qt.Key_W, 1): Keydef.lock_size,
+	(Qt.Key_W, 1): Keydef.preserve_viewport,
 	(Qt.Key_T, 1): Keydef.preload_thumbnail,
 }
 

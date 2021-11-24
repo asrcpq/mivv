@@ -69,7 +69,7 @@ class MainWindow(QMainWindow):
 
 	def set_label(self):
 		status_string = ""
-		if var.lock_size:
+		if var.preserve_viewport:
 			status_string += "W"
 		if var.preload_thumbnail:
 			status_string += "T"
@@ -170,8 +170,8 @@ class MainWindow(QMainWindow):
 				raise Exception('Unknown mode')
 		elif k == Keydef.quit:
 			var.app.quit()
-		elif k == Keydef.lock_size:
-			var.lock_size = not var.lock_size
+		elif k == Keydef.preserve_viewport:
+			var.preserve_viewport = not var.preserve_viewport
 			self.set_label()
 		elif k == Keydef.preload_thumbnail:
 			var.preload_thumbnail = not var.preload_thumbnail

@@ -68,7 +68,7 @@ class Imageview(QGraphicsView):
 		o_osf = self.viewport_data.original_scaling_factor
 		self._set_original_scaling_factor()
 		osf = self.viewport_data.original_scaling_factor
-		if not var.lock_size:
+		if not var.preserve_viewport:
 			self._scale_view(1.0, False)
 		else:
 			self._scale_view(osf / o_osf, False) # prevent overflow
@@ -119,15 +119,17 @@ class Imageview(QGraphicsView):
 
 	def _finish_loading(self):
 		self._set_original_scaling_factor()
-		if not var.lock_size or not self.viewport_data.zoom_level:
+		if not var.preserve_viewport or not self.viewport_data.zoom_level:
 			self._scale_view(1.0, True)
+			self._set_content_center()
 		else:
 			self._scale_view(
 				self.viewport_data.original_scaling_factor / self.viewport_data.zoom_level,
 				True,
 			)
+			if not self.viewport_data.content_center:
+				self._set_content_center()
 		self._set_move_dist()
-		self._set_content_center()
 		self.render()
 		# parent() is dirty
 		self.parent().show()
@@ -144,7 +146,7 @@ class Imageview(QGraphicsView):
 		self.setCursor(Qt.WaitCursor)
 		var.main_window.label_busy(True)
 		# if size not locked, zoom_level is unknown
-		if not var.lock_size:
+		if not var.preserve_viewport:
 			self.viewport_data.zoom_level = None
 			# else, zoom level won't change
 
@@ -240,7 +242,7 @@ class Imageview(QGraphicsView):
 			self._scale_view(1 / var.scaling_mult, False)
 		elif k == Keydef.image_view_zoom_origin:
 			self._scale_view(self.viewport_data.original_scaling_factor, True)
-			var.lock_size = True
+			var.preserve_viewport = True
 			self._set_move_dist()
 		elif k == Keydef.image_view_mirror_h:
 			self.viewport_data.set_flip(1)
@@ -248,7 +250,7 @@ class Imageview(QGraphicsView):
 			self.viewport_data.set_flip(0)
 		elif k == Keydef.image_view_zoom_fill:
 			if not var.keymod_shift:
-				var.lock_size = False
+				var.preserve_viewport = False
 				self._set_content_center()
 				self._scale_view(1.0, True)
 				self.viewport_data.set_rotation(0)

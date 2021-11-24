@@ -4,7 +4,7 @@ Keydef = Enum('Keydef', [
 	# main
 	'quit',
 	'toggle_grid_mode',
-	'lock_size',
+	'preserve_viewport',
 	'preload_thumbnail',
 	# common
 	'image_view_left',

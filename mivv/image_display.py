@@ -50,10 +50,7 @@ class ImageDisplay(QLabel):
 		self.image_view.resize(self.size())
 		var.main_window.set_label()
 
-	def key_release_handler(self, k):
-		self.image_view.key_release_handler(k)
-
-	def key_press_handler(self, k):
+	def key_handler(self, k, is_release, is_auto_repeat):
 		if k == Keydef.image_chessboard:
 			if self.background:
 				self.background = None
@@ -61,4 +58,4 @@ class ImageDisplay(QLabel):
 			else:
 				self.set_background()
 		else:
-			self.image_view.key_press_handler(k)
+			self.image_view.key_handler(k, is_release, is_auto_repeat)

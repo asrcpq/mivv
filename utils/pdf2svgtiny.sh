@@ -7,4 +7,5 @@ for file in *.svg; do
 	geom="$(sed -n '2p' "$file" | grep -o 'width="[0-9]*pt" height="[0-9]*pt"')"
 	sed -i "s/viewBox=\"[^\"]*\" //g" "$file"
 	sed -i "s/symbol/g/g;2a <rect $geom fill=\"white\"/>" "$file"
+	sed -i "s/pt//g" "$file"
 done

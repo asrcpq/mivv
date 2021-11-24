@@ -28,6 +28,7 @@ class Imageview(QGraphicsView):
 		self.content = None
 		self.ty = None
 		self.canvas_item = None
+		self.canvas_scaling_factor = 1.0
 		self.last_mouse_pos = None
 		self.last_mouse_angle = None
 		self.last_angle = None
@@ -281,14 +282,18 @@ class Imageview(QGraphicsView):
 		return True
 
 	def _set_canvas(self):
-		var.logger.info("Create canvas.")
-		self.canvas_item = CanvasItem(self.content_size)
+		scaling = self.canvas_scaling_factor
+		size = self.content_size * scaling
+		var.logger.info(f"Create canvas {size}")
+		self.canvas_item = CanvasItem(size)
+		self.canvas_item.setScale(1 / scaling)
 		self.canvas_item.setZValue(1)
 		self.scene().addItem(self.canvas_item)
 
 	def _key_release_handler_canvas(self, k):
 		if k == Keydef.image_canvas_clear:
 			self.mouse_mode = 0
+			self.parent().override_label("")
 			self._set_canvas()
 
 	def _key_press_handler_canvas(self, k):
@@ -379,7 +384,7 @@ class Imageview(QGraphicsView):
 	def tabletEvent(self, e):
 		pos = e.posF()
 		pressure = e.pressure()
-		pos = self.mapToScene(pos.x(), pos.y())
+		pos = self.mapToScene(pos.x(), pos.y()) * self.canvas_scaling_factor
 		ty = e.type()
 		if ty == QEvent.TabletPress:
 			if not self.canvas_item:
@@ -440,6 +445,18 @@ class Imageview(QGraphicsView):
 				return
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 5 # not 4
+		elif self.mouse_mode == 6:
+			if e.buttons() & Qt.LeftButton:
+				dp = pos - self.last_mouse_pos
+				self.canvas_scaling_factor += dp.y() / 100
+				scaling = self.canvas_scaling_factor
+				size = self.content_size * self.canvas_scaling_factor
+				self.parent().override_label(
+					"Creating canvas:" \
+					f"{scaling:.2f} " \
+					f"{size.width():.0f} x {size.height():.0f}" \
+				)
+			self.last_mouse_pos = pos
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

@@ -51,6 +51,22 @@ class MainWindow(QMainWindow):
 		else:
 			self.fn_label.setStyleSheet("QLabel{background-color: black;color: white;}")
 
+	def set_fn_label_string(self, string):
+		left = self.info_label.geometry().left()
+		metrics = QFontMetrics(self.fn_label.font())
+		elidedText = metrics.elidedText(string, Qt.ElideLeft, left)
+		self.fn_label.setText(elidedText)
+		self.fn_label.setGeometry(
+			0,
+			self.height() - var.bar_height,
+			left,
+			var.bar_height,
+		)
+
+	def set_fn_label_filename(self):
+		text = f"{var.image_loader.filelist[var.current_idx]}"
+		self.set_fn_label_string(text)
+
 	def set_label(self):
 		status_string = ""
 		if var.lock_size:
@@ -87,17 +103,7 @@ class MainWindow(QMainWindow):
 			width,
 			var.bar_height,
 		)
-		left = self.info_label.geometry().left()
-		text = f"{var.image_loader.filelist[var.current_idx]}"
-		metrics = QFontMetrics(self.fn_label.font())
-		elidedText = metrics.elidedText(text, Qt.ElideLeft, left)
-		self.fn_label.setText(elidedText)
-		self.fn_label.setGeometry(
-			0,
-			self.height() - var.bar_height,
-			left,
-			var.bar_height,
-		)
+		self.set_fn_label_filename()
 
 	def grid_mode(self):
 		self.image_display.hide()

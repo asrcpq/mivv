@@ -292,13 +292,17 @@ class Imageview(QGraphicsView):
 		self.canvas_item.setZValue(1)
 		self.scene().addItem(self.canvas_item)
 
-	def _key_release_handler_canvas(self, k):
+	def _key_release_handler_canvas(self, k, is_auto_repeat):
+		if is_auto_repeat:
+			return False
 		if k == Keydef.image_canvas_clear:
 			self.mouse_mode = 0
 			self.parent().override_label("")
 			self._set_canvas()
 
-	def _key_press_handler_canvas(self, k):
+	def _key_press_handler_canvas(self, k, is_auto_repeat):
+		if is_auto_repeat:
+			return False
 		if k == Keydef.image_canvas_clear:
 			if self.canvas_item:
 				self.scene().removeItem(self.canvas_item)
@@ -316,12 +320,12 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def key_release_handler(self, k):
-		if self._key_release_handler_canvas(k):
-			return True
-		return False
+	def key_handler(self, k, is_release, is_auto_repeat):
+		if is_release:
+			if self._key_release_handler_canvas(k, is_auto_repeat):
+				return True
+			return False
 
-	def key_press_handler(self, k):
 		if self._key_press_handler_navigation(k):
 			return True
 		if not self.content:
@@ -331,7 +335,7 @@ class Imageview(QGraphicsView):
 			return True
 		if self._key_press_handler_movie(k):
 			return True
-		if self._key_press_handler_canvas(k):
+		if self._key_press_handler_canvas(k, is_auto_repeat):
 			return True
 		return False
 

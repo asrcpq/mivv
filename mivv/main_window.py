@@ -127,8 +127,6 @@ class MainWindow(QMainWindow):
 	def prockey(self, e):
 		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
 		k = var.keymap_common.get((e.key(), bit))
-		if e.isAutoRepeat():
-			return None
 		if not k:
 			if self.mode == 1:
 				k = var.keymap_image.get((e.key(), bit))
@@ -149,7 +147,7 @@ class MainWindow(QMainWindow):
 			var.keymod_control = False
 		k = self.prockey(e)
 		if self.mode == 1:
-			self.image_display.key_release_handler(k)
+			self.image_display.key_handler(k, True, e.isAutoRepeat())
 
 	def keyPressEvent(self, e):
 		if e.key() == Qt.Key_Shift:
@@ -180,7 +178,7 @@ class MainWindow(QMainWindow):
 			self.set_label()
 		else:
 			if self.mode == 1:
-				self.image_display.key_press_handler(k)
+				self.image_display.key_handler(k, False, e.isAutoRepeat())
 			elif self.mode == 2:
 				self.grid_view.key_handler(k)
 			self.set_label()

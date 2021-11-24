@@ -246,6 +246,7 @@ class Gridview(QWidget):
 			self._offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
 		elif k == Keydef.grid_page_down_half:
 			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
+		return True
 
 	def wheelEvent(self, e):
 		ang = e.angleDelta()

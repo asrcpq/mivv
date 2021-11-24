@@ -178,10 +178,15 @@ class MainWindow(QMainWindow):
 			self.set_label()
 		else:
 			if self.mode == 1:
-				self.image_display.key_handler(k, False, e.isAutoRepeat())
+				ret = self.image_display.key_handler(k, False, e.isAutoRepeat())
 			elif self.mode == 2:
-				self.grid_view.key_handler(k)
-			self.set_label()
+				ret = self.grid_view.key_handler(k)
+			else:
+				var.logger.error(f"Unknown mode {self.mode}")
+			if ret is None:
+				var.logger.error(f"key handler return none!")
+			if ret: # processed
+				self.set_label()
 
 	def resizeEvent(self, _e):
 		var.logger.info(f"Resized to {self.width()} {self.height()}")

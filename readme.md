@@ -37,6 +37,8 @@ see `mivv/var.py` for keybind
 
 ## todo(maybe)
 
+* shift+create canvas=every 25% scaling
+
 * add test
 
 * measure tool

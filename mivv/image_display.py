@@ -57,5 +57,7 @@ class ImageDisplay(QLabel):
 				self.clear()
 			else:
 				self.set_background()
+			return True
 		else:
-			self.image_view.key_handler(k, is_release, is_auto_repeat)
+			return self.image_view.key_handler(k, is_release, is_auto_repeat)
+		return False

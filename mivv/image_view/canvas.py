@@ -37,6 +37,9 @@ class CanvasItem(QGraphicsItem):
 		painter.drawPixmap(option.rect, self.canvas)
 
 	def draw(self, pos, pressure):
+		if not self.boundingRect().contains(pos):
+			self.canvas.finish()
+			return
 		self.canvas.draw(pos, pressure)
 
 	def finish(self):

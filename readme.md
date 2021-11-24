@@ -53,6 +53,8 @@ see `mivv/var.py` for keybind
 
 * more draw: clear, undo, colorpicker, fill...
 
+* draw across edge not continuous
+
 * rotation + fill?
 
 * memory management

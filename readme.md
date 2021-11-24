@@ -37,6 +37,8 @@ see `mivv/var.py` for keybind
 
 ## todo(maybe)
 
+* allow autorepeat
+
 * add test
 
 * measure tool

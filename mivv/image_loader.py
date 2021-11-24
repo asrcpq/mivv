@@ -67,6 +67,21 @@ class _ImageLoaderThread(QThread):
 			self.sorter = lambda l: l
 		self.alive = True
 
+	def proc_dir(self, file):
+		filelist = []
+		if self.expand_level >= 2:
+			escaped_file = escape(file)
+			g = self.sorter(list(glob(os.path.join(escaped_file, "*"))))
+			if self.expand_level >= 3:
+				filelist += g
+			else:
+				for file in g:
+					file_filtered = []
+					if os.path.isfile(file):
+						file_filtered.append(file)
+					filelist += sorted(file_filtered, reverse = True)
+		return filelist
+
 	def run(self):
 		filelist = self.filelist
 		while filelist:
@@ -81,17 +96,8 @@ class _ImageLoaderThread(QThread):
 				var.logger.error(f"Permission denied: {file}")
 				continue
 			if os.path.isdir(file):
-				if self.expand_level >= 2:
-					escaped_file = escape(file)
-					g = self.sorter(list(glob(os.path.join(escaped_file, "*"))))
-					if self.expand_level >= 3:
-						filelist += g
-					else:
-						for file in g:
-							file_filtered = []
-							if os.path.isfile(file):
-								file_filtered.append(file)
-							filelist += sorted(file_filtered, reverse = True)
+				to_append = self.proc_dir(file)
+				filelist += to_append
 				continue
 			if not os.path.exists(file):
 				continue

@@ -412,8 +412,6 @@ class Imageview(QGraphicsView):
 			return
 		if ty == QEvent.TabletMove:
 			self.canvas_item.draw(pos, pressure)
-		# TODO: get update rect
-		self.update()
 
 	def mouseMoveEvent(self, e):
 		pos = e.localPos()

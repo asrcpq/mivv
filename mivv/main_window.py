@@ -25,7 +25,8 @@ class MainWindow(QMainWindow):
 		font = QFont("monospace", var.bar_height - 1)
 		for name in ["filename", "info"]:
 			label = QLabel(name, self)
-			label.setStyleSheet("color: white;")
+			label.setAutoFillBackground(True)
+			label.setStyleSheet("QLabel{background-color: black;color: white;}")
 			label.setFont(font)
 			labels.append(label)
 		self.fn_label = labels[0]
@@ -46,9 +47,9 @@ class MainWindow(QMainWindow):
 
 	def label_busy(self, busy):
 		if busy:
-			self.fn_label.setStyleSheet("color: red;")
+			self.fn_label.setStyleSheet("QLabel{background-color: black;color: red;}")
 		else:
-			self.fn_label.setStyleSheet("color: white;")
+			self.fn_label.setStyleSheet("QLabel{background-color: black;color: white;}")
 
 	def set_label(self):
 		status_string = ""

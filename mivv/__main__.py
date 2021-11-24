@@ -14,6 +14,7 @@ def build_parser():
 	parser.add_argument('-i', action = "store_true", help = "filelist from stdin")
 	parser.add_argument('-t', action = "store_true", help = "start in grid mode")
 	parser.add_argument('-c', action = "store_true", help = "gc cache and exit")
+	parser.add_argument('-f', action = "store_true", help = "fullscreen")
 	parser.add_argument('-p', "--private", action = "store_true", help = "never write")
 	parser.add_argument(
 		'-l',
@@ -89,6 +90,8 @@ if __name__ == '__main__':
 	if args.loglevel:
 		var.loglevel = args.loglevel
 	set_loglevel(var.loglevel)
+	if args.f:
+		var.fullscreen = True
 	if args.i:
 		filelist_string = sys.stdin.read()
 		filelist = filelist_string.split('\n')

@@ -36,6 +36,7 @@ chessboard_background = False
 loglevel = "warn"
 preserve_viewport = False # on resize
 preload_thumbnail = True
+fullscreen = False
 
 # modifier bit: shift 1, control 2
 keymap_common = {

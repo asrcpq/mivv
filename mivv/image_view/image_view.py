@@ -201,7 +201,7 @@ class Imageview(QGraphicsView):
 		self.viewport_data.scale_view(offset, abs_k)
 		self._set_move_dist()
 
-	def _key_handler_navigation(self, k):
+	def _key_press_handler_navigation(self, k):
 		if k == Keydef.image_view_next:
 			self.navigate_image(1, False)
 		elif k == Keydef.image_view_prev:
@@ -224,7 +224,7 @@ class Imageview(QGraphicsView):
 	def _set_move_dist(self):
 		self.move_dist = self.viewport_data.get_move_dist()
 
-	def _key_handler_transform(self, k):
+	def _key_press_handler_transform(self, k):
 		if k == Keydef.image_view_left:
 			self.viewport_data.move(-self.move_dist, 0)
 		elif k == Keydef.image_view_right:
@@ -261,7 +261,7 @@ class Imageview(QGraphicsView):
 		self.render()
 		return True
 
-	def _key_handler_movie(self, k):
+	def _key_press_handler_movie(self, k):
 		if not isinstance(self.content, QMovie):
 			return False
 		if k == Keydef.image_movie_pause_toggle:
@@ -286,11 +286,16 @@ class Imageview(QGraphicsView):
 		self.canvas_item.setZValue(1)
 		self.scene().addItem(self.canvas_item)
 
-	def _key_handler_canvas(self, k):
+	def _key_release_handler_canvas(self, k):
+		if k == Keydef.image_canvas_clear:
+			self.mouse_mode = 0
+			self._set_canvas()
+
+	def _key_press_handler_canvas(self, k):
 		if k == Keydef.image_canvas_clear:
 			if self.canvas_item:
 				self.scene().removeItem(self.canvas_item)
-			self._set_canvas()
+			self.mouse_mode = 6
 		elif k == Keydef.image_canvas_eraser:
 			if self.canvas_item:
 				self.canvas_item.set_operator(True)
@@ -301,24 +306,30 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def key_handler(self, k):
-		if self._key_handler_navigation(k):
-			return
+	def key_release_handler(self, k):
+		if self._key_release_handler_canvas(k):
+			return True
+		return False
+
+	def key_press_handler(self, k):
+		if self._key_press_handler_navigation(k):
+			return True
 		if not self.content:
 			var.logger.info("Key ignored, because content is invalid.")
-			return
-		if self._key_handler_transform(k):
-			return
-		if self._key_handler_movie(k):
-			return
-		if self._key_handler_canvas(k):
-			return
+			return True
+		if self._key_press_handler_transform(k):
+			return True
+		if self._key_press_handler_movie(k):
+			return True
+		if self._key_press_handler_canvas(k):
+			return True
+		return False
 
 	def _mouse_shift_rotate(self, pos):
 		c = self.viewport().rect().center()
 		p1 = pos - c
 		angle = atan2(p1.x(), p1.y()) / pi * 180 * self.viewport_data.rotate_multiplier()
-		if self.mouse_mode != 3:
+		if self.mouse_mode == 0:
 			self.last_mouse_angle = angle
 			self.mouse_mode = 3
 			self.setCursor(Qt.ClosedHandCursor)
@@ -335,7 +346,7 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def _mouse_ctrl_zoom(self, pos):
-		if self.mouse_mode != 1:
+		if self.mouse_mode == 0:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 1
 			return
@@ -352,7 +363,7 @@ class Imageview(QGraphicsView):
 
 	def _mouse_pan(self, pos):
 		pos = self.viewport_data.get_mouse_transform().map(pos)
-		if self.mouse_mode != 2:
+		if self.mouse_mode == 0:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 2
 			return
@@ -372,7 +383,7 @@ class Imageview(QGraphicsView):
 		ty = e.type()
 		if ty == QEvent.TabletPress:
 			if not self.canvas_item:
-				self._set_canvas()
+				return
 			if (
 				not self.canvas_item.on_draw and \
 				e.buttons() == Qt.LeftButton

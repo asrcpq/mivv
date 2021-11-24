@@ -49,7 +49,7 @@ see `mivv/var.py` for keybind
 
 * left up align
 
-* more draw: clear, undo, colorpicker, fill...
+* more draw: clear, redo, colorpicker, fill...
 
 * draw across edge not continuous
 

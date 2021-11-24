@@ -303,6 +303,9 @@ class Imageview(QGraphicsView):
 			if self.canvas_item:
 				self.scene().removeItem(self.canvas_item)
 			self.mouse_mode = 6
+		elif k == Keydef.image_canvas_undo:
+			if self.canvas_item:
+				self.canvas_item.undo()
 		elif k == Keydef.image_canvas_eraser:
 			if self.canvas_item:
 				self.canvas_item.set_operator(True)

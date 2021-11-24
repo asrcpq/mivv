@@ -69,6 +69,7 @@ keymap_image = {
 	(Qt.Key_S, 0): Keydef.image_movie_frame_forward,
 	(Qt.Key_E, 1): Keydef.image_canvas_eraser,
 	(Qt.Key_A, 0): Keydef.image_canvas_pen,
+	(Qt.Key_Z, 0): Keydef.image_canvas_undo,
 	(Qt.Key_C, 0): Keydef.image_canvas_clear,
 	(Qt.Key_B, 1): Keydef.image_chessboard,
 }

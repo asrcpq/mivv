@@ -45,7 +45,7 @@ see `mivv/var.py` for keybind
 
 * transparent background
 
-* disable draw
+* draw rect update
 
 * measure tool
 

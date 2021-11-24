@@ -37,6 +37,13 @@ class ImageDisplay(QLabel):
 		self.setPixmap(background)
 		self.background = background
 
+	# if string is empty, reset with filename
+	def override_label(self, string):
+		if not string:
+			self.parent().set_fn_label_filename()
+		else:
+			self.parent().set_fn_label_string(string)
+
 	def resizeEvent(self, e):
 		if self.background:
 			self.set_background()

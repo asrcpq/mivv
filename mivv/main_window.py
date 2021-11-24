@@ -116,15 +116,32 @@ class MainWindow(QMainWindow):
 		self.mode = 1
 		self.set_label() # only for zoom level
 
-	@staticmethod
-	def keyReleaseEvent(e):
-		k = e.key()
-		if k == Qt.Key_Shift:
+	def prockey(self, e):
+		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
+		k = var.keymap_common.get((e.key(), bit))
+		if e.isAutoRepeat():
+			return None
+		if not k:
+			if self.mode == 1:
+				k = var.keymap_image.get((e.key(), bit))
+			elif self.mode == 2:
+				k = var.keymap_grid.get((e.key(), bit))
+		if not k:
+			var.logger.debug("Key ignored")
+			return None
+		var.logger.debug(k)
+		return k
+
+	def keyReleaseEvent(self, e):
+		if e.key() == Qt.Key_Shift:
 			var.logger.debug("Shift release")
 			var.keymod_shift = False
-		elif k == Qt.Key_Control:
+		elif e.key() == Qt.Key_Control:
 			var.logger.debug("Control release")
 			var.keymod_control = False
+		k = self.prockey(e)
+		if self.mode == 1:
+			self.image_display.key_release_handler(k)
 
 	def keyPressEvent(self, e):
 		if e.key() == Qt.Key_Shift:
@@ -135,17 +152,9 @@ class MainWindow(QMainWindow):
 			var.logger.debug("Control pressed")
 			var.keymod_control = True
 			return
-		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
-		k = var.keymap_common.get((e.key(), bit))
+		k = self.prockey(e)
 		if not k:
-			if self.mode == 1:
-				k = var.keymap_image.get((e.key(), bit))
-			elif self.mode == 2:
-				k = var.keymap_grid.get((e.key(), bit))
-		if not k:
-			var.logger.debug("Key ignored")
 			return
-		var.logger.debug(k)
 		if k == Keydef.toggle_grid_mode:
 			if self.mode == 1:
 				self.grid_mode()
@@ -163,7 +172,7 @@ class MainWindow(QMainWindow):
 			self.set_label()
 		else:
 			if self.mode == 1:
-				self.image_display.key_handler(k)
+				self.image_display.key_press_handler(k)
 			elif self.mode == 2:
 				self.grid_view.key_handler(k)
 			self.set_label()

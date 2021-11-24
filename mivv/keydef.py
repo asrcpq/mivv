@@ -6,7 +6,7 @@ Keydef = Enum('Keydef', [
 	'toggle_grid_mode',
 	'preserve_viewport',
 	'preload_thumbnail',
-	# common
+	# image mode
 	'image_view_left',
 	'image_view_right',
 	'image_view_up',
@@ -28,9 +28,10 @@ Keydef = Enum('Keydef', [
 	'image_movie_frame_forward',
 	'image_canvas_eraser',
 	'image_canvas_pen',
+	'image_canvas_undo',
 	'image_canvas_clear',
 	'image_chessboard',
-	# grid_mode
+	# grid mode
 	'grid_view_left',
 	'grid_view_right',
 	'grid_view_up',

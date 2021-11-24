@@ -1,7 +1,8 @@
 from PyQt5.QtWidgets import QGraphicsItem
 from PyQt5.QtGui import QPainter, QPen, QPixmap
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import Qt, QRectF, QSizeF
 
+from mivv import var
 from .common_brushes import DummyBrush
 
 class Canvas(QPixmap):
@@ -16,10 +17,11 @@ class Canvas(QPixmap):
 	def draw(self, pos, pressure):
 		pixmap_patch, p = self.mb.draw(self, pos, pressure)
 		if not pixmap_patch:
-			return
+			return None
 		painter = QPainter(self)
 		painter.setCompositionMode(QPainter.CompositionMode_Source)
 		painter.drawPixmap(p, pixmap_patch)
+		return QRectF(p, QSizeF(pixmap_patch.size()))
 
 	def finish(self):
 		self.mb.reset_draw()
@@ -40,7 +42,10 @@ class CanvasItem(QGraphicsItem):
 		if not self.boundingRect().contains(pos):
 			self.canvas.finish()
 			return
-		self.canvas.draw(pos, pressure)
+		update_rect = self.canvas.draw(pos, pressure)
+		if update_rect:
+			var.logger.debug(f"Update rect: {update_rect}")
+			self.update(update_rect)
 
 	def finish(self):
 		self.canvas.finish()

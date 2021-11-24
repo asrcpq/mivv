@@ -45,8 +45,6 @@ see `mivv/var.py` for keybind
 
 * transparent background
 
-* draw rect update
-
 * measure tool
 
 * left up align

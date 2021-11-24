@@ -344,6 +344,8 @@ class Imageview(QGraphicsView):
 			self.mouse_mode = 3
 			self.setCursor(Qt.ClosedHandCursor)
 			return
+		if self.mouse_mode != 3:
+			return
 		d_angle = angle - self.last_mouse_angle
 		if d_angle > var.image_move_rotate:
 			k = int(d_angle / var.image_move_rotate)
@@ -359,6 +361,8 @@ class Imageview(QGraphicsView):
 		if self.mouse_mode == 0:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 1
+			return
+		if self.mouse_mode != 1:
 			return
 		self.setCursor(Qt.SizeVerCursor)
 		dp = pos - self.last_mouse_pos
@@ -377,6 +381,8 @@ class Imageview(QGraphicsView):
 			self.last_mouse_pos = pos
 			self.mouse_mode = 2
 			return
+		if self.mouse_mode != 2:
+			return
 		self.setCursor(Qt.CrossCursor)
 		dp = pos - self.last_mouse_pos
 		view_size_w = self._compute_view_size().width()
@@ -384,7 +390,6 @@ class Imageview(QGraphicsView):
 		self.viewport_data.move(dp.x(), dp.y())
 		self.last_mouse_pos = pos
 		self.render()
-		self.mouse_mode = 2
 
 	def tabletEvent(self, e):
 		pos = e.posF()

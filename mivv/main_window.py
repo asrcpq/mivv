@@ -14,6 +14,8 @@ class MainWindow(QMainWindow):
 		super().__init__()
 		self.setStyleSheet(f"background-color: {var.background};")
 		self.setWindowTitle("mivv")
+		if var.fullscreen:
+			self.setWindowState(Qt.WindowFullScreen);
 		var.hidpi = self.devicePixelRatioF()
 		self.setGeometry(0, 0, 640, 480)
 

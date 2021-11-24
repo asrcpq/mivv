@@ -26,6 +26,8 @@ see `mivv/var.py` for keybind
 
 	* qtsvg only support svg tiny
 
+	* qtsvg poor performance
+
 	* qtpdf does not have a pyqt version,
 	poppler-qt5 is broken(cannot install in venv)
 
@@ -34,10 +36,6 @@ see `mivv/var.py` for keybind
 	see `memory_management.md`
 
 ## todo(maybe)
-
-* font color(busy color)
-
-* svg flicker
 
 * add test
 

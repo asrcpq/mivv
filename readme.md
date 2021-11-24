@@ -39,19 +39,13 @@ see `mivv/var.py` for keybind
 
 * add test
 
-* dedupe filelist
-
-* toggle bar
-
-* transparent background
-
 * measure tool
 
 * left up align
 
-* more draw: clear, redo, colorpicker, fill...
+* more draw: paintbrush, save, redo, colorpicker, fill, select, transform...
 
-* draw across edge not continuous
+* strikes that cross the border are not continuous
 
 * rotation + fill?
 
@@ -59,6 +53,6 @@ see `mivv/var.py` for keybind
 
 	* more image cache(next prev)
 
-	* prevent huge image from being loaded
+	* prevent artificial huge image from being loaded
 
 	* load thumbnails dynamically

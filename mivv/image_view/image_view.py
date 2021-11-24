@@ -23,7 +23,7 @@ class Imageview(QGraphicsView):
 		self.setMouseTracking(True)
 		self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-		self.setFocusPolicy(Qt.NoFocus);
+		self.setFocusPolicy(Qt.NoFocus)
 		self.content_size: QSizeF = QSizeF()
 		self.content = None
 		self.ty = None

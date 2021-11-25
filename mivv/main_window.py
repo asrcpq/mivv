@@ -111,6 +111,7 @@ class MainWindow(QMainWindow):
 		self.image_display.hide()
 		if not self.grid_view.reset_layout():
 			self.grid_view.set_cursor(False)
+		self.grid_view.update_filelist()
 		self.grid_view.resize(self.width(), self.height() - var.bar_height)
 		self.grid_view.show()
 		self.mode = 2

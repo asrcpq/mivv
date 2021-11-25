@@ -22,5 +22,4 @@ class PatchManager():
 	def undo(self):
 		if self.undo_stack:
 			return self.undo_stack.pop()
-		else:
-			return None
+		return None

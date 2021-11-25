@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
 		self.setStyleSheet(f"background-color: {var.background};")
 		self.setWindowTitle("mivv")
 		if var.fullscreen:
-			self.setWindowState(Qt.WindowFullScreen);
+			self.setWindowState(Qt.WindowFullScreen)
 		var.hidpi = self.devicePixelRatioF()
 		self.setGeometry(0, 0, 640, 480)
 
@@ -118,7 +118,6 @@ class MainWindow(QMainWindow):
 		self.set_label() # only for zoom level
 
 	def image_mode(self):
-		# TODO no load if image not changed
 		self.image_display.load()
 		self.image_display.resize(self.width(), self.height() - var.bar_height)
 		self.grid_view.hide()
@@ -143,9 +142,11 @@ class MainWindow(QMainWindow):
 		if e.key() == Qt.Key_Shift:
 			var.logger.debug("Shift release")
 			var.keymod_shift = False
-		elif e.key() == Qt.Key_Control:
+			return
+		if e.key() == Qt.Key_Control:
 			var.logger.debug("Control release")
 			var.keymod_control = False
+			return
 		k = self.prockey(e)
 		if self.mode == 1:
 			self.image_display.key_handler(k, True, e.isAutoRepeat())
@@ -155,7 +156,7 @@ class MainWindow(QMainWindow):
 			var.logger.debug("Shift pressed")
 			var.keymod_shift = True
 			return
-		elif e.key() == Qt.Key_Control:
+		if e.key() == Qt.Key_Control:
 			var.logger.debug("Control pressed")
 			var.keymod_control = True
 			return
@@ -185,7 +186,7 @@ class MainWindow(QMainWindow):
 			else:
 				var.logger.error(f"Unknown mode {self.mode}")
 			if ret is None:
-				var.logger.error(f"key handler return none!")
+				var.logger.error("key handler return none!")
 			if ret: # processed
 				self.set_label()
 

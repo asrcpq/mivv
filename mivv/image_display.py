@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QPainter, QColor
-from PyQt5.QtCore import Qt
 
 from mivv.image_view.image_view import Imageview
 from mivv.keydef import Keydef
@@ -44,7 +43,7 @@ class ImageDisplay(QLabel):
 		else:
 			self.parent().set_fn_label_string(string)
 
-	def resizeEvent(self, e):
+	def resizeEvent(self, _e):
 		if self.background:
 			self.set_background()
 		self.image_view.resize(self.size())
@@ -58,6 +57,4 @@ class ImageDisplay(QLabel):
 			else:
 				self.set_background()
 			return True
-		else:
-			return self.image_view.key_handler(k, is_release, is_auto_repeat)
-		return False
+		return self.image_view.key_handler(k, is_release, is_auto_repeat)

@@ -19,6 +19,7 @@ ext_type = {
 }
 cache_size = 256
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes
+grid_space = 10
 grid_size_idx_default = 2
 k_move = 50 # relative to screen size
 scaling_mult = 1.3 # image mode keyboard scaling factor

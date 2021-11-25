@@ -2,7 +2,7 @@
 
 PyQt5 simple image viewer.
 
-![demo](https://asrcpq.github.io/resources/2111/mivv_demo.gif)
+<img src="https://asrcpq.github.io/resources/2111/mivv_demo.gif" width="100%">
 
 ## features
 

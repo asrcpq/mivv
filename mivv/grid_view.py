@@ -12,7 +12,6 @@ class Gridview(QWidget):
 		self.setStyleSheet(f"background-color: {var.background};")
 		self.y_offset = 0
 		self.grid_size_idx = 2
-		self.grid_space = 10
 		self.grid_offset = None
 		self.count_h = 0
 		self.count_v = 0
@@ -104,10 +103,10 @@ class Gridview(QWidget):
 		self.filelist_len = var_flen
 
 	def reset_layout(self):
-		self.grid_offset = var.grid_sizes[self.grid_size_idx] + self.grid_space
-		count_h = (self.width() - self.grid_space) // self.grid_offset
+		self.grid_offset = var.grid_sizes[self.grid_size_idx] + var.grid_space
+		count_h = (self.width() - var.grid_space) // self.grid_offset
 		count_h = max(count_h, 1)
-		count_v = (self.height() - self.grid_space) // self.grid_offset
+		count_v = (self.height() - var.grid_space) // self.grid_offset
 		count_v = max(count_v, 1)
 		if self.count_h == count_h and self.count_v == count_v:
 			return False
@@ -138,8 +137,8 @@ class Gridview(QWidget):
 				if i >= len(self.labels[j]):
 					label = Thumbnail(self, i, j)
 					label.setGeometry(
-						i * self.grid_offset + self.grid_space,
-						j * self.grid_offset + self.grid_space,
+						i * self.grid_offset + var.grid_space,
+						j * self.grid_offset + var.grid_space,
 						grid_size,
 						grid_size,
 					)
@@ -264,8 +263,8 @@ class Gridview(QWidget):
 			if self.mouse_mode != 3:
 				self.mouse_mode = 3
 			et = e.localPos()
-			cx = int((et.x() - self.grid_space / 2) / self.grid_offset)
-			cy = int((et.y() - self.grid_space / 2) / self.grid_offset)
+			cx = int((et.x() - var.grid_space / 2) / self.grid_offset)
+			cy = int((et.y() - var.grid_space / 2) / self.grid_offset)
 			if cx < self.count_h and cx >= 0 and \
 				cy < self.count_v and cy >= 0:
 				self._cursor_select(cx, cy)

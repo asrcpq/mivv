@@ -50,7 +50,7 @@ class ImageDisplay(QLabel):
 		var.main_window.set_label()
 
 	def key_handler(self, k, is_release, is_auto_repeat):
-		if k == Keydef.image_chessboard:
+		if k == Keydef.image_chessboard and not is_release:
 			if self.background:
 				self.background = None
 				self.clear()

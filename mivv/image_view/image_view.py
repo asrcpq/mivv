@@ -114,7 +114,7 @@ class Imageview(QGraphicsView):
 			return False
 		if not var.preload_thumbnail:
 			self._finish_loading()
-		self.setCursor(Qt.ArrowCursor)
+		self.setCursor(Qt.CrossCursor)
 		var.main_window.label_busy(False)
 		return True
 
@@ -390,7 +390,7 @@ class Imageview(QGraphicsView):
 			return
 		if self.mouse_mode != 2:
 			return
-		self.setCursor(Qt.CrossCursor)
+		self.setCursor(Qt.OpenHandCursor)
 		dp = pos - self.last_mouse_pos
 		view_size_w = self._compute_view_size().width()
 		dp *= -view_size_w / self.width()
@@ -447,6 +447,7 @@ class Imageview(QGraphicsView):
 			return
 		if e.buttons() & Qt.RightButton:
 			pos = e.localPos()
+			self.setCursor(Qt.ArrowCursor)
 			if self.mouse_mode == 0:
 				self.last_mouse_pos = pos
 				self.mouse_mode = 4
@@ -463,7 +464,6 @@ class Imageview(QGraphicsView):
 				self.navigate_image(1, False)
 			else:
 				return
-			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 5 # not 4
 			return
 		if self.mouse_mode == 6:
@@ -479,7 +479,7 @@ class Imageview(QGraphicsView):
 				)
 			self.last_mouse_pos = pos
 		else:
-			self.setCursor(Qt.ArrowCursor)
+			self.setCursor(Qt.CrossCursor)
 			self.mouse_mode = 0
 
 	def get_zoom_level(self):

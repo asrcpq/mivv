@@ -39,13 +39,21 @@ see `mivv/var.py` for keybind
 
 * shift+create canvas=every 25% scaling
 
+* flip change position
+
 * add test
 
 * measure tool
 
 * left up align
 
-* more draw: paintbrush, save, redo, colorpicker, fill, select, transform...
+* draw
+
+	* brush size
+
+	* paintbrush
+
+	* save, redo, colorpicker, select, transform
 
 * strikes that cross the border are not continuous
 

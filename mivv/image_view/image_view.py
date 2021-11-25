@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 	QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QImageReader
-from PyQt5.QtCore import Qt, QRectF, QSize, QSizeF, QEvent, pyqtSignal
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal
 from PyQt5.QtSvg import QGraphicsSvgItem
 
 from mivv import var
@@ -116,6 +116,7 @@ class Imageview(QGraphicsView):
 			self._finish_loading()
 		self.setCursor(Qt.ArrowCursor)
 		var.main_window.label_busy(False)
+		return True
 
 	def _finish_loading(self):
 		self._set_original_scaling_factor()
@@ -299,6 +300,8 @@ class Imageview(QGraphicsView):
 			self.mouse_mode = 0
 			self.parent().override_label("")
 			self._set_canvas()
+			return True
+		return False
 
 	def _key_press_handler_canvas(self, k, is_auto_repeat):
 		if is_auto_repeat:
@@ -429,15 +432,20 @@ class Imageview(QGraphicsView):
 		pos = e.localPos()
 		if e.buttons() & Qt.MiddleButton:
 			if self.mouse_mode == 3:
-				return self._mouse_shift_rotate(pos)
+				self._mouse_shift_rotate(pos)
+				return
 			if self.mouse_mode == 1:
-				return self._mouse_ctrl_zoom(pos)
+				self._mouse_ctrl_zoom(pos)
+				return
 			if var.keymod_shift:
-				return self._mouse_shift_rotate(pos)
+				self._mouse_shift_rotate(pos)
+				return
 			if var.keymod_control:
-				return self._mouse_ctrl_zoom(pos)
-			return self._mouse_pan(pos)
-		elif e.buttons() & Qt.RightButton:
+				self._mouse_ctrl_zoom(pos)
+				return
+			self._mouse_pan(pos)
+			return
+		if e.buttons() & Qt.RightButton:
 			pos = e.localPos()
 			if self.mouse_mode == 0:
 				self.last_mouse_pos = pos
@@ -457,7 +465,8 @@ class Imageview(QGraphicsView):
 				return
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 5 # not 4
-		elif self.mouse_mode == 6:
+			return
+		if self.mouse_mode == 6:
 			if e.buttons() & Qt.LeftButton:
 				dp = pos - self.last_mouse_pos
 				self.canvas_scaling_factor += dp.y() / 100

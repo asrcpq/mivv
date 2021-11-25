@@ -117,7 +117,7 @@ if "XDG_CONFIG_HOME" in os.environ:
 
 # logger is used here, so after include user conf
 if "XDG_CACHE_HOME" in os.environ:
-	cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/"
+	cache_path = f"{os.environ['XDG_CACHE_HOME']}/mivv/thumbnail"
 else:
 	logger.warning("XDG_CACHE_HOME not set. Will not read/write cache.")
 	cache_path = None

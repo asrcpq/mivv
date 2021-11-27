@@ -39,8 +39,6 @@ Keydef = Enum('Keydef', [
 	'grid_view_zoom_in',
 	'grid_view_zoom_out',
 	'grid_view_zoom_origin',
-	'grid_view_next',
-	'grid_view_prev',
 	'grid_view_first',
 	'grid_view_last',
 	'grid_hol',

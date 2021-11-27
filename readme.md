@@ -12,6 +12,8 @@ PyQt5 simple image viewer.
 
 * annotate image(wip)
 
+* configurable(use `$XDG_CONFIG_HOME/mivv/config.py`)
+
 ## usage
 
 1. have pyqt5 installed
@@ -22,12 +24,10 @@ see `mivv/var.py` for keybind
 
 ## known limitations
 
-* pdf/complete svg support
+* qtsvg only support svg tiny
 
-	* qtsvg only support svg tiny
-
-	* qtpdf does not have a pyqt version,
-	poppler-qt5 is broken(cannot install in venv)
+* qtpdf does not have a pyqt version,
+poppler-qt5 is broken(cannot install in venv)
 
 * Loading all thumbnails use too much memory
 

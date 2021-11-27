@@ -8,7 +8,7 @@ from mivv.keydef import Keydef
 
 startup_time = time()
 
-# config values
+# config values, case insensitive
 ext_type = {
 	".png": 1,
 	".jpg": 1,
@@ -59,9 +59,9 @@ keymap_image = {
 	(Qt.Key_I, 0): Keydef.image_view_zoom_in,
 	(Qt.Key_O, 0): Keydef.image_view_zoom_out,
 	(Qt.Key_1, 0): Keydef.image_view_zoom_origin,
-	(Qt.Key_N, 0): Keydef.image_view_next,
+	(Qt.Key_Period, 0): Keydef.image_view_next,
+	(Qt.Key_Comma, 0): Keydef.image_view_prev,
 	(Qt.Key_PageDown, 0): Keydef.image_view_next,
-	(Qt.Key_P, 0): Keydef.image_view_prev,
 	(Qt.Key_PageUp, 0): Keydef.image_view_prev,
 	(Qt.Key_G, 0): Keydef.image_view_first,
 	(Qt.Key_G, 1): Keydef.image_view_last,
@@ -92,8 +92,6 @@ keymap_grid = {
 	(Qt.Key_I, 0): Keydef.grid_view_zoom_in,
 	(Qt.Key_O, 0): Keydef.grid_view_zoom_out,
 	(Qt.Key_1, 0): Keydef.grid_view_zoom_origin,
-	(Qt.Key_N, 0): Keydef.grid_view_next,
-	(Qt.Key_P, 0): Keydef.grid_view_prev,
 	(Qt.Key_G, 0): Keydef.grid_view_first,
 	(Qt.Key_G, 1): Keydef.grid_view_last,
 	(Qt.Key_0, 0): Keydef.grid_hol,

@@ -12,7 +12,7 @@ PyQt5 simple image viewer.
 
 * annotate image(wip)
 
-* configurable(use `$XDG_CONFIG_HOME/mivv/config.py`)
+* configurable(via `$XDG_CONFIG_HOME/mivv/config.py`)
 
 ## usage
 
@@ -34,6 +34,10 @@ poppler-qt5 is broken(cannot install in venv)
 	see `memory_management.md`
 
 ## todo(maybe)
+
+* transparent image preview black flash with chessboard(because of jpg)
+
+* video
 
 * shift+create canvas=every 25% scaling
 

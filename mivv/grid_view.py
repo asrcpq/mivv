@@ -163,7 +163,6 @@ class Gridview(QWidget):
 
 	def resizeEvent(self, _e):
 		self.reset_layout()
-		self.parent().set_label()
 
 	def _cursor_select(self, x, y):
 		new_idx = (self.y_offset + y) * self.count_h + x

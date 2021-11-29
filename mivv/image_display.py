@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QLabel
 from PyQt5.QtGui import QPixmap, QPainter, QColor
+from PyQt5.QtCore import Qt
 
 from mivv.image_view.image_view import Imageview
 from mivv.keydef import Keydef
@@ -23,12 +24,13 @@ class ImageDisplay(QLabel):
 		background = QPixmap(self.size())
 		block_size = 25
 		painter = QPainter(background)
+		painter.setPen(Qt.NoPen)
 		for i in range(self.width() // block_size + 1):
 			for j in range(self.height() // block_size + 1):
 				if (i + j) % 2 == 0:
-					painter.setBrush(QColor(0, 0, 0))
+					painter.setBrush(QColor(255, 255, 255))
 				else:
-					painter.setBrush(QColor(63, 63, 63))
+					painter.setBrush(QColor(192, 192, 192))
 				painter.drawRect(
 					i * block_size, j * block_size,
 					block_size, block_size,
@@ -47,7 +49,6 @@ class ImageDisplay(QLabel):
 		if self.background:
 			self.set_background()
 		self.image_view.resize(self.size())
-		var.main_window.set_label()
 
 	def key_handler(self, k, is_release, is_auto_repeat):
 		if k == Keydef.image_chessboard and not is_release:

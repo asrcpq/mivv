@@ -5,6 +5,7 @@ from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from mivv import var
+from mivv.label_stack import LSLabel
 from mivv.grid_view import Gridview
 from mivv.image_display import ImageDisplay
 from mivv.keydef import Keydef
@@ -12,7 +13,7 @@ from mivv.keydef import Keydef
 class MainWindow(QMainWindow):
 	def __init__(self):
 		super().__init__()
-		self.setStyleSheet(f"background-color: {var.background};")
+		self.setStyleSheet(f"background-color: {var.background}")
 		self.setWindowTitle("mivv")
 		if var.fullscreen:
 			self.setWindowState(Qt.WindowFullScreen)
@@ -24,12 +25,8 @@ class MainWindow(QMainWindow):
 		self.grid_view = Gridview(self)
 
 		labels = []
-		font = QFont("monospace", var.bar_height - 1)
 		for name in ["filename", "info"]:
-			label = QLabel(name, self)
-			label.setAutoFillBackground(True)
-			label.setStyleSheet("QLabel{background-color: black;color: white;}")
-			label.setFont(font)
+			label = LSLabel(self)
 			labels.append(label)
 		self.fn_label = labels[0]
 		self.info_label = labels[1]
@@ -48,6 +45,7 @@ class MainWindow(QMainWindow):
 			self.grid_view.update_filelist()
 
 	def label_busy(self, busy):
+		return
 		if busy:
 			self.fn_label.setStyleSheet("QLabel{background-color: black;color: red;}")
 		else:
@@ -57,7 +55,7 @@ class MainWindow(QMainWindow):
 		left = self.info_label.geometry().left()
 		metrics = QFontMetrics(self.fn_label.font())
 		elidedText = metrics.elidedText(string, Qt.ElideLeft, left)
-		self.fn_label.setText(elidedText)
+		self.fn_label.set_text(elidedText)
 		self.fn_label.setGeometry(
 			0,
 			self.height() - var.bar_height,
@@ -91,7 +89,7 @@ class MainWindow(QMainWindow):
 			unfinished_indicator = "+"
 		else:
 			unfinished_indicator = ""
-		self.info_label.setText(
+		self.info_label.set_text(
 			f" {status_string} " \
 			f"{scaling_string} " \
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
@@ -112,14 +110,14 @@ class MainWindow(QMainWindow):
 		if not self.grid_view.reset_layout():
 			self.grid_view.set_cursor(False)
 		self.grid_view.update_filelist()
-		self.grid_view.resize(self.width(), self.height() - var.bar_height)
+		self.grid_view.resize(self.width(), self.height())
 		self.grid_view.show()
 		self.mode = 2
 		self.set_label() # only for zoom level
 
 	def image_mode(self):
 		self.image_display.load()
-		self.image_display.resize(self.width(), self.height() - var.bar_height)
+		self.image_display.resize(self.width(), self.height())
 		self.grid_view.hide()
 		self.mode = 1
 		self.set_label() # only for zoom level
@@ -193,9 +191,9 @@ class MainWindow(QMainWindow):
 	def resizeEvent(self, _e):
 		var.logger.info(f"Resized to {self.width()} {self.height()}")
 		if self.mode == 1:
-			self.image_display.resize(self.width(), self.height() - var.bar_height)
+			self.image_display.resize(self.width(), self.height())
 		elif self.mode == 2:
-			self.grid_view.resize(self.width(), self.height() - var.bar_height)
+			self.grid_view.resize(self.width(), self.height())
 
 		# bug: randomly modifier keyreleaseevent not triggered during resize
 		# when wm resize involves shift key to be pressed, like in i3wm.
@@ -204,3 +202,4 @@ class MainWindow(QMainWindow):
 		# then we don't need to implement our own modifier tracker
 		var.keymod_shift = False
 		var.keymod_control = False
+		self.set_label()

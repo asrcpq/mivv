@@ -30,7 +30,7 @@ image_move_rotate = 5 # ... rotation(degree)
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
 guesture_move = 30
-bar_height = 10
+bar_height = 15
 background = "rgb(0, 0, 0)"
 border_color = "rgb(255, 255, 255)"
 chessboard_background = False
@@ -45,6 +45,7 @@ keymap_common = {
 	(Qt.Key_Return, 0): Keydef.toggle_grid_mode,
 	(Qt.Key_W, 1): Keydef.preserve_viewport,
 	(Qt.Key_T, 1): Keydef.preload_thumbnail,
+	(Qt.Key_B, 0): Keydef.toggle_label,
 }
 
 keymap_image = {

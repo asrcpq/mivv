@@ -210,7 +210,6 @@ class Gridview(QWidget):
 			self.grid_size_idx = len(var.grid_sizes) - 1
 		if old_idx == self.grid_size_idx:
 			return
-		self.parent().set_label()
 		self._xreset_layout()
 
 	def key_handler(self, k):
@@ -285,6 +284,7 @@ class Gridview(QWidget):
 				elif dp.y() < -var.grid_move_zoom:
 					self._set_zoom_level(1, False)
 					self.last_mouse_pos = e.localPos()
+				var.main_window.set_basic_label()
 			# pan
 			else:
 				self.setCursor(Qt.CrossCursor)
@@ -301,7 +301,7 @@ class Gridview(QWidget):
 				elif dp.x() < -var.grid_move_pan:
 					self._offset_cursor(-1, False)
 					self.last_mouse_pos = e.localPos()
-				self.parent().set_label()
+				var.main_window.set_basic_label()
 		else:
 			self.setCursor(Qt.ArrowCursor)
 			self.mouse_mode = 0

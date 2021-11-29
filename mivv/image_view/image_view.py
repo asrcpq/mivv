@@ -132,9 +132,8 @@ class Imageview(QGraphicsView):
 				self._set_content_center()
 		self._set_move_dist()
 		self.render()
-		# parent() is dirty
-		self.parent().show()
-		var.main_window.set_label()
+		var.main_window.image_display.show()
+		var.main_window.set_basic_label()
 
 	def _reset_scene(self):
 		scene = QGraphicsScene()
@@ -379,7 +378,7 @@ class Imageview(QGraphicsView):
 		elif dp.y() < -var.image_move_zoom:
 			self._scale_view(1 / var.scaling_mult_mouse, False)
 			self.last_mouse_pos = pos
-		var.main_window.set_label()
+		var.main_window.set_basic_label()
 		self.render()
 
 	def _mouse_pan(self, pos):
@@ -467,16 +466,18 @@ class Imageview(QGraphicsView):
 			self.mouse_mode = 5 # not 4
 			return
 		if self.mouse_mode == 6:
-			if e.buttons() & Qt.LeftButton:
+			if e.buttons() & Qt.LeftButton and self.last_mouse_pos:
 				dp = pos - self.last_mouse_pos
 				self.canvas_scaling_factor += dp.y() / 100
 				scaling = self.canvas_scaling_factor
 				size = self.content_size * self.canvas_scaling_factor
-				self.parent().override_label(
+				var.main_window.label_stack.set_label("canvas_size",
 					"Creating canvas:" \
 					f"{scaling:.2f} " \
 					f"{size.width():.0f} x {size.height():.0f}" \
 				)
+			else:
+				var.main_window.label_stack.unset_label("canvas_size")
 			self.last_mouse_pos = pos
 		else:
 			self.setCursor(Qt.CrossCursor)

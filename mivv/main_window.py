@@ -5,7 +5,7 @@ from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtCore import Qt
 
 from mivv import var
-from mivv.label_stack import LSLabel
+from mivv.label_stack import LabelStack
 from mivv.grid_view import Gridview
 from mivv.image_display import ImageDisplay
 from mivv.keydef import Keydef
@@ -24,12 +24,10 @@ class MainWindow(QMainWindow):
 		self.image_display = ImageDisplay(self)
 		self.grid_view = Gridview(self)
 
-		labels = []
-		for name in ["filename", "info"]:
-			label = LSLabel(self)
-			labels.append(label)
-		self.fn_label = labels[0]
-		self.info_label = labels[1]
+		label_stack = LabelStack(self)
+		label_stack.set_label("filename", "")
+		label_stack.set_label("info", "")
+		self.label_stack = label_stack
 
 	def initialize_view(self):
 		if var.start_in_grid_mode:
@@ -40,34 +38,19 @@ class MainWindow(QMainWindow):
 		var.logger.info(f"Startup time: {time() - var.startup_time:.03f} secs")
 
 	def loader_callback(self):
-		self.set_label()
+		self.set_basic_label()
 		if self.mode == 2:
 			self.grid_view.update_filelist()
 
 	def label_busy(self, busy):
+		# todo
 		return
-		if busy:
-			self.fn_label.setStyleSheet("QLabel{background-color: black;color: red;}")
-		else:
-			self.fn_label.setStyleSheet("QLabel{background-color: black;color: white;}")
-
-	def set_fn_label_string(self, string):
-		left = self.info_label.geometry().left()
-		metrics = QFontMetrics(self.fn_label.font())
-		elidedText = metrics.elidedText(string, Qt.ElideLeft, left)
-		self.fn_label.set_text(elidedText)
-		self.fn_label.setGeometry(
-			0,
-			self.height() - var.bar_height,
-			left,
-			var.bar_height,
-		)
 
 	def set_fn_label_filename(self):
 		text = f"{var.image_loader.filelist[var.current_idx]}"
-		self.set_fn_label_string(text)
+		self.label_stack.set_label("filename", text)
 
-	def set_label(self):
+	def set_basic_label(self):
 		status_string = ""
 		if var.preserve_viewport:
 			status_string += "W"
@@ -89,19 +72,11 @@ class MainWindow(QMainWindow):
 			unfinished_indicator = "+"
 		else:
 			unfinished_indicator = ""
-		self.info_label.set_text(
-			f" {status_string} " \
+		self.label_stack.set_label("info",
+			f"{status_string} " \
 			f"{scaling_string} " \
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
 			f"{unfinished_indicator}" \
-		)
-		self.info_label.adjustSize()
-		width = self.info_label.geometry().width()
-		self.info_label.setGeometry(
-			self.width() - width,
-			self.height() - var.bar_height,
-			width,
-			var.bar_height,
 		)
 		self.set_fn_label_filename()
 
@@ -113,14 +88,14 @@ class MainWindow(QMainWindow):
 		self.grid_view.resize(self.width(), self.height())
 		self.grid_view.show()
 		self.mode = 2
-		self.set_label() # only for zoom level
+		self.set_basic_label() # only for zoom level
 
 	def image_mode(self):
 		self.image_display.load()
 		self.image_display.resize(self.width(), self.height())
 		self.grid_view.hide()
 		self.mode = 1
-		self.set_label() # only for zoom level
+		self.set_basic_label() # only for zoom level
 
 	def prockey(self, e):
 		bit = int(var.keymod_control) * 2 + int(var.keymod_shift)
@@ -172,10 +147,12 @@ class MainWindow(QMainWindow):
 			var.app.quit()
 		elif k == Keydef.preserve_viewport:
 			var.preserve_viewport = not var.preserve_viewport
-			self.set_label()
+			self.set_basic_label()
 		elif k == Keydef.preload_thumbnail:
 			var.preload_thumbnail = not var.preload_thumbnail
-			self.set_label()
+			self.set_basic_label()
+		elif k == Keydef.toggle_label:
+			self.label_stack.toggle_visible()
 		else:
 			if self.mode == 1:
 				ret = self.image_display.key_handler(k, False, e.isAutoRepeat())
@@ -186,7 +163,7 @@ class MainWindow(QMainWindow):
 			if ret is None:
 				var.logger.error("key handler return none!")
 			if ret: # processed
-				self.set_label()
+				self.set_basic_label()
 
 	def resizeEvent(self, _e):
 		var.logger.info(f"Resized to {self.width()} {self.height()}")
@@ -195,11 +172,15 @@ class MainWindow(QMainWindow):
 		elif self.mode == 2:
 			self.grid_view.resize(self.width(), self.height())
 
-		# bug: randomly modifier keyreleaseevent not triggered during resize
+		# note: randomly modifier keyreleaseevent not triggered during resize
 		# when wm resize involves shift key to be pressed, like in i3wm.
 		# This can be fixed after wayland key modifier works
 		# during mouse event(see QTBUG-61488)
 		# then we don't need to implement our own modifier tracker
 		var.keymod_shift = False
 		var.keymod_control = False
-		self.set_label()
+		self.label_stack.resize(self.size())
+
+		# note: double update here, but this makes implementation easier
+		self.set_basic_label()
+		self.label_stack.update_size()

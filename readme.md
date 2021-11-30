@@ -35,8 +35,6 @@ poppler-qt5 is broken(cannot install in venv)
 
 ## todo(maybe)
 
-* preserve image center, instead of viewport coordinate, in w mode
-
 * keyboard zoom with predefined ratio like 10%, 25%, 50%, ...
 
 * transparent image preview black flash with chessboard(because of jpg)

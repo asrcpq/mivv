@@ -166,7 +166,7 @@ class Imageview(QGraphicsView):
 		self.load_data.emit(filename, self.ty)
 		if var.preload_thumbnail:
 			self._reset_scene()
-			self.content_size = QImageReader(filename).size()
+			self.update_content_size(QImageReader(filename).size())
 			if self.content_size.width() == -1:
 				var.logger.error(f"Load image size error: {filename}")
 				self.content = None
@@ -229,10 +229,10 @@ class Imageview(QGraphicsView):
 
 	def _set_content_center(self, preserve_center = False):
 		if preserve_center and self.viewport_data.content_center:
-		#	tmp = self.content_size / 2
-		#	self.viewport_data.content_center += QPointF(tmp.width(), tmp.height())
-		#	tmp = self.old_content_size / 2
-		#	self.viewport_data.content_center -= QPointF(tmp.width(), tmp.height())
+			tmp = self.content_size / 2
+			self.viewport_data.content_center += QPointF(tmp.width(), tmp.height())
+			tmp = self.old_content_size / 2
+			self.viewport_data.content_center -= QPointF(tmp.width(), tmp.height())
 			return
 		t = self.content_size / 2
 		self.viewport_data.content_center = QPointF(t.width(), t.height())

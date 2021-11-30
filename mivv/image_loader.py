@@ -123,6 +123,8 @@ class _ImageLoaderThread(QThread):
 		if var.private_mode or not var.cache_path:
 			var.logger.debug(f"No cache(private mode): {path}")
 			return
+		# note: cause black background flickering for transparent image + thumbnail preview
+		# but png too big
 		cached_path = var.cache_path + path + ".jpg"
 		dirname = os.path.dirname(cached_path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)

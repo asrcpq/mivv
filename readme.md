@@ -35,10 +35,6 @@ poppler-qt5 is broken(cannot install in venv)
 
 ## todo(maybe)
 
-* keyboard zoom with predefined ratio like 10%, 25%, 50%, ...
-
-* transparent image preview black flash with chessboard(because of jpg)
-
 * video
 
 * shift+create canvas=every 25% scaling

@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
 		if var.fullscreen:
 			self.setWindowState(Qt.WindowFullScreen)
 		var.hidpi = self.devicePixelRatioF()
-		self.setGeometry(0, 0, 640, 480)
+		self.setGeometry(var.default_geom)
 
 		self.mode = None
 		self.image_display = ImageDisplay(self)

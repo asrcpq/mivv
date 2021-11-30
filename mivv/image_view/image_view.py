@@ -25,6 +25,7 @@ class Imageview(QGraphicsView):
 		self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 		self.setFocusPolicy(Qt.NoFocus)
 		self.content_size: QSizeF = QSizeF()
+		self.old_content_size: QSizeF = QSizeF()
 		self.content = None
 		self.ty = None
 		self.canvas_item = None
@@ -39,6 +40,11 @@ class Imageview(QGraphicsView):
 		self.loader_thread.result.connect(self.update_content)
 		self.load_data.connect(self.loader_thread.feed_data)
 		self.last_content_item = None # thumbnail or image(gif mode)
+
+		# initialize again, because main_window is not yet visible,
+		# the geometry is default to 100x30
+		# default fill is implemented by scale 1x which will be restricted by scaling range
+		self.setGeometry(var.default_geom)
 
 	def _set_original_scaling_factor(self):
 		wk = self.width() / self.content_size.width()
@@ -74,6 +80,10 @@ class Imageview(QGraphicsView):
 			self._scale_view(osf / o_osf, False) # prevent overflow
 		self.render()
 
+	def update_content_size(self, new_size: QSizeF):
+		self.old_content_size = self.content_size
+		self.content_size = new_size
+
 	def update_content(self, content):
 		if self.last_content_item:
 			self.scene().removeItem(self.last_content_item)
@@ -82,7 +92,7 @@ class Imageview(QGraphicsView):
 		if self.ty == 1:
 			content = QPixmap.fromImage(content)
 			self.content = content
-			self.content_size = content.size()
+			self.update_content_size(content.size())
 			if self.content.isNull():
 				var.logger.error("Load image error")
 				self.content = None
@@ -94,7 +104,7 @@ class Imageview(QGraphicsView):
 		elif self.ty == 2:
 			self.content = QMovie(content)
 			# don't use content size, gif image identified as movie breaks
-			self.content_size = QImageReader(content).size()
+			self.update_content_size(QImageReader(content).size())
 			if not self.content.isValid():
 				var.logger.error("Load movie error")
 				self.content = None
@@ -107,7 +117,7 @@ class Imageview(QGraphicsView):
 		elif self.ty == 3:
 			item = QGraphicsSvgItem(content)
 			self.content = item
-			self.content_size = item.boundingRect().size()
+			self.update_content_size(item.boundingRect().size())
 			self.scene().addItem(item)
 		else:
 			var.logger.error(f"Unknown type: {self.ty}")
@@ -128,8 +138,7 @@ class Imageview(QGraphicsView):
 				self.viewport_data.original_scaling_factor / self.viewport_data.zoom_level,
 				True,
 			)
-			if not self.viewport_data.content_center:
-				self._set_content_center()
+			self._set_content_center(True)
 		self._set_move_dist()
 		self.render()
 		var.main_window.image_display.show()
@@ -172,8 +181,6 @@ class Imageview(QGraphicsView):
 		return True
 
 	def render(self):
-		if not self.content_size:
-			return
 		size = self._compute_view_size()
 		sx = self.viewport().width() / size.width()
 		sy = self.viewport().height() / size.height()
@@ -184,7 +191,7 @@ class Imageview(QGraphicsView):
 		else:
 			raise Exception('Float error')
 		self.setTransform(self.viewport_data.get_transform(k))
-		self.centerOn(self.viewport_data.content_center[0], self.viewport_data.content_center[1])
+		self.centerOn(self.viewport_data.content_center.x(), self.viewport_data.content_center.y())
 
 	def navigate_image(self, offset, abs_pos = False):
 		old_idx = var.current_idx
@@ -220,9 +227,16 @@ class Imageview(QGraphicsView):
 			return False
 		return True
 
-	def _set_content_center(self):
+	def _set_content_center(self, preserve_center = False):
+		if preserve_center and self.viewport_data.content_center:
+		#	tmp = self.content_size / 2
+		#	self.viewport_data.content_center += QPointF(tmp.width(), tmp.height())
+		#	tmp = self.old_content_size / 2
+		#	self.viewport_data.content_center -= QPointF(tmp.width(), tmp.height())
+			return
 		t = self.content_size / 2
-		self.viewport_data.content_center = [t.width(), t.height()]
+		self.viewport_data.content_center = QPointF(t.width(), t.height())
+		self.viewport_data.scale_view(1.0, True)
 
 	def _set_move_dist(self):
 		self.move_dist = self.viewport_data.get_move_dist()

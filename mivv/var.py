@@ -1,7 +1,7 @@
 from time import time
 import os
 
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRect
 
 from mivv.logger import get_logger
 from mivv.keydef import Keydef
@@ -17,6 +17,7 @@ ext_type = {
 	".gif": 2,
 	".svg": 3,
 }
+default_geom = QRect(0, 0, 640, 480)
 cache_size = 256
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes
 grid_space = 10

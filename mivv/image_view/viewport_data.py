@@ -53,7 +53,7 @@ class _ViewportData():
 		qtrans = QTransform()
 		qtrans.scale(k * self.flip[0], k * self.flip[1])
 		qtrans.rotate(self.rotation)
-		qtrans.translate(self.content_center[0], self.content_center[1])
+		qtrans.translate(self.content_center.x(), self.content_center.y())
 		return qtrans
 
 	def get_mouse_transform(self):
@@ -82,5 +82,4 @@ class _ViewportData():
 	def move(self, p):
 		qtrans = self.get_mouse_transform()
 		p = qtrans.map(p)
-		self.content_center[0] += p.x()
-		self.content_center[1] += p.y()
+		self.content_center += p

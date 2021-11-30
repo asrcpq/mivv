@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (
 	QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
 from PyQt5.QtGui import QPixmap, QMovie, QImageReader
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal, QPointF
 from PyQt5.QtSvg import QGraphicsSvgItem
 
 from mivv import var
@@ -229,13 +229,13 @@ class Imageview(QGraphicsView):
 
 	def _key_press_handler_transform(self, k):
 		if k == Keydef.image_view_left:
-			self.viewport_data.move(-self.move_dist, 0)
+			self.viewport_data.move(QPointF(-self.move_dist, 0))
 		elif k == Keydef.image_view_right:
-			self.viewport_data.move(self.move_dist, 0)
+			self.viewport_data.move(QPointF(self.move_dist, 0))
 		elif k == Keydef.image_view_down:
-			self.viewport_data.move(0, self.move_dist)
+			self.viewport_data.move(QPointF(0, self.move_dist))
 		elif k == Keydef.image_view_up:
-			self.viewport_data.move(0, -self.move_dist)
+			self.viewport_data.move(QPointF(0, -self.move_dist))
 		elif k == Keydef.image_view_zoom_out:
 			self._scale_view(var.scaling_mult, False)
 		elif k == Keydef.image_view_zoom_in:
@@ -382,7 +382,6 @@ class Imageview(QGraphicsView):
 		self.render()
 
 	def _mouse_pan(self, pos):
-		pos = self.viewport_data.get_mouse_transform().map(pos)
 		if self.mouse_mode == 0:
 			self.last_mouse_pos = pos
 			self.mouse_mode = 2
@@ -393,7 +392,7 @@ class Imageview(QGraphicsView):
 		dp = pos - self.last_mouse_pos
 		view_size_w = self._compute_view_size().width()
 		dp *= -view_size_w / self.width()
-		self.viewport_data.move(dp.x(), dp.y())
+		self.viewport_data.move(dp)
 		self.last_mouse_pos = pos
 		self.render()
 

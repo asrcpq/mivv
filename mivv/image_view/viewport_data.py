@@ -79,6 +79,8 @@ class _ViewportData():
 		else:
 			self.rotation = (floor(self.rotation / 90) + 1) * 90
 
-	def move(self, dx, dy):
-		self.content_center[0] += dx
-		self.content_center[1] += dy
+	def move(self, p):
+		qtrans = self.get_mouse_transform()
+		p = qtrans.map(p)
+		self.content_center[0] += p.x()
+		self.content_center[1] += p.y()

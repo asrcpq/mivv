@@ -41,8 +41,6 @@ poppler-qt5 is broken(cannot install in venv)
 
 * keyboard zoom with predefined ratio like 10%, 25%, 50%, ...
 
-* fix rotate + keyboard move
-
 * transparent image preview black flash with chessboard(because of jpg)
 
 * video

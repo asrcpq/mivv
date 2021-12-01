@@ -180,8 +180,12 @@ class Gridview(QWidget):
 		else:
 			var.current_idx += offset
 		if var.current_idx < 0:
-			var.logger.debug("scroll overflow restrict/cancle 0")
-			var.current_idx %= self.count_h
+			if offset + self.count_h < 0:
+				var.logger.debug("scroll overflow restrict 0%")
+				var.current_idx %= self.count_h
+			else:
+				var.logger.debug("scroll overflow restrict 0=")
+				var.current_idx = 0
 			self.set_cursor(False)
 		elif var.current_idx >= len(var.image_loader.filelist):
 			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \

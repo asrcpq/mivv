@@ -12,7 +12,6 @@ class LabelStack(QWidget):
 		self._labels = []
 		self._labels_dict = {}
 		self._font = QFont("monospace", var.bar_height // 1.4)
-		self._single_paint = None # should only be temporarily changed in set_label
 		self.w = 0
 		self.h = 0
 		self.update_size()
@@ -31,9 +30,7 @@ class LabelStack(QWidget):
 		else:
 			idx = self._labels_dict[keyword]
 			self._labels[idx] = string
-		self._single_paint = idx
 		self.update()
-		self._single_paint = None
 
 	# ignore nonexistent
 	def unset_label(self, keyword):
@@ -58,17 +55,15 @@ class LabelStack(QWidget):
 		self.update()
 
 	def paintEvent(self, _e):
-		if not self._single_paint:
-			for i in range(len(self._labels)):
-				self.paint(i)
-		else:
-			self.paint(self._single_paint)
+		for idx, _label in enumerate(self._labels):
+			self.paint(idx)
 
 	def paint(self, idx):
+		text = self._labels[idx]
 		p = QPainter(self);
 		rect = self._compute_geom(idx)
 		p.setFont(self._font)
-		true_rect = p.boundingRect(rect, Qt.AlignLeft, self._labels[idx])
+		true_rect = p.boundingRect(rect, Qt.AlignLeft, text)
 		w = true_rect.width() + 5 # todo: why overflow?
 		true_rect = QRect(rect.left(), rect.top(), w, var.bar_height)
 		true_rect2 = QRect(rect.left(), rect.top(), w, var.bar_height)
@@ -77,4 +72,4 @@ class LabelStack(QWidget):
 		bgc.setAlpha(128)
 		p.fillRect(true_rect, bgc);
 		p.setPen(Qt.white)
-		p.drawText(true_rect, Qt.AlignLeft, self._labels[idx])
+		p.drawText(true_rect, Qt.AlignLeft, text)

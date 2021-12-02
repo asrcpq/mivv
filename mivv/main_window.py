@@ -38,19 +38,15 @@ class MainWindow(QMainWindow):
 		var.logger.info(f"Startup time: {time() - var.startup_time:.03f} secs")
 
 	def loader_callback(self):
-		self.set_basic_label()
+		self.set_info_label()
 		if self.mode == 2:
 			self.grid_view.update_filelist()
-
-	def label_busy(self, busy):
-		# todo
-		return
 
 	def set_fn_label_filename(self):
 		text = f"{var.image_loader.filelist[var.current_idx]}"
 		self.label_stack.set_label("filename", text)
 
-	def set_basic_label(self):
+	def set_info_label(self):
 		status_string = ""
 		if var.preserve_viewport:
 			status_string += "W"
@@ -81,6 +77,9 @@ class MainWindow(QMainWindow):
 			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
 			f"{unfinished_indicator}" \
 		)
+
+	def set_basic_label(self):
+		self.set_info_label()
 		self.set_fn_label_filename()
 
 	def grid_mode(self):

@@ -124,8 +124,8 @@ class Imageview(QGraphicsView):
 			return False
 		if not var.preload_thumbnail:
 			self._finish_loading()
+		var.main_window.label_stack.unset_label("loading")
 		self.setCursor(Qt.CrossCursor)
-		var.main_window.label_busy(False)
 		return True
 
 	def _finish_loading(self):
@@ -153,7 +153,7 @@ class Imageview(QGraphicsView):
 		var.logger.info(f"Start loading id {var.current_idx}")
 		self.viewport_data.new_image_initialize()
 		self.setCursor(Qt.WaitCursor)
-		var.main_window.label_busy(True)
+		var.main_window.label_stack.set_label("loading", "loading")
 		# if size not locked, zoom_level is unknown
 		if not var.preserve_viewport:
 			self.viewport_data.zoom_level = None

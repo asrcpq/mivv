@@ -62,6 +62,9 @@ class MainWindow(QMainWindow):
 			try:
 				zoom_level_percent = 100 * self.image_display.get_zoom_level()
 				scaling_string = f"{zoom_level_percent:.1f}%"
+				s = self.image_display.image_view.content_size
+				if s:
+					scaling_string += f" {s.width()}x{s.height()}"
 			except TypeError:
 				scaling_string = "?%"
 		elif self.mode == 2:

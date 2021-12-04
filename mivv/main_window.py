@@ -52,8 +52,7 @@ class MainWindow(QMainWindow):
 			status_string += "W"
 		if var.preload_thumbnail:
 			status_string += "T"
-		if status_string:
-			status_string = f"[{status_string}]"
+		status_string = f"[{status_string}]"
 		if self.mode == 1:
 			try:
 				zoom_level_percent = 100 * self.image_display.get_zoom_level()

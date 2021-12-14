@@ -1,7 +1,7 @@
 /core
 /venv
 /dist
-/default.nix
+/result
 *.egg-info
 *.png
 *.log

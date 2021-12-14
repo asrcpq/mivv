@@ -78,7 +78,7 @@ def loader_callback():
 		var.main_window.initialize_view()
 	var.main_window.loader_callback()
 
-if __name__ == '__main__':
+def main():
 	args = build_parser().parse_args()
 	if args.c:
 		gc_cache()
@@ -119,3 +119,6 @@ if __name__ == '__main__':
 	var.app = app
 	app.exec()
 	var.image_loader.stop()
+
+if __name__ == '__main__':
+	main()

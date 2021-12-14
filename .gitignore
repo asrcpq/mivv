@@ -1,6 +1,8 @@
 /core
 /venv
 /dist
+/default.nix
+*.egg-info
 *.png
 *.log
 __pycache__

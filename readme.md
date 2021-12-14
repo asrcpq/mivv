@@ -35,11 +35,11 @@ poppler-qt5 is broken(cannot install in venv)
 
 ## todo(maybe)
 
-* video
-
-* shift+create canvas=every 25% scaling
+* modular design
 
 * flip change position
+
+* video module
 
 * add test
 

@@ -2,7 +2,7 @@ from time import time
 
 from PyQt5.QtWidgets import QLabel, QMainWindow
 from PyQt5.QtGui import QFont, QFontMetrics
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QEvent
 
 from mivv import var
 from mivv.label_stack import LabelStack
@@ -111,6 +111,13 @@ class MainWindow(QMainWindow):
 			return None
 		var.logger.debug(k)
 		return k
+
+	def event(self, event):
+		if event.type() == QEvent.WindowActivate:
+			var.logger.debug('window activate')
+			var.keymod_shift = False
+			var.keymod_control = False
+		return super().event(event)
 
 	def keyReleaseEvent(self, e):
 		if e.key() == Qt.Key_Shift:

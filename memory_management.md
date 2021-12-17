@@ -1,7 +1,7 @@
 # mivv uses too much memory?
 
 Currently this is the major limitation of mivv.
-Typically mivv uses ~2GB memory for every 10k image,
+Typically mivv uses ~2GB memory for every 10k images,
 because it loads all thumbnail files into memory asynchronously
 to accelarate exploration.
 

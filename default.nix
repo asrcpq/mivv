@@ -11,6 +11,6 @@ python3.pkgs.buildPythonApplication rec {
 
 	dontWrapQtApps = true;
 	preFixup = ''
-			wrapQtApp $out/bin/mivv
+		wrapQtApp $out/bin/mivv
 	'';
 }

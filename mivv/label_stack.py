@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5.QtGui import QFont, QColor, QPainter
+from PyQt5.QtGui import QFont, QFontMetrics, QColor, QPainter
 from PyQt5.QtCore import Qt, QRect
 
 from mivv import var
@@ -11,7 +11,9 @@ class LabelStack(QWidget):
 		self.setAttribute(Qt.WA_TransparentForMouseEvents)
 		self._labels = []
 		self._labels_dict = {}
-		self._font = QFont("monospace", var.bar_height // 1.4)
+		font = QFont("monospace", var.font_size)
+		self.bar_height = QFontMetrics(font).height()
+		self._font = font
 		self.w = 0
 		self.h = 0
 		self.update_size()
@@ -41,9 +43,9 @@ class LabelStack(QWidget):
 
 	def _compute_geom(self, idx):
 		l = 0
-		t = self.h - var.bar_height * (idx + 1) - 1
+		t = self.h - self.bar_height * (idx + 1) - 1
 		w = self.h
-		h = var.bar_height
+		h = self.bar_height
 		return QRect(l, t, w, h)
 
 	def update_size(self):
@@ -65,8 +67,8 @@ class LabelStack(QWidget):
 		p.setFont(self._font)
 		true_rect = p.boundingRect(rect, Qt.AlignLeft, text)
 		w = true_rect.width() + 5 # todo: why overflow?
-		true_rect = QRect(rect.left(), rect.top(), w, var.bar_height)
-		true_rect2 = QRect(rect.left(), rect.top(), w, var.bar_height)
+		true_rect = QRect(rect.left(), rect.top(), w, self.bar_height)
+		true_rect2 = QRect(rect.left(), rect.top(), w, self.bar_height)
 		p.setPen(Qt.NoPen)
 		bgc = QColor(var.background)
 		bgc.setAlpha(128)

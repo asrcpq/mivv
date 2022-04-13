@@ -66,12 +66,11 @@ class LabelStack(QWidget):
 		rect = self._compute_geom(idx)
 		p.setFont(self._font)
 		true_rect = p.boundingRect(rect, Qt.AlignLeft, text)
-		w = true_rect.width() + 5 # todo: why overflow?
+		w = true_rect.width() + 5
 		true_rect = QRect(rect.left(), rect.top(), w, self.bar_height)
-		true_rect2 = QRect(rect.left(), rect.top(), w, self.bar_height)
 		p.setPen(Qt.NoPen)
 		bgc = QColor(var.background)
 		bgc.setAlpha(128)
 		p.fillRect(true_rect, bgc);
 		p.setPen(Qt.white)
-		p.drawText(true_rect, Qt.AlignLeft, text)
+		p.drawText(true_rect, Qt.AlignVCenter, text)

@@ -413,7 +413,7 @@ class Imageview(QGraphicsView):
 	def tabletEvent(self, e):
 		pos = e.posF()
 		pressure = e.pressure()
-		pos = self.mapToScene(pos.x(), pos.y()) * self.canvas_scaling_factor
+		pos = self.mapToScene(int(pos.x()), int(pos.y())) * self.canvas_scaling_factor
 		ty = e.type()
 		if ty == QEvent.TabletPress:
 			if not self.canvas_item:

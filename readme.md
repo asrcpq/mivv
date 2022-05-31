@@ -10,28 +10,34 @@ PySide6 simple image viewer.
 
 * free rotation
 
-* annotate image(wip)
+* annotate image(crappy)
 
 * configurable(via `$XDG_CONFIG_HOME/mivv/config.py`)
 
 ## usage
 
-1. have pyqt5 installed
+1. have pyside6 installed
 
-2. `PYTHONPATH=. python3 mivv --help`
+2. goto project root and type `PYTHONPATH=. python3 mivv --help`
+
+I don't want to use python's buggy packaging tools.
 
 see `mivv/var.py` for keybind
 
 ## known limitations
 
-* qtsvg only support svg tiny
+* no basic-svg, pdf support(lib limitation)
 
-* qtpdf does not have a pyqt version,
-poppler-qt5 is broken(cannot install in venv)
+* Loading all thumbnails(~10k images level) use too much memory
 
-* Loading all thumbnails use too much memory
+	I have a better solution(dynamic thumbnail (un)loading),
+	but it is too complicated for a simple image viewer.
 
-	see `memory_management.md`
+* annotate feature is not working well/looking good
+
+	I'm too lazy to implement better drawing.
+	Currently I only use this tool for screen annotation by scripting
+	(screenshot -> open image -> draw).
 
 ## todo(maybe)
 
@@ -41,7 +47,7 @@ poppler-qt5 is broken(cannot install in venv)
 
 * modular design
 
-* flip change position
+* in-place mirror
 
 * video module
 

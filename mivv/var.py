@@ -1,7 +1,7 @@
 from time import time
 import os
 
-from PyQt5.QtCore import Qt, QRect
+from PySide6.QtCore import Qt, QRect
 
 from mivv.logger import get_logger
 from mivv.keydef import Keydef

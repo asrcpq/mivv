@@ -1,5 +1,5 @@
-from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt
 
 from mivv.thumbnail import Thumbnail
 from mivv.keydef import Keydef

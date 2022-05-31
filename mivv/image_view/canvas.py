@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QGraphicsItem
-from PyQt5.QtGui import QPainter, QPen, QPixmap
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QRect
+from PySide6.QtWidgets import QGraphicsItem
+from PySide6.QtGui import QPainter, QPen, QPixmap
+from PySide6.QtCore import Qt, QRectF, QSizeF, QRect
 
 from mivv import var
 from .patch_manager import PatchManager

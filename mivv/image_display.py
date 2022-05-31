@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QLabel
-from PyQt5.QtGui import QPixmap, QPainter, QColor
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QLabel
+from PySide6.QtGui import QPixmap, QPainter, QColor
+from PySide6.QtCore import Qt
 
 from mivv.image_view.image_view import Imageview
 from mivv.keydef import Keydef

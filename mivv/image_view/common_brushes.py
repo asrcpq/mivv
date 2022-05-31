@@ -3,8 +3,8 @@
 # input: point sequence
 # output: update patch, offset
 
-from PyQt5.QtGui import QPainter, QPolygonF
-from PyQt5.QtCore import Qt, QPointF, QRectF, QLineF
+from PySide6.QtGui import QPainter, QPolygonF
+from PySide6.QtCore import Qt, QPointF, QRectF, QLineF
 class DummyBrush():
 	def __init__(self):
 		self.hist_pos = []

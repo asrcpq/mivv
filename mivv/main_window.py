@@ -1,8 +1,8 @@
 from time import time
 
-from PyQt5.QtWidgets import QLabel, QMainWindow
-from PyQt5.QtGui import QFont, QFontMetrics
-from PyQt5.QtCore import Qt, QEvent
+from PySide6.QtWidgets import QLabel, QMainWindow
+from PySide6.QtGui import QFont, QFontMetrics
+from PySide6.QtCore import Qt, QEvent
 
 from mivv import var
 from mivv.label_stack import LabelStack

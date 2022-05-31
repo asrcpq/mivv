@@ -3,8 +3,8 @@ from pathlib import Path
 import os
 import re
 
-from PyQt5.QtGui import QImage, QPixmap
-from PyQt5.QtCore import Qt, pyqtSignal, QThread
+from PySide6.QtGui import QImage, QPixmap
+from PySide6.QtCore import Qt, Signal, QThread
 
 from mivv import var
 
@@ -36,6 +36,7 @@ class ImageLoader():
 	def preload(self, filelist, expand_level, sort_method):
 		self.loader_thread = _ImageLoaderThread(filelist, expand_level, sort_method)
 		self.loader_thread.result.connect(self.get_result)
+		var.logger.debug("Loader connected")
 		self.loader_thread.start()
 
 	def stop(self):
@@ -43,7 +44,7 @@ class ImageLoader():
 		self.loader_thread.stop()
 
 class _ImageLoaderThread(QThread):
-	result = pyqtSignal(object, str, int)
+	result = Signal(object, str, int)
 
 	@staticmethod
 	def dict_sort(l):

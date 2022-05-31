@@ -1,6 +1,6 @@
-from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5.QtGui import QFont, QFontMetrics, QColor, QPainter
-from PyQt5.QtCore import Qt, QRect
+from PySide6.QtWidgets import QWidget, QLabel
+from PySide6.QtGui import QFont, QFontMetrics, QColor, QPainter
+from PySide6.QtCore import Qt, QRect
 
 from mivv import var
 

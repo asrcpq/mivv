@@ -1,6 +1,6 @@
 from math import ceil, floor
 
-from PyQt5.QtGui import QTransform
+from PySide6.QtGui import QTransform
 
 from mivv import var
 

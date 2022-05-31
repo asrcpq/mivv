@@ -1,8 +1,8 @@
-from PyQt5.QtGui import QImage
-from PyQt5.QtCore import pyqtSignal, QThread
+from PySide6.QtGui import QImage
+from PySide6.QtCore import Signal, QThread
 
 class _ContentLoaderThread(QThread):
-	result = pyqtSignal(object)
+	result = Signal(object)
 
 	def __init__(self):
 		QThread.__init__(self)

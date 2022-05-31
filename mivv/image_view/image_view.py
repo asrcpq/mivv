@@ -1,11 +1,11 @@
 from math import atan2, pi
 
-from PyQt5.QtWidgets import (
+from PySide6.QtWidgets import (
 	QLabel, QGraphicsView, QGraphicsScene, QGraphicsPixmapItem
 )
-from PyQt5.QtGui import QPixmap, QMovie, QImageReader
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QEvent, pyqtSignal, QPointF
-from PyQt5.QtSvg import QGraphicsSvgItem
+from PySide6.QtGui import QPixmap, QMovie, QImageReader
+from PySide6.QtCore import Qt, QRectF, QSizeF, QEvent, Signal, QPointF
+from PySide6.QtSvgWidgets import QGraphicsSvgItem
 
 from mivv import var
 from mivv.keydef import Keydef
@@ -14,7 +14,7 @@ from .viewport_data import _ViewportData
 from .content_loader_thread import _ContentLoaderThread
 
 class Imageview(QGraphicsView):
-	load_data = pyqtSignal(str, int)
+	load_data = Signal(str, int)
 
 	def __init__(self, parent = None):
 		super().__init__(parent)

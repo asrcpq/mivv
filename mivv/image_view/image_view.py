@@ -163,7 +163,6 @@ class Imageview(QGraphicsView):
 		self.canvas_item = None
 		self.ty = var.image_loader.typelist[var.current_idx]
 		filename = var.image_loader.filelist[var.current_idx]
-		self.load_data.emit(filename, self.ty)
 		if var.preload_thumbnail:
 			self._reset_scene()
 			self.update_content_size(QImageReader(filename).size())
@@ -178,6 +177,7 @@ class Imageview(QGraphicsView):
 			item.setPixmap(pixmap)
 			self.scene().addItem(item)
 			self._finish_loading()
+		self.load_data.emit(filename, self.ty)
 		return True
 
 	def render(self):

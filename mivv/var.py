@@ -2,10 +2,12 @@ from time import time
 import os
 
 from PySide6.QtCore import Qt, QRect
+from PySide6 import QtGui
 
 from mivv.logger import get_logger
 from mivv.keydef import Keydef
 
+QtGui.QImageReader.setAllocationLimit(0)
 startup_time = time()
 
 # config values, case insensitive
@@ -19,13 +21,14 @@ ext_type = {
 }
 default_geom = QRect(0, 0, 640, 480)
 cache_size = 256
+cache_k = 4 # exclude size less than `cache_size ^ 2 * k` from caching
 grid_sizes = [32, 64, 128, 192, 256] # preview sizes
 grid_space = 10
 grid_size_idx_default = 2
 k_move = 50 # relative to screen size
 scaling_mult = 2 ** (1 / 3) # image mode keyboard scaling factor
 scaling_mult_mouse = 1.04 # image mode mouse scaling factor
-zoom_level_limit = [0.01, 20.0] # note that scaling factor = 1 / zoom level
+zoom_level_limit = [0.01, 100.0] # note that scaling factor = 1 / zoom level
 image_move_zoom = 5 # image mode pixels moved to trigger zoom
 image_move_rotate = 5 # ... rotation(degree)
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom

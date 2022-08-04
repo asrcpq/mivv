@@ -142,8 +142,8 @@ class _ImageLoaderThread(QThread):
 		if pixmap.isNull():
 			var.logger.warning(f"Create cache read fail: {abspath}")
 			return None
-		if pixmap.width() <= var.cache_size or \
-			pixmap.height() <= var.cache_size:
+		if pixmap.width() * pixmap.height() < \
+			var.cache_size ** 2 * var.cache_k:
 			self._save_cache(None, abspath)
 			return pixmap
 		pixmap_resize = pixmap.scaled(

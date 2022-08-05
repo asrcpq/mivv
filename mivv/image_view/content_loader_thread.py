@@ -1,5 +1,6 @@
 from PySide6.QtGui import QImage
 from PySide6.QtCore import Signal, QThread
+import time
 
 class _ContentLoaderThread(QThread):
 	result = Signal(object)
@@ -20,6 +21,7 @@ class _ContentLoaderThread(QThread):
 		while self.run_flag:
 			self.run_flag = False
 			if self.ty == 1:
+				time.sleep(0.001)
 				result = QImage(self.filename)
 			elif self.ty == 2:
 				result = self.filename

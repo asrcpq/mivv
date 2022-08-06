@@ -3,7 +3,7 @@ from PySide6.QtCore import Signal, QThread
 import time
 
 class _ContentLoaderThread(QThread):
-	result = Signal(object)
+	result = Signal(object, str)
 
 	def __init__(self):
 		QThread.__init__(self)
@@ -31,7 +31,7 @@ class _ContentLoaderThread(QThread):
 				result = None
 			if self.run_flag:
 				continue
-			self.result.emit(result)
+			self.result.emit(result, self.filename)
 
 	def stop(self):
 		self.wait()

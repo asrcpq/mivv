@@ -84,7 +84,10 @@ class Imageview(QGraphicsView):
 		self.old_content_size = self.content_size
 		self.content_size = new_size
 
-	def update_content(self, content):
+	def update_content(self, content, filename):
+		if filename != var.image_loader.filelist[var.current_idx]:
+			var.logger.info(f"Skip {filename}")
+			return False
 		if self.last_content_item:
 			self.scene().removeItem(self.last_content_item)
 		if not var.preload_thumbnail:

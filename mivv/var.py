@@ -27,7 +27,7 @@ grid_space = 10
 grid_size_idx_default = 2
 k_move = 50 # relative to screen size
 scaling_mult = 2 ** (1 / 3) # image mode keyboard scaling factor
-scaling_mult_mouse = 1.04 # image mode mouse scaling factor
+scaling_mult_mouse = 1.1 # image mode mouse scaling factor
 zoom_level_limit = [0.01, 100.0] # note that scaling factor = 1 / zoom level
 image_move_zoom = 5 # image mode pixels moved to trigger zoom
 image_move_rotate = 5 # ... rotation(degree)
@@ -76,8 +76,8 @@ keymap_image = {
 	(Qt.Key_W, 0): Keydef.image_view_zoom_fill,
 	(Qt.Key_Greater, 1): Keydef.image_view_cw,
 	(Qt.Key_Less, 1): Keydef.image_view_ccw,
-	(Qt.Key_Bar, 0): Keydef.image_view_mirror_v,
-	(Qt.Key_Underscore, 1): Keydef.image_view_mirror_h,
+	(Qt.Key_M, 0): Keydef.image_view_mirror_v,
+	(Qt.Key_M, 1): Keydef.image_view_mirror_h,
 	(Qt.Key_R, 0): Keydef.image_navi_reload,
 	(Qt.Key_Space, 0): Keydef.image_movie_pause_toggle,
 	(Qt.Key_S, 0): Keydef.image_movie_frame_forward,

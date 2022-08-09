@@ -41,8 +41,6 @@ see `mivv/var.py` for keybind
 
 ## todo(maybe)
 
-* option to disable interpolation in view zoom
-
 * canvas default resolution same as screen
 
 * modular design

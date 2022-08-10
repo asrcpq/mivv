@@ -6,6 +6,7 @@ Keydef = Enum('Keydef', [
 	'toggle_grid_mode',
 	'preserve_viewport',
 	'preload_thumbnail',
+	'smooth_interpolation',
 	'toggle_label',
 	# image mode
 	'image_view_left',

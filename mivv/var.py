@@ -50,6 +50,7 @@ keymap_common = {
 	(Qt.Key_Return, 0): Keydef.toggle_grid_mode,
 	(Qt.Key_W, 1): Keydef.preserve_viewport,
 	(Qt.Key_T, 1): Keydef.preload_thumbnail,
+	(Qt.Key_I, 1): Keydef.smooth_interpolation,
 	(Qt.Key_B, 0): Keydef.toggle_label,
 }
 

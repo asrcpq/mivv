@@ -228,7 +228,6 @@ class Imageview(QGraphicsView):
 			self.navigate_image(0, True)
 		elif k == Keydef.image_navi_reload:
 			self.load()
-			self.render()
 		else:
 			return False
 		return True

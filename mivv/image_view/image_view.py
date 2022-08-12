@@ -102,10 +102,10 @@ class Imageview(QGraphicsView):
 				return False
 			item = QGraphicsPixmapItem()
 			item.setPixmap(content)
-			if var.smooth_interpolation:
-				item.setTransformationMode(Qt.SmoothTransformation)
-			else:
+			if var.no_interpolation:
 				item.setTransformationMode(Qt.FastTransformation)
+			else:
+				item.setTransformationMode(Qt.SmoothTransformation)
 			self.scene().addItem(item)
 		elif self.ty == 2:
 			self.content = QMovie(content)

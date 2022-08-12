@@ -52,7 +52,7 @@ class MainWindow(QMainWindow):
 			status_string += "W"
 		if var.preload_thumbnail:
 			status_string += "T"
-		if var.smooth_interpolation:
+		if var.no_interpolation:
 			status_string += "I"
 		status_string = f"[{status_string}]"
 		if self.mode == 1:
@@ -161,8 +161,8 @@ class MainWindow(QMainWindow):
 		elif k == Keydef.preload_thumbnail:
 			var.preload_thumbnail = not var.preload_thumbnail
 			self.set_basic_label()
-		elif k == Keydef.smooth_interpolation:
-			var.smooth_interpolation = not var.smooth_interpolation
+		elif k == Keydef.no_interpolation:
+			var.no_interpolation = not var.no_interpolation
 			self.set_basic_label()
 			if self.mode == 1:
 				# TODO: do not reset view

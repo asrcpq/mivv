@@ -33,7 +33,7 @@ image_move_zoom = 5 # image mode pixels moved to trigger zoom
 image_move_rotate = 5 # ... rotation(degree)
 grid_move_zoom = 50 # grid mode pixels moved to trigger zoom
 grid_move_pan = 50 # grid mode pixels moved to trigger navigation
-smooth_interpolation = True
+no_interpolation = False
 guesture_move = 30
 font_size = 10
 background = "rgb(0, 0, 0)"
@@ -50,7 +50,7 @@ keymap_common = {
 	(Qt.Key_Return, 0): Keydef.toggle_grid_mode,
 	(Qt.Key_W, 1): Keydef.preserve_viewport,
 	(Qt.Key_T, 1): Keydef.preload_thumbnail,
-	(Qt.Key_I, 1): Keydef.smooth_interpolation,
+	(Qt.Key_I, 1): Keydef.no_interpolation,
 	(Qt.Key_B, 0): Keydef.toggle_label,
 }
 

@@ -18,6 +18,7 @@ ext_type = {
 	".bmp": 1,
 	".gif": 2,
 	".svg": 3,
+	".kra": 4,
 }
 default_geom = QRect(0, 0, 640, 480)
 cache_size = 256

@@ -2,6 +2,7 @@ from glob import glob, escape
 from pathlib import Path
 import os
 import re
+from kra2qimage import kra2qimage
 
 from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import Qt, Signal, QThread
@@ -107,12 +108,12 @@ class _ImageLoaderThread(QThread):
 				continue
 			ty = var.ext_type[ext.casefold()]
 			abspath = os.path.abspath(file)
-			pixmap = self._load_cache(abspath)
+			img = self._load_cache(abspath)
 			var.logger.debug(f"Loaded: {file}")
-			if pixmap is None:
+			if img is None:
 				var.logger.error(f"Load fail: {file}")
 				continue
-			self.result.emit(pixmap, file, ty)
+			self.result.emit(img, file, ty)
 		self.result.emit(None, None, None)
 
 	def stop(self):
@@ -120,7 +121,7 @@ class _ImageLoaderThread(QThread):
 		self.wait()
 
 	@staticmethod
-	def _save_cache(pixmap, path):
+	def _save_cache(img, path):
 		if var.private_mode or not var.cache_path:
 			var.logger.debug(f"No cache(private mode): {path}")
 			return
@@ -129,31 +130,42 @@ class _ImageLoaderThread(QThread):
 		cached_path = var.cache_path + path + ".jpg"
 		dirname = os.path.dirname(cached_path)
 		Path(dirname).mkdir(parents = True, exist_ok = True)
-		if pixmap:
+		if img:
 			var.logger.debug(f"Cached: {cached_path}")
-			pixmap.save(cached_path)
+			img.save(cached_path)
 		else:
 			var.logger.debug(f"Touch-cached: {cached_path}")
 			open(cached_path, "w").close()
 
 	# nocheck, abspath must exist
 	def _create_cache(self, abspath):
-		pixmap = QImage(abspath)
-		if pixmap.isNull():
+		_filename, ext = os.path.splitext(abspath)
+		if ext.casefold() not in var.ext_type:
+			var.logger.warning(f"Unknown ext: {ext}")
+			return None
+		ty = var.ext_type[ext.casefold()]
+		if ty <= 3:
+			img = QImage(abspath)
+		elif ty == 4:
+			img = kra2qimage(abspath)
+		else:
+			var.logger.error("Unknown ty: {ty}")
+			return None
+		if img.isNull():
 			var.logger.warning(f"Create cache read fail: {abspath}")
 			return None
-		if pixmap.width() * pixmap.height() < \
+		if img.width() * img.height() < \
 			var.cache_size ** 2 * var.cache_k:
 			self._save_cache(None, abspath)
-			return pixmap
-		pixmap_resize = pixmap.scaled(
+			return img
+		img_resize = img.scaled(
 			var.cache_size,
 			var.cache_size,
 			Qt.KeepAspectRatio,
 			Qt.SmoothTransformation,
 		)
-		self._save_cache(pixmap_resize, abspath)
-		return pixmap_resize
+		self._save_cache(img_resize, abspath)
+		return img_resize
 
 	# nocheck, abspath, cached_path must exist
 	def _load_cache(self, abspath):

@@ -92,7 +92,7 @@ class Imageview(QGraphicsView):
 			self.scene().removeItem(self.last_content_item)
 		if not var.preload_thumbnail:
 			self._reset_scene()
-		if self.ty == 1:
+		if self.ty == 1 or self.ty == 4:
 			content = QPixmap.fromImage(content)
 			self.content = content
 			self.update_content_size(content.size())
@@ -171,6 +171,9 @@ class Imageview(QGraphicsView):
 		filename = var.image_loader.filelist[var.current_idx]
 		if var.preload_thumbnail:
 			self._reset_scene()
+			# FIXME: kra size reader not work, kra file only work with non preview mode
+			# Solution: collects all types of loaders
+			# (item+thumbnail+metadata) into a module
 			self.update_content_size(QImageReader(filename).size())
 			if self.content_size.width() == -1:
 				var.logger.error(f"Load image size error: {filename}")

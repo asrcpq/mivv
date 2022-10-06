@@ -1,1 +1,2 @@
-posix hpm
+change:
+reduce default grid space to 1px

@@ -17,6 +17,7 @@ ext_type = {
 	".jpeg": 1,
 	".bmp": 1,
 	".gif": 2,
+	".webp": 2,
 	".svg": 3,
 }
 default_geom = QRect(0, 0, 640, 480)

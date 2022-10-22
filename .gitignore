@@ -1,9 +1,3 @@
-/core
 /venv
-/dist
-/result
-*.egg-info
 *.png
 *.log
-__pycache__
-__pypackages__

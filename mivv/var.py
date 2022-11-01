@@ -118,7 +118,7 @@ keymap_grid = {
 # global values
 logger = get_logger()
 hidpi = None
-image_loader = None
+thumbnail_loader = None
 main_window = None
 app = None
 private_mode = False

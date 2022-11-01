@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
 			self.grid_view.update_filelist()
 
 	def set_fn_label_filename(self):
-		text = f"{var.image_loader.filelist[var.current_idx]}"
+		text = f"{var.thumbnail_loader.filelist[var.current_idx]}"
 		self.label_stack.set_label("filename", text)
 
 	def set_info_label(self):
@@ -68,14 +68,14 @@ class MainWindow(QMainWindow):
 			scaling_string = f"{var.grid_sizes[self.grid_view.grid_size_idx]}px"
 		else:
 			scaling_string = "?%"
-		if not var.image_loader.finished:
+		if not var.thumbnail_loader.finished:
 			unfinished_indicator = "+"
 		else:
 			unfinished_indicator = ""
 		self.label_stack.set_label("info",
 			f"{status_string} " \
 			f"{scaling_string} " \
-			f"{1 + var.current_idx}/{len(var.image_loader.filelist)}" \
+			f"{1 + var.current_idx}/{len(var.thumbnail_loader.filelist)}" \
 			f"{unfinished_indicator}" \
 		)
 

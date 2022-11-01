@@ -85,7 +85,7 @@ class Imageview(QGraphicsView):
 		self.content_size = new_size
 
 	def update_content(self, content, filename):
-		if filename != var.image_loader.filelist[var.current_idx]:
+		if filename != var.thumbnail_loader.filelist[var.current_idx]:
 			var.logger.info(f"Skip {filename}")
 			return False
 		if self.last_content_item:
@@ -167,8 +167,8 @@ class Imageview(QGraphicsView):
 
 		self.last_content_item = None
 		self.canvas_item = None
-		self.ty = var.image_loader.typelist[var.current_idx]
-		filename = var.image_loader.filelist[var.current_idx]
+		self.ty = var.thumbnail_loader.typelist[var.current_idx]
+		filename = var.thumbnail_loader.filelist[var.current_idx]
 		if var.preload_thumbnail:
 			self._reset_scene()
 			self.update_content_size(QImageReader(filename).size())
@@ -176,7 +176,7 @@ class Imageview(QGraphicsView):
 				var.logger.error(f"Load image size error: {filename}")
 				self.content = None
 				return False
-			pixmap = var.image_loader.pixmaps[var.current_idx].scaled(self.content_size)
+			pixmap = var.thumbnail_loader.pixmaps[var.current_idx].scaled(self.content_size)
 			self.content = pixmap
 			item = QGraphicsPixmapItem()
 			self.last_content_item = item
@@ -205,8 +205,8 @@ class Imageview(QGraphicsView):
 			var.current_idx = offset
 		else:
 			var.current_idx += offset
-		if var.current_idx >= len(var.image_loader.filelist):
-			var.current_idx = len(var.image_loader.filelist) - 1
+		if var.current_idx >= len(var.thumbnail_loader.filelist):
+			var.current_idx = len(var.thumbnail_loader.filelist) - 1
 		if var.current_idx < 0:
 			var.current_idx = 0
 		if old_idx == var.current_idx:
@@ -223,7 +223,7 @@ class Imageview(QGraphicsView):
 		elif k == Keydef.image_view_prev:
 			self.navigate_image(-1, False)
 		elif k == Keydef.image_view_last:
-			self.navigate_image(len(var.image_loader.filelist) - 1, True)
+			self.navigate_image(len(var.thumbnail_loader.filelist) - 1, True)
 		elif k == Keydef.image_view_first:
 			self.navigate_image(0, True)
 		elif k == Keydef.image_navi_reload:

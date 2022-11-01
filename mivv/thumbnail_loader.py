@@ -7,6 +7,7 @@ from PySide6.QtGui import QImage, QPixmap
 from PySide6.QtCore import Qt, Signal, QThread
 
 from mivv import var
+from mivv.open_image import open_image
 
 class ThumbnailLoader():
 	def __init__(self, callback):
@@ -138,7 +139,7 @@ class _ThumbnailLoaderThread(QThread):
 
 	# nocheck, abspath must exist
 	def _create_cache(self, abspath):
-		pixmap = QImage(abspath)
+		pixmap = open_image(abspath)
 		if pixmap.isNull():
 			var.logger.warning(f"Create cache read fail: {abspath}")
 			return None

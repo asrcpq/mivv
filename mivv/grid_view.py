@@ -18,7 +18,7 @@ class Gridview(QWidget):
 		self.cursor = [0, 0]
 		self.labels = []
 		self.mouse_mode = 0
-		self.filelist_len = len(var.image_loader.filelist) # cached length for update check
+		self.filelist_len = len(var.thumbnail_loader.filelist) # cached length for update check
 		self.last_mouse_pos = None
 
 	def _get_idx(self, i, j):
@@ -41,7 +41,7 @@ class Gridview(QWidget):
 			return
 		self.cursor[0] = var.current_idx % self.count_h
 		cy_plus_offset = var.current_idx // self.count_h
-		total_row = (len(var.image_loader.filelist) - 1) // self.count_h + 1
+		total_row = (len(var.thumbnail_loader.filelist) - 1) // self.count_h + 1
 		# scaled: row as close as possible
 		# keymove: scroll as little as possible(but no extra whitespace)
 		if scaled:
@@ -89,7 +89,7 @@ class Gridview(QWidget):
 		self.reset_layout()
 
 	def update_filelist(self):
-		var_flen = len(var.image_loader.filelist)
+		var_flen = len(var.thumbnail_loader.filelist)
 		if self.filelist_len == var_flen:
 			return
 		if self.filelist_len > var_flen:
@@ -146,13 +146,13 @@ class Gridview(QWidget):
 				else:
 					label = self.labels[j][i]
 				idx = self._get_idx(i, j)
-				if idx >= len(var.image_loader.filelist):
+				if idx >= len(var.thumbnail_loader.filelist):
 					self.labels[j][i].hide()
 				else:
-					if not var.image_loader.pixmaps[idx]:
+					if not var.thumbnail_loader.pixmaps[idx]:
 						var.logger.warning(f"Not loaded {idx}")
 					else:
-						pixmap_resize = var.image_loader.pixmaps[idx].scaled(
+						pixmap_resize = var.thumbnail_loader.pixmaps[idx].scaled(
 							grid_size,
 							grid_size,
 							Qt.KeepAspectRatio,
@@ -187,11 +187,11 @@ class Gridview(QWidget):
 				var.logger.debug("scroll overflow restrict 0=")
 				var.current_idx = 0
 			self.set_cursor(False)
-		elif var.current_idx >= len(var.image_loader.filelist):
+		elif var.current_idx >= len(var.thumbnail_loader.filelist):
 			if (self.cursor[1] + self.y_offset + 1) * self.count_h < \
-					len(var.image_loader.filelist):
+					len(var.thumbnail_loader.filelist):
 				var.logger.debug("scroll overflow restrict")
-				var.current_idx = len(var.image_loader.filelist) - 1
+				var.current_idx = len(var.thumbnail_loader.filelist) - 1
 				self.set_cursor(False)
 			else:
 				var.logger.debug("scroll overflow cancel max")
@@ -226,7 +226,7 @@ class Gridview(QWidget):
 		elif k == Keydef.grid_view_up:
 			self._offset_cursor(-self.count_h, False)
 		elif k == Keydef.grid_view_last:
-			self._offset_cursor(len(var.image_loader.filelist) - 1, True)
+			self._offset_cursor(len(var.thumbnail_loader.filelist) - 1, True)
 		elif k == Keydef.grid_view_first:
 			self._offset_cursor(0, True)
 		elif k == Keydef.grid_view_zoom_out:

@@ -6,7 +6,7 @@ import argparse
 from PySide6.QtWidgets import QApplication
 
 from mivv.main_window import MainWindow
-from mivv.image_loader import ImageLoader
+from mivv.thumbnail_loader import ThumbnailLoader
 from mivv import var
 
 def build_parser():
@@ -115,15 +115,15 @@ def main():
 	var.logger.debug("Application created")
 	filelist_raw = list(reversed(filelist))
 	var.logger.debug("Generated filelist")
-	image_loader = ImageLoader(loader_callback)
-	var.image_loader = image_loader
+	thumbnail_loader = ThumbnailLoader(loader_callback)
+	var.thumbnail_loader = thumbnail_loader
 	var.logger.debug("Initialized image loader")
-	image_loader.preload(filelist_raw, expand_level, args.sort)
+	thumbnail_loader.preload(filelist_raw, expand_level, args.sort)
 	var.logger.debug("Preload okay")
 	var.app = app
 	var.logger.debug("Starting app")
 	app.exec()
-	var.image_loader.stop()
+	var.thumbnail_loader.stop()
 
 if __name__ == '__main__':
 	main()

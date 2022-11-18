@@ -247,6 +247,8 @@ class Gridview(QWidget):
 			self._offset_cursor(-self.count_h * (1 + (self.count_v - 1) // 2))
 		elif k == Keydef.grid_page_down_half:
 			self._offset_cursor(self.count_h * (1 + (self.count_v - 1) // 2))
+		elif k == Keydef.grid_select:
+			print(var.thumbnail_loader.filelist[var.current_idx])
 		return True
 
 	def wheelEvent(self, e):

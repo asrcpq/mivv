@@ -113,6 +113,7 @@ keymap_grid = {
 	(Qt.Key_PageUp, 0): Keydef.grid_page_up,
 	(Qt.Key_D, 2): Keydef.grid_page_down_half,
 	(Qt.Key_U, 2): Keydef.grid_page_up_half,
+	(Qt.Key_Space, 0): Keydef.grid_select,
 }
 
 # global values

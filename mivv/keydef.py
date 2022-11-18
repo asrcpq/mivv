@@ -49,4 +49,5 @@ Keydef = Enum('Keydef', [
 	'grid_page_up_half',
 	'grid_page_down',
 	'grid_page_down_half',
+	'grid_select',
 ])

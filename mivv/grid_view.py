@@ -28,7 +28,7 @@ class Gridview(QWidget):
 		try:
 			if up:
 				self.labels[self.cursor[1]][self.cursor[0]]\
-					.setStyleSheet(f"border: 3px double {var.border_color};")
+					.setStyleSheet(f"border: 5px double {var.border_color};")
 			else:
 				self.labels[self.cursor[1]][self.cursor[0]]\
 					.setStyleSheet("border: none;")

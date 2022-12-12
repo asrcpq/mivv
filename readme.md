@@ -2,7 +2,7 @@
 
 PySide6 simple image viewer.
 
-<img src="https://asrcpq.github.io/resources/2111/mivv_demo.gif" width="100%">
+<img src="https://raw.githubusercontent.com/asrcpq/demo/master/mivv/mivv_demo.gif" width="100%">
 
 ## features
 

@@ -1,2 +1,0 @@
-. "$(dirname $0)/../venv/bin/activate"
-PYTHONPATH="$(dirname $0)/.." python3 "$(dirname $0)/../mivv" "$@"
